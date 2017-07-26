@@ -8,10 +8,17 @@
 // +----------------------------------------------------------------------
 namespace Home\Controller;
 
+use Think\ManageBaseController;
+
 /**
  * 用户扫码登录的主站接口端
  */
-class ScanLoginApiController extends HomeController {
+class ScanLoginApiController extends ManageBaseController {
+	function __construct() {
+		$this->need_login = false;
+		$this->need_appinfo = false;
+		parent::__construct ();
+	}
 	function getQrCode() {
 		$key = I ( 'key' );
 		if (empty ( $key )) {

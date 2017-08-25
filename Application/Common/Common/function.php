@@ -1583,7 +1583,7 @@ function execute_sql_file($sql_path) {
 	// 开始安装
 	foreach ( $sql as $value ) {
 		$value = trim ( $value );
-		if (empty ( $value ))
+		if (empty ( $value ) || strpos($sql, $prefix.'attribute ')!==false)
 			continue;
 		
 		$res = M ()->execute ( $value );

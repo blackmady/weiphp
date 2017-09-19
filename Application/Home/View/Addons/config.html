@@ -88,7 +88,16 @@
                               </div>
                     		</case>
                     		 <case value="file">
-                          <div class="controls upload_file">
+                    		 <div class="controls upload_file">
+				                <div  id="upload_file_{$o_key}" class="uploadrow_file"></div>
+				                <input type="hidden" name="{$o_key}"  value="{$form['value']}"/>
+				                <div class="upload-img-box">
+				                  <present name="form.value">
+				                    <div class="upload-pre-file"><span class="upload_icon_all"></span>  {$form['value']|get_table_field=###,'id','name','File'}</div>
+				                  </present>
+				                </div>
+				             </div>
+                          <!-- <div class="controls upload_file">
                           	
                                 <input type="file" id="upload_file_{$o_key}">
                                 <input type="hidden" name="config[{$o_key}]" value="{$form['value']}"/>
@@ -99,7 +108,7 @@
                                   </present>
                                 </div>
                              
-                          </div>
+                          </div> -->
                           <script type="text/javascript">
 								//上传图片
 							    /* 初始化上传插件 */

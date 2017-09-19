@@ -263,6 +263,13 @@ class AppsTable {
 					'type' => 'file',
 					'field' => 'int(10) UNSIGNED NULL',
 					'is_show' => 1,
+					'placeholder' => '请输入内容'
+			],
+			'authorizer_refresh_token' => [
+					'title' => '一键绑定刷新令牌',
+					'type' => 'string',
+					'field' => 'varchar(255) NULL',
+					'is_show' => 0,
 					'is_must' => 0
 			]
 	];

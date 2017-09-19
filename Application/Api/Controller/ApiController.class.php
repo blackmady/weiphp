@@ -20,8 +20,8 @@ class ApiController extends ApiBaseController {
 		$map ['act'] = $act;
 		$map ['mod'] = $mod;
 		$api_info = M ( 'api' )->where ( $map )->find ();
-		if (! $api_info) { // 自己写接口处理程序
-			$res = D ( $mod )->$act ( $param );
+		if (! $api_info) { // 自己写接口处理程序,并放到Api应用下的MODEL方法，防止访问其它文件出现任意文件上传漏洞
+			$res = D ( 'Api/'.$mod )->$act ( $param );
 			if ($debug) {
 				dump ( $debug );
 			} else {

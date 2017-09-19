@@ -105,7 +105,7 @@ class PublicBindController extends ManageBaseController {
 			$map2 ['uid'] = $this->mid;
 			M ( 'manager' )->where ( $map2 )->setField ( 'has_public', 1 );
 			D ( 'Common/User' )->clear ( $this->mid );
-			$url = U ( 'Home/Apps/public_edit', $param );
+			$url = U ( 'Home/Apps/lists', $param );
 		}
 		$key1 = 'pre_auth_code';
 		S ( $key1 ,null);

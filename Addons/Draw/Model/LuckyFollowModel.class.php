@@ -91,10 +91,11 @@ class LuckyFollowModel extends Model {
     }
     // 获取各抽奖活动对应奖品已发放的数量
     function getLzwgAwardNum($event_id,$token='',$aim_talbe='lottery_games') {
+        $px = C ( 'DB_PREFIX' );
         if ($token && $aim_talbe){
-            $sql="SELECT award_id, sum(num) as num FROM `wp_lucky_follow` WHERE draw_id='$event_id' and token='$token' and aim_table='$aim_talbe' GROUP BY award_id" ;
+            $sql="SELECT award_id, sum(num) as num FROM `".$px."lucky_follow` WHERE draw_id='$event_id' and token='$token' and aim_table='$aim_talbe' GROUP BY award_id" ;
         }else{
-            $sql="SELECT award_id, sum(num) as num FROM `wp_lucky_follow` WHERE draw_id='$event_id' GROUP BY award_id" ;
+            $sql="SELECT award_id, sum(num) as num FROM `".$px."lucky_follow` WHERE draw_id='$event_id' GROUP BY award_id" ;
         }
         $info = $this->query ($sql );
         foreach ( $info as $v ) {
@@ -207,7 +208,8 @@ class LuckyFollowModel extends Model {
 	
 	// 获取各活动场次对应奖品已发放的数量
 	function getAwardNum($sport_id) {
-		$info = $this->query ( "SELECT award_id, count(num) as num FROM `wp_lucky_follow` WHERE sport_id='$sport_id' GROUP BY award_id" );
+	    $px = C ( 'DB_PREFIX' );
+		$info = $this->query ( "SELECT award_id, count(num) as num FROM `".$px."lucky_follow` WHERE sport_id='$sport_id' GROUP BY award_id" );
 		foreach ( $info as $v ) {
 			$i [$v ['award_id']] = $v ['num'];
 		}

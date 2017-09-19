@@ -125,7 +125,8 @@ class WeixinAddonModel extends WeixinModel {
 			return true; // 告诉上面的关注方法，不需要再回复欢迎语了
 		} elseif ($qr ['addon'] == 'Draw') {
 			$url = addons_url ( 'Draw://Wap/index', array (
-					'games_id' => $qr ['aim_id'] 
+					'games_id' => $qr ['aim_id'],
+			         'token' => get_token ()
 			) );
 			$this->replyText ( "关注成功，<a href='{$url}'>请点击这里继续抽奖游戏</a>" );
 			return true; // 告诉上面的关注方法，不需要再回复欢迎语了

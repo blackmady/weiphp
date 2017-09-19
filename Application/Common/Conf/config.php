@@ -96,7 +96,7 @@ return array (
 		// 编辑器图片上传相关配置
 		'EDITOR_UPLOAD' => array (
 				'maxSize' => 2097152, // 2M 上传的文件大小限制 (0-不做限制)
-				'exts' => 'jpg,gif,png,jpeg', // 允许上传的文件后缀
+				'exts' => 'jpg,gif,png,jpeg,bmp', // 允许上传的文件后缀
 				'rootPath' => './Uploads/Editor/' 
 		),
 		// 编辑器上传服务器

@@ -7,10 +7,10 @@ Source Host           : localhost:3306
 Source Database       : weishop
 
 Target Server Type    : MYSQL
-Target Server Version : 50505
+Target Server Version : 50615
 File Encoding         : 65001
 
-Date: 2017-07-20 09:36:06
+Date: 2017-09-27 11:06:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -142,7 +142,7 @@ INSERT INTO `wp_addons` VALUES ('153', 'Test', '微测试', '主要功能有问�
 INSERT INTO `wp_addons` VALUES ('162', 'Weiba', '微社区', '打造公众号粉丝之间沟通的社区，为粉丝运营提供更多服务', '1', '{\"random\":\"1\"}', '凡星', '0.1', '1463801487', '1', '0', null, '1');
 INSERT INTO `wp_addons` VALUES ('163', 'QrAdmin', '扫码管理', '在服务号的情况下，可以自主创建一个二维码，并可指定扫码后用户自动分配到哪个用户组，绑定哪些标签', '1', 'null', '凡星', '0.1', '1463999217', '1', '0', null, '1');
 INSERT INTO `wp_addons` VALUES ('156', 'Draw', '比赛抽奖', '功能主要有奖品设置，抽奖配置和抽奖统计', '1', 'null', '凡星', '0.1', '1447389122', '1', '0', null, '1');
-INSERT INTO `wp_addons` VALUES ('164', 'PublicBind', '一键绑定公众号', '', '1', '{\"random\":\"1\"}', '凡星', '0.1', '1465981270', '0', '0', null, '1');
+INSERT INTO `wp_addons` VALUES ('164', 'PublicBind', '一键绑定公众号', '', '1', '{\"random\":\"1\",\"ComponentVerifyTicket\":\"ticket@@@nFDkyPQm5H6DkJQIjoeAkeIXsDE9G5Y5UP1fEu_AdLW6J1F3wcX1OAxxZxywk7Ke_TEHMwhM1bn-dlvAT9hYDg\"}', '凡星', '0.1', '1465981270', '0', '0', null, '1');
 INSERT INTO `wp_addons` VALUES ('165', 'Cms', '微信小程序CMS', '微信小程序CMS内容管理系统', '1', 'null', '凡星', '0.1', '1495787007', '1', '0', null, '1');
 INSERT INTO `wp_addons` VALUES ('166', 'Feedback', '用户反馈', '', '1', 'null', '凡星', '0.1', '1495787298', '1', '0', null, '1');
 INSERT INTO `wp_addons` VALUES ('167', 'WeiUserCenter', '小程序用户中心', '这是一个临时描述', '1', 'null', 'sky', '0.1', '1498703881', '1', '0', null, '1');
@@ -270,6 +270,7 @@ CREATE TABLE `wp_apps` (
   `partner_key` varchar(100) DEFAULT NULL COMMENT 'API密钥',
   `cert_pem` int(10) unsigned DEFAULT NULL COMMENT '微信支付证书cert',
   `key_pem` int(10) unsigned DEFAULT NULL COMMENT '微信支付证书key',
+  `authorizer_refresh_token` varchar(255) DEFAULT NULL COMMENT '一键绑定刷新令牌',
   PRIMARY KEY (`id`),
   KEY `token` (`token`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;

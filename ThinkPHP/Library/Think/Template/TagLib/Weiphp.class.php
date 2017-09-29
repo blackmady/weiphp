@@ -127,7 +127,7 @@ class Weiphp extends TagLib {
 		empty ( $class ) && $class = 'form-horizontal form-center';
 		
 		$action = $this->tpl->get ( $tag ['action'] );
-		$action == false && $action = U ( ACTION_NAME );
+		$action == false && $action = U ( ACTION_NAME,array('mdm'=>$_GET['mdm']) );
 		
 		$parseStr = "<form id='{$id}' action='{$action}' method='{$method}' class='{$class}'>";
 		$parseStr .= implode ( PHP_EOL, $htmlArr );
@@ -359,9 +359,10 @@ $(function(){
 					</div>";
 					break;
 				case 'file' :
+				    
 					$html .= "<div class='controls upload_file' rel='{$name}'>
 					<div id='upload_file_{$name}' class='uploadrow_file'></div>
-					<input type='hidden' name='{$name}' value='{$value}'/>
+					<input type='hidden' name='{$name}' value='{$value}' data-fileexts='{$field['validate_file_exts']}' data-maxsize='{$field['validate_file_size']}'/>
 					<div class='upload-img-box'>";
 					if (! empty ( $value )) {
 						$html .= "<div class='upload-pre-file'><span class='upload_icon_all'></span>" . get_table_field ( $value, 'id', 'name', 'File' ) . "</div>";

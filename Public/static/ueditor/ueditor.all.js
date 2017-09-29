@@ -19207,7 +19207,7 @@ baidu.editor.ui = {};(function (){
 
     var iframeUrlMap = {
         'anchor':'~/dialogs/anchor/anchor.html',
-        'insertimage':'~/dialogs/image/image.html?v=16072001',
+        'insertimage':'~/dialogs/image/image.html?v=16072005',
         'link':'~/dialogs/link/link.html',
         'spechars':'~/dialogs/spechars/spechars.html',
         'searchreplace':'~/dialogs/searchreplace/searchreplace.html',

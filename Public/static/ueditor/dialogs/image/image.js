@@ -516,7 +516,7 @@ var imageUploader = {},
                             onsuccess:function (xhr) {
                                 //去除空格
                                 var tmp = utils.trim(xhr.responseText),
-                                    imageUrls = !tmp ? [] : tmp.split("ue_separate_ue"),
+                                    imageUrls = !tmp ? [] : tmp.split("|"),
                                     length = imageUrls.length;
                                 g("imageList").innerHTML = !length ? "&nbsp;&nbsp;" + lang.noUploadImage : "";
                                 for (var k = 0, ci; ci = imageUrls[k++];) {

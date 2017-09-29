@@ -317,6 +317,12 @@ sql;
 			isset ( $f ['auto_rule'] ) || $f ['auto_rule'] = '';
 			isset ( $f ['auto_time'] ) || $f ['auto_time'] = 3;
 			isset ( $f ['auto_type'] ) || $f ['auto_type'] = 'function';
+			
+			if ($f['type']=='file'){
+			    isset ( $f ['validate_file_exts'] ) || $f ['validate_file_exts'] = '';
+			    isset ( $f ['validate_file_size'] ) || $f ['validate_file_size'] = 10485760;
+			}
+			
 		}
 		return $obj;
 	}

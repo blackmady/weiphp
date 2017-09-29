@@ -130,10 +130,12 @@
                                 </div>
                              
                           </div>
+                          
                           <script type="text/javascript">
 								//上传图片
 							    /* 初始化上传插件 */
-								$("#upload_file_{$field.name}").uploadify({
+							    initUploadFile();
+								/* $("#upload_file_{$field.name}").uploadify({
 							        "height"          : 30,
 							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
 							        "fileObjName"     : "download",
@@ -158,7 +160,7 @@
 							                $(this).removeClass('disabled').prop('disabled',false);
 							            },1500);
 							        }
-							    }
+							    } */
 								</script> 
                         </case>
                         <default/>

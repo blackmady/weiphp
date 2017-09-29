@@ -12,6 +12,14 @@ class WapController extends BaseController {
 		$this->user = getWeixinUserInfo ( $openid );
 		$this->user ['uid'] = get_mid ();
 		$this->assign ( 'user', $this->user );
+		
+		$publicInfo=get_token_appinfo();
+		// 初始化微信JSAPI需要的参数
+		Vendor ( 'jssdk.jssdk' );
+		$jssdk = new \JSSDK ( $publicInfo ['appid'], $publicInfo ['secret'] );
+		$jsapiParams = $jssdk->GetsignPackage ();
+		$this->assign ( 'jsapiParams', $jsapiParams );
+		
 	}
 	// 贺卡类型
 	function card_type() {

@@ -42,7 +42,7 @@ class GuessTable {
 					'width' => '',
 					'is_sort' => 0
 			],
-			'ids' => [
+			'urls' => [
 					'title' => '操作',
 					'come_from' => 1,
 					'width' => '',
@@ -67,6 +67,10 @@ class GuessTable {
 							'4' => [
 									'title' => '预览',
 									'url' => 'preview?id=[id]&target=_blank'
+							],
+							'5' => [
+									'title' => '复制链接',
+									'url' => 'Guess/Wap/index&id=[id]'
 							]
 					]
 			]
@@ -78,36 +82,42 @@ class GuessTable {
 					'title' => '竞猜标题',
 					'field' => 'varchar(255) NULL',
 					'type' => 'string',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'desc' => [
 					'title' => '活动说明',
 					'field' => 'text NULL',
 					'type' => 'textarea',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'start_time' => [
 					'title' => '开始时间',
 					'field' => 'int(10) NULL',
 					'type' => 'datetime',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'end_time' => [
 					'title' => '结束时间',
 					'field' => 'int(10) NULL',
 					'type' => 'datetime',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'create_time' => [
 					'title' => '创建时间',
 					'field' => 'int(10) NULL',
 					'type' => 'datetime',
-					'is_show' => 4
+					'is_show' => 4,
+					'placeholder' => '请输入内容'
 			],
 			'guess_count' => [
 					'field' => 'int(10) unsigned NULL',
 					'type' => 'num',
-					'is_show' => 4
+					'is_show' => 4,
+					'placeholder' => '请输入内容'
 			],
 			'token' => [
 					'title' => 'Token',
@@ -115,20 +125,23 @@ class GuessTable {
 					'type' => 'string',
 					'auto_rule' => 'get_token',
 					'auto_time' => 1,
-					'auto_type' => 'function'
+					'auto_type' => 'function',
+					'placeholder' => '请输入内容'
 			],
 			'template' => [
 					'title' => '素材模板',
 					'field' => 'varchar(255) NULL',
 					'type' => 'string',
 					'value' => 'default',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'cover' => [
 					'title' => '主题图片',
 					'field' => 'int(10) unsigned NULL',
 					'type' => 'picture',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			]
 	];
 }	

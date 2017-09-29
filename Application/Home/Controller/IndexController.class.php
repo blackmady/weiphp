@@ -150,8 +150,10 @@ class IndexController extends HomeController {
 			) );
 			redirect ( $url );
 		}
+		$map ['is_show']=1;
 		$map ['status'] = 1;
 		$data = M ( 'addons' )->where ( $map )->order ( 'id DESC' )->select ();
+		unset($map);
 		$token_status = D ( 'Common/AddonStatus' )->getList ( true );
 		foreach ( $data as $k => &$vo ) {
 			if ($token_status [$vo ['name']] === '-1') {

@@ -7,6 +7,7 @@ use Think\WapBaseController;
 class WapController extends WapBaseController {
 	// 首页
 	public function index() {
+	    
 		$db_prefix = C ( 'DB_PREFIX' );
 		$token = get_token ();
 
@@ -185,6 +186,7 @@ class WapController extends WapBaseController {
 		$this->display ();
 	}
 	public function postDetail() {
+	   
 		$this->assign ( 'is_post_detail', 1 );
 		$post_id = intval ( $_GET ['post_id'] );
 		$post_detail = D ( 'weiba_post' )->where ( 'is_del=0 and id=' . $post_id )->find ();

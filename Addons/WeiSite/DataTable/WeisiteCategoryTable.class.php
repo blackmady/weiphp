@@ -79,20 +79,23 @@ class WeisiteCategoryTable {
 					'field' => 'varchar(100) NOT NULL',
 					'type' => 'string',
 					'is_must' => 1,
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'icon' => [
 					'title' => '分类图片',
 					'field' => 'int(10) unsigned NULL',
 					'type' => 'picture',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'url' => [
 					'title' => '外链',
 					'field' => 'varchar(255) NULL',
 					'type' => 'string',
 					'remark' => '为空时默认跳转到该分类的文章列表页面',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'is_show' => [
 					'title' => '显示',
@@ -101,7 +104,8 @@ class WeisiteCategoryTable {
 					'value' => 1,
 					'is_show' => 1,
 					'extra' => '0:不显示
-1:显示'
+1:显示',
+					'placeholder' => '请输入内容'
 			],
 			'token' => [
 					'title' => 'Token',
@@ -109,26 +113,30 @@ class WeisiteCategoryTable {
 					'type' => 'string',
 					'auto_rule' => 'get_token',
 					'auto_time' => 1,
-					'auto_type' => 'function'
+					'auto_type' => 'function',
+					'placeholder' => '请输入内容'
 			],
 			'sort' => [
 					'title' => '排序号',
 					'field' => 'int(10) NULL',
 					'type' => 'num',
 					'remark' => '数值越小越靠前',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'pid' => [
 					'title' => '一级目录',
 					'field' => 'int(10) NULL',
 					'type' => 'cascade',
 					'is_show' => 1,
-					'extra' => 'type=db&table=weisite_category&pid=id'
+					'extra' => 'type=db&table=weisite_category&pid=id',
+					'placeholder' => '请输入内容'
 			],
 			'template' => [
 					'title' => '二级模板',
 					'field' => 'varchar(255) NULL',
-					'type' => 'string'
+					'type' => 'string',
+					'placeholder' => '请输入内容'
 			]
 	];
 }	

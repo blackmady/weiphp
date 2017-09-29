@@ -48,7 +48,7 @@ class CmsController extends BaseController {
 			if ($Model->create () && $Model->save ()) {
 				D ( 'Common/Keyword' )->set ( $_POST ['keyword'], MODULE_NAME, $id, $_POST ['keyword_type'], 'custom_reply_news' );
 				
-				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'], $this->get_param ) );
+				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'],array('mdm'=>$_GET['mdm']) ) );
 			} else {
 				$this->error ( '400483:' . $Model->getError () );
 			}
@@ -95,7 +95,7 @@ class CmsController extends BaseController {
 			if ($Model->create () && $id = $Model->add ()) {
 				D ( 'Common/Keyword' )->set ( $_POST ['keyword'], MODULE_NAME, $id, $_POST ['keyword_type'], 'custom_reply_news' );
 				
-				$this->success ( '添加' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'], $this->get_param ) );
+				$this->success ( '添加' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'], array('mdm'=>$_GET['mdm'])) );
 			} else {
 				$this->error ( '400486:' . $Model->getError () );
 			}

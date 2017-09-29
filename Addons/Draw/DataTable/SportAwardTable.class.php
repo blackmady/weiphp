@@ -22,31 +22,46 @@ class SportAwardTable {
 					'title' => '编号',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0
+					'is_sort' => 0,
+					'name' => 'id',
+					'function' => '',
+					'href' => [ ]
 			],
 			'name' => [
 					'title' => '奖项名称',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0
+					'is_sort' => 0,
+					'name' => 'name',
+					'function' => '',
+					'href' => [ ]
 			],
 			'award_type' => [
 					'title' => '奖品类型',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0
+					'is_sort' => 0,
+					'name' => 'award_type',
+					'function' => '',
+					'href' => [ ]
 			],
 			'img' => [
 					'title' => '商品图片',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0
+					'is_sort' => 0,
+					'name' => 'img',
+					'function' => '',
+					'href' => [ ]
 			],
 			'explain' => [
 					'title' => '奖品说明',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0
+					'is_sort' => 0,
+					'name' => 'explain',
+					'function' => '',
+					'href' => [ ]
 			],
 			'urls' => [
 					'title' => '操作',
@@ -66,7 +81,9 @@ class SportAwardTable {
 									'title' => '中奖者列表',
 									'url' => 'LuckyFollow/getlistByAwardId?awardId=[id]'
 							]
-					]
+					],
+					'name' => 'urls',
+					'function' => ''
 			]
 	];
 	
@@ -154,11 +171,12 @@ class SportAwardTable {
 					'placeholder' => '请输入内容'
 			],
 			'coupon_id' => [
-					'title' => '选择赠送券',
-					'field' => 'char(50) NULL',
+					'title' => '选择优惠券',
 					'type' => 'select',
+					'field' => 'char(50) NULL',
+					'remark' => '不显示过期优惠券',
 					'is_show' => 1,
-					'placeholder' => '请输入内容'
+					'is_must' => 0
 			],
 			'money' => [
 					'title' => '返现金额',

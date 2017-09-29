@@ -176,6 +176,10 @@ class WeixinController extends ManageBaseController
         if (empty($returnUrl)) {
             $returnUrl = addons_url('Payment://Weixin/payOK');
         }
+        
+//         $this->assign('price',$_GET['price']);
+//         $this->assign('jsApiParameters',$jsApiParameters);
+//         $this->display();
         header('Location:' . SITE_URL . '/WxpayAPI/unifiedorder.php?jsApiParameters=' . $jsApiParameters . '&returnurl=' . $returnUrl . '&totalfee=' . $_GET['price'] . '&paymentId=' . $paymentId);
         
         // echo $jsApiParameters;

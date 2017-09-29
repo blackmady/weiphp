@@ -22,46 +22,25 @@ class ExamAnswerTable {
 					'title' => 'OpenId',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0,
-					'name' => 'openid',
-					'function' => '',
-					'href' => [ ]
+					'is_sort' => 0
 			],
-			'truename' => [
+			'uid' => [
 					'title' => '姓名',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0,
-					'name' => 'truename',
-					'function' => '',
-					'href' => [ ]
-			],
-			'mobile' => [
-					'title' => '手机号',
-					'come_from' => 0,
-					'width' => '',
-					'is_sort' => 0,
-					'name' => 'mobile',
-					'function' => '',
-					'href' => [ ]
+					'is_sort' => 0
 			],
 			'score' => [
 					'title' => '成绩',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0,
-					'name' => 'score',
-					'function' => '',
-					'href' => [ ]
+					'is_sort' => 0
 			],
 			'cTime' => [
 					'title' => '考试时间',
 					'come_from' => 0,
 					'width' => '',
-					'is_sort' => 0,
-					'name' => 'cTime',
-					'function' => '',
-					'href' => [ ]
+					'is_sort' => 0
 			],
 			'urls' => [
 					'title' => '操作',
@@ -73,9 +52,7 @@ class ExamAnswerTable {
 									'title' => '答题详情',
 									'url' => 'detail?uid=[uid]&exam_id=[exam_id]'
 							]
-					],
-					'name' => 'urls',
-					'function' => ''
+					]
 			]
 	];
 	
@@ -141,8 +118,7 @@ class ExamAnswerTable {
 					'title' => '得分',
 					'type' => 'num',
 					'field' => 'int(10) unsigned NULL',
-					'is_show' => 0,
-					'is_must' => 0
+					'placeholder' => '请输入内容'
 			]
 	];
 }	

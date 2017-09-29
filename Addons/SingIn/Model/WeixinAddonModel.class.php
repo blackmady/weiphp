@@ -56,6 +56,7 @@ class WeixinAddonModel extends WeixinModel {
 		if ($res) {
 			$credit['score']=$score;
 			$credit['uid']=$uid;
+			$credit['title']='微签到';
 			add_credit('signin',0,$credit);
 			// 组装回复内容
 			

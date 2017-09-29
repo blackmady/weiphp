@@ -42,7 +42,13 @@ class WeisiteFooterTable {
 					'width' => '',
 					'is_sort' => 0
 			],
-			'ids' => [
+			'pid' => [
+					'title' => 'pid',
+					'come_from' => 0,
+					'width' => '',
+					'is_sort' => 0
+			],
+			'urls' => [
 					'title' => '操作',
 					'come_from' => 1,
 					'width' => '',
@@ -66,7 +72,8 @@ class WeisiteFooterTable {
 					'title' => '关联URL',
 					'field' => 'varchar(255) NULL',
 					'type' => 'string',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'title' => [
 					'title' => '菜单名',
@@ -74,7 +81,8 @@ class WeisiteFooterTable {
 					'type' => 'string',
 					'is_must' => 1,
 					'remark' => '可创建最多 3 个一级菜单，每个一级菜单下可创建最多 5 个二级菜单。编辑中的菜单不会马上被用户看到，请放心调试。',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'pid' => [
 					'title' => '一级菜单',
@@ -82,14 +90,16 @@ class WeisiteFooterTable {
 					'type' => 'select',
 					'remark' => '如果是一级菜单，选择“无”即可',
 					'is_show' => 1,
-					'extra' => '0:无'
+					'extra' => '0:无',
+					'placeholder' => '请输入内容'
 			],
 			'sort' => [
 					'title' => '排序号',
 					'field' => 'tinyint(4) NULL',
 					'type' => 'num',
 					'remark' => '数值越小越靠前',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'token' => [
 					'title' => 'Token',
@@ -97,14 +107,16 @@ class WeisiteFooterTable {
 					'type' => 'string',
 					'auto_rule' => 'get_token',
 					'auto_time' => 1,
-					'auto_type' => 'function'
+					'auto_type' => 'function',
+					'placeholder' => '请输入内容'
 			],
 			'icon' => [
 					'title' => '图标',
 					'field' => 'int(10) unsigned NULL',
 					'type' => 'picture',
 					'remark' => '根据选择的底部模板决定是否需要上传图标',
-					'is_show' => 1
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
 			]
 	];
 }	

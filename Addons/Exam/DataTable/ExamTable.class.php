@@ -125,6 +125,22 @@ class ExamTable {
 					'is_show' => 1,
 					'placeholder' => '请输入内容'
 			],
+			'start_time' => [
+					'title' => '考试开始时间',
+					'type' => 'datetime',
+					'field' => 'int(10) NULL',
+					'remark' => '为空表示什么时候开始都可以',
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
+			],
+			'end_time' => [
+					'title' => '考试结束时间',
+					'type' => 'datetime',
+					'field' => 'int(10) NULL',
+					'remark' => '为空表示不限制结束时间',
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
+			],
 			'intro' => [
 					'title' => '封面简介',
 					'field' => 'text NOT NULL',
@@ -163,11 +179,10 @@ class ExamTable {
 					'title' => 'Token',
 					'type' => 'string',
 					'field' => 'varchar(255) NULL',
-					'is_show' => 0,
-					'is_must' => 0,
 					'auto_type' => 'function',
 					'auto_rule' => 'get_token',
-					'auto_time' => 1
+					'auto_time' => 1,
+					'placeholder' => '请输入内容'
 			],
 			'finish_tip' => [
 					'title' => '结束语',
@@ -176,22 +191,6 @@ class ExamTable {
 					'is_must' => 1,
 					'remark' => '为空默认为：考试完成，谢谢参与',
 					'is_show' => 1,
-					'placeholder' => '请输入内容'
-			],
-			'start_time' => [
-					'title' => '考试开始时间',
-					'field' => 'int(10) NULL',
-					'type' => 'datetime',
-					'remark' => '为空表示什么时候开始都可以',
-					'is_show' => 2,
-					'placeholder' => '请输入内容'
-			],
-			'end_time' => [
-					'title' => '考试结束时间',
-					'field' => 'int(10) NULL',
-					'type' => 'datetime',
-					'remark' => '为空表示不限制结束时间',
-					'is_show' => 2,
 					'placeholder' => '请输入内容'
 			]
 	];

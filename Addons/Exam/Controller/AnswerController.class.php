@@ -49,9 +49,10 @@ class AnswerController extends ManageBaseController {
 		
 		$dataTable = D ( 'Common/Model' )->getFileInfo ( $this->model );
 		$list ['list_data'] = $this->parseData ( $list ['list_data'], $dataTable->fields, $dataTable->list_grid, $dataTable->config );
+		
 		foreach ( $list ['list_data'] as &$vo ) {
 			$member = get_userinfo ( $vo ['uid'] );
-			$vo ['truename'] = $member ['truename'] ? $member ['truename'] : $member ['nickname'];
+			$vo ['uid'] = $member ['truename'] ? $member ['truename'] : $member ['nickname'];
 			$vo ['mobile'] = $member ['mobile'];
 			$vo ['score'] = $vo ['total'];
 		}
@@ -78,6 +79,10 @@ class AnswerController extends ManageBaseController {
 		$girds ['title'] = '回答内容';
 		$list_data ['list_grids'] [] = $girds;
 		
+		$girds ['field'] = 'true_answer';
+		$girds ['title'] = '答案';
+		$list_data ['list_grids'] [] = $girds;
+		
 		$list_data ['fields'] = $fields;
 		$this->assign ( $list_data );
 		// dump ( $list_data );
@@ -87,6 +92,11 @@ class AnswerController extends ManageBaseController {
 			$title [$q ['id']] = $q ['title'];
 			$type [$q ['id']] = $q ['type'];
 			$extra [$q ['id']] = parse_config_attr ( $q ['extra'] );
+			//正确答案
+			$trueAnser=wp_explode($q['answer'], ' ');
+			foreach ($trueAnser as $aa){
+			    $trueAnserArr[$q['id']].=$extra [$q ['id']][$aa].' ';
+			}
 		}
 		
 		$map ['uid'] = intval ( $_REQUEST ['uid'] );
@@ -101,13 +111,14 @@ class AnswerController extends ManageBaseController {
 					break;
 				case 'checkbox' :
 					foreach ( $value as $v ) {
-						$data [1] [] = $extra [$qid] [$v];
+						$data ['answer'] [] = $extra [$qid] [$v];
 					}
 					$data [1] = implode ( ',', $data ['answer'] );
 					break;
 				default :
 					$data [1] = $value;
 			}
+			$data[2]=$trueAnserArr[$qid];
 			$list [] = $data;
 			unset ( $data );
 		}

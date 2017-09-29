@@ -19,8 +19,8 @@ class CategoryController extends BaseController {
 		$map ['token'] = get_token ();
 // 		session ( 'common_condition', $map );
 // 		$list_data = $this->_get_model_list ( $this->model );
-		$list_data = $this->_list_grid ( $this->model );
-		$fields = $list_data ['fields'];
+// 		$list_data = $this->_list_grid ( $this->model );
+// 		$fields = $list_data ['fields'];
 // 		$map = $this->_search_map ( $this->model, $fields );
 		$key = $this->model ['search_key'] ? $this->model ['search_key'] : 'title';
 		$keyArr = explode ( ':', $key );
@@ -36,9 +36,14 @@ class CategoryController extends BaseController {
 			);
 			unset ( $_REQUEST [$key] );
 		}
- 		$list_data['list_data']=M('weisite_category')->where($map)->order('id desc')->select();
+		session ( 'common_condition', $map );
+		
+		$list_data = $this->_get_model_list ( $this->model );
+//  		$list_data['list_data']=M('weisite_category')->where($map)->order('id desc')->select();
 		$list_data ['list_data'] = $this->get_data ( $list_data ['list_data'] );
 
+		$fields = $list_data ['fields'];
+		
 		foreach ($list_data['list_data'] as $v){
 		    $fcate[$v['id']]=$v['title'];
 		}

@@ -993,6 +993,7 @@ class WapController extends WapBaseController {
 	       
 	        $credit['score']=$get_score;
 	        $credit['uid']=$uid;
+	        $credit['title']='微签到';
 	        add_credit('signin',5,$credit);
 	        if ($res){
 	            $returnData['status']=1;

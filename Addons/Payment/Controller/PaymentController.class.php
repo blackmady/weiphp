@@ -377,7 +377,7 @@ class PaymentController extends BaseController {
 			$newdata = array ();
 			foreach ( $data as $key => $v ) {
 				// 加密处理
-				if ($key == "id" || $key == "shop_pay_score") {
+				if ($key == "id" || $key == "shop_pay_score"||$key=="wx_cert_pem"||$key=="wx_key_pem") {
 					$newdata [$key] = $v;
 				} else {
 					$newdata [$key] = $this->hideStr ( $v, (strlen ( $v ) / 3), (strlen ( $v ) / 3) );
@@ -553,6 +553,13 @@ class PaymentController extends BaseController {
 	}
 	//通用的支付确认界面
 	function confirm(){
+	    $publicInfo=get_token_appinfo();
+	    // 初始化微信JSAPI需要的参数
+	    Vendor ( 'jssdk.jssdk' );
+	    $jssdk = new \JSSDK ( $publicInfo ['appid'], $publicInfo ['secret'] );
+	    $jsapiParams = $jssdk->GetsignPackage ();
+	    $this->assign ( 'jsapiParams', $jsapiParams );
+	    
 	    $price=I('price');
 	    $aimId=I('aim_id');
 	    $from=I('from');
@@ -560,7 +567,7 @@ class PaymentController extends BaseController {
 	    	$fromUrl = 'Reserve:__Wap_payOK';
 	    }
 	    $title=I('title');
-	    $publicInfo=get_token_appinfo();
+	 
 	    $orderNumber= date ( 'YmdHis' ) . substr ( uniqid (), 4 );
 	    $token=get_token();
 	    $openid=get_openid();

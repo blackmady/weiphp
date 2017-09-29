@@ -22,12 +22,16 @@ class FooterController extends BaseController {
 		$this->assign ( 'has_data', $has_data );
 		
 		// 解析列表规则
-		$list_data = $this->_list_grid ( $this->model );
-		$fields = $list_data ['fields'];
+// 		session ( 'common_condition', $map );
+		
+		$list_data = $this->_get_model_list ( $this->model ,0,'pid asc, sort asc');
+// 		$list_data = $this->_list_grid ( $this->model );
+// 		$fields = $list_data ['fields'];
 		
 		// 搜索条件
-		$map = $this->_search_map ( $this->model, $fields );
-		$list_data ['list_data'] = $this->get_data ( $map );
+// 		$map = $this->_search_map ( $this->model, $fields );
+		$list_data ['list_data'] = $this->get_data ($list_data['list_data']);
+		unset($list_data['list_grids']['pid']);
 		
 		$this->assign ( $list_data );
 		
@@ -38,8 +42,8 @@ class FooterController extends BaseController {
 		
 		$this->display ();
 	}
-	function get_data($map) {
-		$list = D ( 'Addons://WeiSite/Footer' )->get_list ( $map );
+	function get_data($list) {
+// 		$list = D ( 'Addons://WeiSite/Footer' )->get_list ( $map );
 		
 		// 取一级菜单
 		foreach ( $list as $k => $vo ) {

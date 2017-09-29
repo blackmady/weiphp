@@ -36,7 +36,10 @@ class MaterialFileTable {
 					'type' => 'file',
 					'field' => 'int(10) NOT NULL',
 					'is_show' => 1,
-					'is_must' => 1
+					'is_must' => 1,
+					'validate_file_exts' => 'mp4',
+					'validate_file_size' => 10485760,
+					'placeholder' => '请输入内容'
 			],
 			'cover_url' => [
 					'title' => '本地URL',

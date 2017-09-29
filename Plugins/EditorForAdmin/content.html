@@ -26,7 +26,7 @@
 						urlType : 'absolute',
 						fileManagerJson : '{:U('fileManagerJson')}',
 						//uploadJson : '{:U('uploadJson')}' }
-						uploadJson : '{:addons_url("EditorForAdmin://Upload/ke_upimg")}',
+						uploadJson : '{:U("Home/EditorUpload/ue_upimg")}',
 						extraFileUploadParams: {
 							session_id : '{:session_id()}'
 	                    }
@@ -56,11 +56,11 @@
 				window.UEDITOR_HOME_URL = "__STATIC__/{$driver_file}";
 				window.UEDITOR_CONFIG.initialFrameHeight = parseInt('{$addons_config.editor_height}');
 				window.UEDITOR_CONFIG.scaleEnabled = <eq name="addons_config.editor_resize_type" value="1">true<else />false</eq>;
-				window.UEDITOR_CONFIG.imageUrl = '{:addons_url("EditorForAdmin://Upload/ue_upimg")}';
+				window.UEDITOR_CONFIG.imageUrl = '{:U("Home/EditorUpload/ue_upimg")}';
 				window.UEDITOR_CONFIG.imagePath = '';
 				window.UEDITOR_CONFIG.imageFieldName = 'imgFile';
 				//在这里扫描图片
-				window.UEDITOR_CONFIG.imageManagerUrl='{:addons_url("EditorForAdmin://Upload/ue_mgimg")}';//图片在线管理的处理地址
+				window.UEDITOR_CONFIG.imageManagerUrl='{:U("Home/EditorUpload/ue_mgimg")}';//图片在线管理的处理地址
         		window.UEDITOR_CONFIG.imageManagerPath='';        
 				var imageEditor = UE.getEditor('editor_id_{$addons_data.name}',{
 						toolbars: [

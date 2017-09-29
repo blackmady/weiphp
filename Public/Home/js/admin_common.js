@@ -611,6 +611,9 @@ function uploadImgDialog(obj,opts){
 function initUploadFile(callback){
 	$(".upload_file").each(function(index, obj) {
 			var name = $(obj).find('input[type="hidden"]').attr('name');
+			var uploadFileExts= $(obj).find('input[type="hidden"]').attr('data-fileexts');
+			var maxSize= $(obj).find('input[type="hidden"]').attr('data-maxsize');
+			
 			var uploader = WebUploader.create({
 
 				// 设置文件上传域的name
@@ -626,10 +629,32 @@ function initUploadFile(callback){
 				pick: "#upload_file_"+name,
 
 				// 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-				resize: false
+				resize: false,
+				
+				fileSingleSizeLimit:maxSize,  //设定单个文件大小，单位字节
+				
+				 // 只允许选择图片文件。
+		        accept: {
+		            title: 'Files',
+		            extensions: uploadFileExts,
+		            mimeTypes: ''
+		        }
+			
 			});
 			var uploadImgWidth = $("#upload_file_"+name).width()
 			$('.webuploader-pick').height(uploadImgWidth).width(uploadImgWidth);
+			/**
+		     * 验证文件格式以及文件大小
+		     */
+			uploader.on("error",function (type){
+				console.log(type);
+		        if (type=="Q_TYPE_DENIED"){
+		        	updateAlert("请上传 "+uploadFileExts+" 格式文件");
+		        }else if(type=="F_EXCEED_SIZE"){
+		        	updateAlert("文件大小不能超过"+maxSize+"字节");
+		        }
+		    });
+
 			uploader.on( 'uploadSuccess', function( file,res ) {
 				onUploadFileSuccess(file, res, name)
 

@@ -33,14 +33,17 @@
         </div>
         <div class="form-item cf toggle-check_file">
          <label class="item-label"> 域名授权验证文件 </label>
-	         <div class="controls upload_file" rel="check_file">
-	                            <input type="file" id="upload_file_check_file">
-	                            <input type="hidden" name="check_file" value="{$info[check_file]}"/>
-	                            <div class="upload-img-box">
-	                              <present name="info[check_file]">
-	                                <div class="upload-pre-file"><span class="upload_icon_all"></span>{$info[check_file]|get_table_field=###,'id','name','File'}</div>
-	                              </present>
-	                            </div>
+         	<div class="controls">
+		         <div class="controls upload_file" >
+		          		<div  id="upload_file_check_file" class="uploadrow_file"></div>
+<!-- 		                            <input type="file" id="upload_file_check_file"> -->
+		                            <input type="hidden" name="check_file" id="check_file" value="{$info[check_file]}"/>
+		                            <div class="upload-img-box">
+		                              <present name="info[check_file]">
+		                                <div class="upload-pre-file"><span class="upload_icon_all"></span>{$info[check_file]|get_table_field=###,'id','name','File'}</div>
+		                              </present>
+		                            </div>
+		         </div>
 	         </div>
          </div>        
         </div>
@@ -78,6 +81,7 @@ $('#submit').click(function(){
 });
 
 $(function(){
+	initUploadFile();
     $('.time').datetimepicker({
         format: 'yyyy-mm-dd hh:ii',
         language:"zh-CN",

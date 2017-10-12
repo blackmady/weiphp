@@ -324,6 +324,7 @@ sql;
 			}
 			
 		}
+		$obj->datatable_path=$file;
 		return $obj;
 	}
 	public function buildFile($model, $fields = null, $list_grid = null, $config = null) {

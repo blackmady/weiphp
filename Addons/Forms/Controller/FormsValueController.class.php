@@ -67,12 +67,13 @@ class FormsValueController extends BaseController {
 		
 		// 搜索条件
 		$map = $this->_search_map ( $this->model );
-		
+		$map ['forms_id'] = $this->forms_id;
 		$page = I ( 'p', 1, 'intval' );
 		$row = 20;
 		
 		$name = parse_name ( get_table_name ( $this->model ['id'] ), true );
 		$list = M ( $name )->where ( $map )->order ( 'id DESC' )->selectPage ();
+	
 		$list ['list_data'] = $this->parseData ( $list ['list_data'], $dataTable->fields, $dataTable->list_grid, $dataTable->config );
 		
 		$list_data = array_merge ( $list_data, $list );

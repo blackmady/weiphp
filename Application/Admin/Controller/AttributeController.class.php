@@ -116,6 +116,10 @@ class AttributeController extends AdminController {
 		$data = I ( 'post.' );
 		$model_id = $data ['model_id'];
 		$obj = $dao->getFileInfo ( $model_id );
+		
+		if (!is_writable($obj->datatable_path)){
+		    $this->error( '140071:'.$obj->datatable_path.'文件没有可写权限！' );
+		}
 		$list = $obj->fields;
 		
 		if ($data ['is_must'] == 1 && strpos ( $data ['field'], 'NOT NULL' ) === false) {

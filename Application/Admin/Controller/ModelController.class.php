@@ -488,7 +488,7 @@ class ModelController extends AdminController {
 		if (! $res) {
 			$this->error ( '140160:保存失败' );
 		} else {
-			! empty ( $config ['addon'] ) && $config ['addon'] != 'Core' && $this->update_sql ( $config ['addon'] );
+			! empty ( $config ['addon'] ) && $config ['addon'] != 'Core' && $res ['id']>0 && $this->update_sql ( $config ['addon'] );
 			$this->success ( $res ['id'] ? '更新成功' : '新增成功', Cookie ( '__forward__' ) );
 		}
 	}

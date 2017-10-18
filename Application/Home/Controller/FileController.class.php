@@ -42,6 +42,36 @@ class FileController extends HomeController {
 		/* 返回JSON数据 */
 		$this->ajaxReturn ( $return );
 	}
+	/* 文件上传 到根目录 */
+	public function upload_root() {
+	    $return = array (
+	        'status' => 1,
+	        'info' => '上传成功',
+	        'data' => ''
+	    );
+	    /* 调用文件上传组件上传文件 */
+	    $File = D ( 'File' );
+	    $file_driver = C ( 'DOWNLOAD_UPLOAD_DRIVER' );
+	    $setting = array (
+				'maxSize' => 50242880, // 5M 上传的文件大小限制 (0-不做限制)
+				'exts' => 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,xls,xlsx,csv,pem,amr,mp3,mp4', // 允许上传的文件后缀
+				'rootPath' => './' ,
+	            'name_nochange'=>1
+		);
+	    $info = $File->upload ( $_FILES, $setting , C ( 'DOWNLOAD_UPLOAD_DRIVER' ), C ( "UPLOAD_{$file_driver}_CONFIG" ) );
+	    /* 记录附件信息 */
+	    if ($info) {
+	        $return ['status'] = 1;
+	        $return = array_merge ( $info ['download'], $return );
+	    } else {
+	        $return ['status'] = 0;
+	        $return ['info'] = $File->getError ();
+	    }
+	
+	    /* 返回JSON数据 */
+	    $this->ajaxReturn ( $return );
+	}
+	
 	
 	/* 下载文件 */
 	public function download($id = null) {
@@ -78,7 +108,11 @@ class FileController extends HomeController {
 		/* 记录图片信息 */
 		if ($info) {
 			$return ['status'] = 1;
-			$return = array_merge ( $info ['download'], $return );
+			$name = 'download';
+			foreach ( $info as $name => $vo ) {
+				;
+			}
+			empty ( $info [$name] ) || $return = array_merge ( $info [$name], $return );
 		} else {
 			$return ['status'] = 0;
 			$return ['info'] = $Picture->getError ();

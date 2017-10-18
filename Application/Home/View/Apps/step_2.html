@@ -81,7 +81,14 @@ $('#submit').click(function(){
 });
 
 $(function(){
-	initUploadFile();
+	UPLOAD_FILE = "{:U('File/upload_root',array('session_id'=>session_id()))}";
+	var UploadFileExts = "{$UploadFileExts}";
+	initUploadImg();
+	if(UploadFileExts!=""){
+		initUploadFile(function(){},UploadFileExts);
+	}else{
+		initUploadFile();
+	}
     $('.time').datetimepicker({
         format: 'yyyy-mm-dd hh:ii',
         language:"zh-CN",

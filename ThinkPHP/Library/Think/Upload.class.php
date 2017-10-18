@@ -178,20 +178,27 @@ class Upload {
                 }
             }
             
-            /* 生成保存文件名 */
-            $savename = $this->getSaveName($file);
-            if(false == $savename){
-                continue;
-            } else {
-                $file['savename'] = $savename;
-            }
-
-            /* 检测并创建子目录 */
-            $subpath = $this->getSubPath($file['name']);
-            if(false === $subpath){
-                continue;
-            } else {
-                $file['savepath'] = $this->savePath . $subpath;
+           
+            if (isset($this->config['name_nochange']) && $this->config['name_nochange'] == 1){
+                /* 保存文件原名 */
+                $file['savename'] = $file['name'];
+                $file['savepath'] = $this->config['rootPath'];
+            }else{
+                /* 生成保存文件名 */
+                $savename = $this->getSaveName($file);
+                if(false == $savename){
+                    continue;
+                } else {
+                    $file['savename'] = $savename;
+                }
+                /* 检测并创建子目录 */
+                $subpath = $this->getSubPath($file['name']);
+                if(false === $subpath){
+                    continue;
+                } else {
+                    $file['savepath'] = $this->savePath . $subpath;
+                }
+                
             }
             
             /* 对图像文件进行严格检测 */

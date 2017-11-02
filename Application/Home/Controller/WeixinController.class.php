@@ -38,8 +38,13 @@ class WeixinController extends HomeController {
 		$this->sendOldMessage ( $data ['ToUserName'], $data ['FromUserName'] );
 		// 结束程序。防止oneThink框架的调试信息输出
 		
+<<<<<<< HEAD
 		$length = ob_get_length();
 		if(empty($length)){ 
+=======
+		$content = ob_get_contents();
+		if(empty($content)){
+>>>>>>> f00123656ea39cb052f759815a89ec5d7b46e752
             exit ( 'success' );
 		}else{
 			exit ();

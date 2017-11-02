@@ -37,7 +37,13 @@ class WeixinController extends HomeController {
 		// 客服接口群发消息：未发送成功的消息给用户重新发
 		$this->sendOldMessage ( $data ['ToUserName'], $data ['FromUserName'] );
 		// 结束程序。防止oneThink框架的调试信息输出
-		exit ( 'success' );
+		
+		$content = ob_get_contents();
+		if(empty($content)){
+            exit ( 'success' );
+		}else{
+			exit ();
+		}			
 	}
 	private function reply($data, $weixin) {
 		if (isset ( $data ['Recognition'] ) && ! empty ( $data ['Recognition'] )) {

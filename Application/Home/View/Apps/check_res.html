@@ -74,7 +74,7 @@ $(function(){
 });
 
 function check_res(){
-	var url = "{:addons_url('UserCenter://Wap/check_res_ajax')}";
+	var url = "{:addons_url('UserCenter://Wap/check_res_ajax',array('token'=>$info['token']))}";
 	$.post(url,{token:"{$info.token}"},function(res){
 		if(res!=0){ 
 			$.each(res,function(na,data){

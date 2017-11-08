@@ -349,7 +349,7 @@ $(function(){
 						$value = explode ( ',', $value );
 						foreach ( $value as $key => $vo ) {
 							$html .= "<div class='upload-pre-item22'> <img width='100' height='100' src='" . get_cover_url ( $vo ) . "'/>
-							<input type='hidden' name='{$name}[]' value='{$vo}'/><em>&nbsp;</em> </div>'";
+							<input type='hidden' name='{$name}[]' value='{$vo}'/><em>&nbsp;</em> </div>";
 						}
 					}
 					$html .= "</div>

@@ -243,11 +243,10 @@ class ApiController extends ApiBaseController {
 						'headimgurl' => $data ['avatarUrl'] 
 				];
 				isset ( $data ['unionid'] ) && $save ['unionid'] = $data ['unionid'];
-				if (session ( 'mid' ) > 0) {
-					$res = D ( 'common/User' )->where ( [ 
-							'uid' => session ( 'mid' ) 
-					] )->save ( $save );
-					$save ['uid'] = session ( 'mid' );
+				$uid=session ( 'mid' );
+				if ($uid > 0) {
+					$res = D ( 'Common/User' )->updateInfo($uid,$save);
+					$save ['uid'] = $uid;
 					D ( 'Common/User' )->autoLogin ( $save );
 					echo api_return ( 0, $res );
 				} else {

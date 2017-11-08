@@ -326,7 +326,12 @@ class WapController extends WapBaseController {
 	
 	// 检查公众号基础功能
 	function check() {
-		$map ['token'] = I ( 'token' );
+	    $token=I ( 'token' ,'');
+	    if (empty($token)){
+	        $map['id']=WPID;
+	    }else {
+	        $map ['token'] = $token;
+	    }
 		$info = M ( 'apps' )->where ( $map )->find ();
 		$type = $info ['type'];
 		
@@ -434,7 +439,13 @@ class WapController extends WapBaseController {
 		return $res;
 	}
 	function check_res_ajax() {
-		$map ['token'] = I ( 'token' );
+// 		$map ['token'] = I ( 'token' );
+		$token=I ( 'token' ,'');
+		if (empty($token)){
+		    $map ['token'] =M('apps')->where(array('id'=>WPID))->getField('token');
+		}else {
+		    $map ['token'] = $token;
+		}
 		$list = M ( 'apps_check' )->where ( $map )->order ( 'id asc' )->select ();
 		foreach ( $list as $vo ) {
 			$res [$vo ['na']] ['msg'] = $vo ['msg'];

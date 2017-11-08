@@ -36,6 +36,8 @@ class ModelController extends AdminController {
 		$dao = D ( 'Common/Model' );
 		foreach ( $list as &$vo ) {
 			$file = $dao->requireFile ( $vo );
+			if(!$file) continue;
+
 			$file_md5 = md5_file ( $file );
 			$vo ['update_db'] = $vo ['file_md5'] != $file_md5 ? 1 : 0;
 			
@@ -631,8 +633,8 @@ sql;
 			mkdirs ( RUNTIME_PATH . 'uninstall' );
 		}
 		
-		file_put_contents ( $path, $sql );
-
+		@file_put_contents ( $path, $sql );
+		
 		if (! $is_all)
 			redirect ( SITE_URL . '/' . $path );
 	}

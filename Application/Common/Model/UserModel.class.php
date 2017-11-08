@@ -312,7 +312,7 @@ class UserModel extends Model {
 		if ($res) {
 			$this->getUserInfo ( $uid, true );
 		}
-		return $res;
+		return $res !== false ? true : false;
 	}
 	/**
 	 * 更新用户信息

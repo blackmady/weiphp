@@ -3451,7 +3451,7 @@ function do_down_image($media_id, $picUrl = '') {
 				'size' => $res,
 				'error' => 0 
 		);
-		$Picture = D ( 'Picture' );
+		$Picture = D ( 'Home/Picture' );
 		$pic_driver = C ( 'PICTURE_UPLOAD_DRIVER' );
 		$info = $Picture->upload ( $_FILES, C ( 'PICTURE_UPLOAD' ), C ( 'PICTURE_UPLOAD_DRIVER' ), C ( "UPLOAD_{$pic_driver}_CONFIG" ) );
 		$cover_id = $info ['download'] ['id'];
@@ -3965,7 +3965,7 @@ function api_return($errcode = 0, $data = [], $msg = '加载数据成功！') {
 function api_success($data = [], $is_json = true) {
 	if (isset ( $data ['status'] ) || isset ( $data ['msg'] )) {
 		$return ['status'] = 1;
-		$return ['msg'] = '';
+		$return ['msg'] = isset ( $data ['msg'] ) ? $data ['msg'] : '';
 		$return ['data'] = $data;
 		return $is_json ? json ( $return ) : $return;
 	} else {

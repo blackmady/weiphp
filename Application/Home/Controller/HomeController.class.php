@@ -22,6 +22,7 @@ class HomeController extends ManageBaseController {
 	}
 	// 初始化操作
 	function _initialize() {
+		parent::_initialize();
 	}
 	
 	/* 用户登录检测 */

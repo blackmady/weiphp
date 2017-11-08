@@ -53,7 +53,7 @@ define ( 'DEFAULT_TOKEN', '-1' );
  * 官方远程同步服务器地址
  * 应用于后台应用商店、在线升级，配置教程等功能
  */
-define ( 'REMOTE_BASE_URL', 'http://www.weiphp.cn' );
+define ( 'REMOTE_BASE_URL', 'https://www.weiphp.cn' );
 
 // 网站根路径设置
 define ( 'SITE_PATH', dirname ( __FILE__ ) );

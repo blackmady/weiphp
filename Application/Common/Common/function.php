@@ -458,7 +458,7 @@ function hook($hook, $params = array()) {
  */
 function get_addon_class($name) {
 	$class = "Addons\\{$name}\\{$name}Addon";
-	if (! class_exists ( $class )) {
+	if (! class_exists ( $class )||$name == 'News') {
 		$class = "Plugins\\{$name}\\{$name}Addon";
 	}
 	return $class;
@@ -547,9 +547,14 @@ function time_offset($time = NULL) {
 	return $min . ':' . $mod;
 }
 // 获取用户信息
-function getUserInfo($uid, $field = '') {
-	$info = D ( 'Common/User' )->getUserInfo ( $uid );
+function getUserInfo($uid, $field = '', $update = false) {
+	$info = D ( 'Common/User' )->getUserInfo ( $uid, $update );
 	// dump ( $info );
+	return empty ( $field ) ? $info : $info [$field];
+}
+// 通过openid 获取用户信息
+function getUserInfoByOpenid($openid, $field = '', $update = false) {
+	$info = D ( 'Common/User' )->getUserInfoByOpenid ( $openid, $update );
 	return empty ( $field ) ? $info : $info [$field];
 }
 /**

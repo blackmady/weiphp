@@ -561,4 +561,299 @@ class AppsController extends ManageBaseController {
 		
 		$this->display ();
 	}
+	/*************************小程序代码管理************************/
+	/*
+	 * 修改服务器域名
+	 * 需要先将域名登记到第三方平台的小程序服务器域名中，才可以调用接口进行配置。
+	 */
+	function modify_domain()
+    {
+        $publicid = I('id', 0, 'intval');
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        dump($publicInfo);
+        $url = 'https://api.weixin.qq.com/wxa/modify_domain?access_token=' . get_access_token($publicInfo['token']);
+        dump($url);
+        //add添加, delete删除, set覆盖, get获取。当参数是get时不需要填四个域名字段。
+        $param['action']='get';
+        $param['requestdomain']=array(REMOTE_BASE_URL,REMOTE_BASE_URL);
+        $req = str_replace('https','wss',REMOTE_BASE_URL);
+        $param['wsrequestdomain']=array($req,$req);
+        $param['uploaddomain']=array(REMOTE_BASE_URL,REMOTE_BASE_URL);
+        $param['downloaddomain']=array(REMOTE_BASE_URL,REMOTE_BASE_URL);
+        dump(json_encode($param));
+        $res = post_data($url, $param);
+        dump($res);
+    }
+    /*
+     * 预览
+     */
+    function preview_code(){
+        $publicid = I('id', 0, 'intval');
+        $this->assign('id',$publicid);
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $audArr = wp_explode($publicInfo['mini_auditid'], '_');
+        if (!empty($audArr[1])){
+            $param ['scene'] = uniqid ( 'Preview_' );
+            $result =getwxacode ( 'B', $param, $publicInfo['token'] );
+            $fileUrl=$result['url'];
+            $test=0;
+        }else {
+            //未发布，显示体验二维码
+            $fileDir = SITE_PATH .'/Uploads/WxaCode/' . $publicInfo['token'];
+            if(!is_dir ( $fileDir )){
+                mkdirs ( $fileDir );
+            }
+            $filePath = $fileDir . '/' . md5 ( $publicInfo['token'] ) . '.jpg';
+            $fileUrl = SITE_URL . '/Uploads/WxaCode/' . $publicInfo['token'].'/'.md5 ( $publicInfo['token'] ) . '.jpg';
+            if (!file_exists ( $filePath )) {
+                $url='https://api.weixin.qq.com/wxa/get_qrcode?access_token='.get_access_token($publicInfo['token']);
+                $img = get_data($url);
+                $res = file_put_contents ( $filePath, $img );
+            }
+            $test=1;
+        }
+       
+        $this->assign('qr_code',$fileUrl);
+        $this->assign('is_test',$test);
+        $this->display();
+    }
+    /*
+     * 绑定体验者
+     */
+    function bind_tester(){
+        $wechatid=I('wechat','');
+        if (empty($wechatid)){
+            $this->error('体验者微信号不能为空','',true);
+        }
+        $publicid = I('id', 0, 'intval');
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $url='https://api.weixin.qq.com/wxa/bind_tester?access_token='.get_access_token($publicInfo['token']);
+        $param['wechatid']=$wechatid;
+        $res = post_data($url,$param);
+        if($res['errcode']==0 &&  strtolower($res['errmsg']) == 'ok'){
+            $this->success('绑定成功','',true);
+        }else{
+            $err['-1']='系统繁忙';
+            $err['85001']='微信号不存在或微信号设置为不可搜索';
+            $err['85002']='小程序绑定的体验者数量达到上限';
+            $err['85003']='微信号绑定的小程序体验者达到上限';
+            $err['85004']='微信号已经绑定';
+            $this->error('绑定失败：' . $err[$res['errcode']],'',true);
+        }
+    }
+    /*
+     * 代码上传，审核过程
+     * 为授权的小程序帐号上传小程序代码,并提交审核
+     */
+    function audit_page(){
+        $publicid = I('id', 0, 'intval');
+        $this->assign('id',$publicid);
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $jump_url='';
+        if (empty($publicInfo['mini_auditid'])){
+            $hasAudit=0;
+            $jump_url=U('Home/Apps/audit_commit');
+        }else {
+            $audArr = wp_explode($publicInfo['mini_auditid'], '_');
+            $publicInfo['mini_auditid']=$audArr[0];
+            $faBu=empty($audArr[1])?0:1;
+            $hasAudit=1;
+            if ($faBu){
+                $hasAudit=2;
+            }else {
+                //查询审核结果
+                $key='get_auditstatus_'.$publicInfo['mini_auditid'];
+                $result = S($key);
+                if (empty($result)){
+                    $rUrl='https://api.weixin.qq.com/wxa/get_auditstatus?access_token='.get_access_token($publicInfo['token']);
+                    $param['auditid']=$publicInfo['mini_auditid'];
+                    $result = post_data($rUrl, $param);
+                    S($key,$result,1800);
+                }
+                //审核状态，其中0为审核成功，1为审核失败，2为审核中
+                if ($result['status']==0){
+                    $msg='您的小程序审核成功啦，赶快点下面按钮发布上线吧！！！';
+                    //发布
+                    $jump_url=U('Home/Apps/mini_release');
+                }elseif ($result['status']==1) {
+                    $jump_url=U('Home/Apps/audit_commit');
+                    $msg='审核失败  '.$result['reason'];
+                    //将审核编号设置为空，重新审核
+//                     $save['mini_auditid'] = '';
+//                     D('Common/Apps')->updateInfo($publicid, $save);
+                }else{
+                    $msg='小程序正在审核中，请耐心等待。。。。。。';
+                }
+                $this->assign('show_msg',$msg);
+                $this->assign('audit_status',$result['status']);
+            }
+        }
+        
+//         $hasAudit=0;
+//         $jump_url=U('Home/Apps/audit_commit');
+        
+        $this->assign('has_audit',$hasAudit);
+        $this->assign('jump_url',$jump_url);
+        $this->display();
+    }
+
+    /*
+     * 发布审核通过的小程序
+     */
+    function mini_release()
+    {
+        $publicid = I('id', 0, 'intval');
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $url = 'https://api.weixin.qq.com/wxa/release?access_token=' . get_access_token($publicInfo['token']);
+        $res = post_data($url, '{}');
+        addWeixinLog($res, 'mini_release_' . $publicid);
+        if ($res['errcode'] == 0 && strtolower($res['errmsg']) == 'ok') {
+            $save['mini_auditid'] = $publicInfo['mini_auditid'] . '_1';
+            D('Common/Apps')->updateInfo($publicid, $save);
+            $this->success('发布成功', U('audit_page', array(
+                'id' => $publicid
+            )));
+        } else {
+            $err['-1']='系统繁忙';
+            $err['85019']='没有审核版本';
+            $err['85020']='审核状态未满足发布';
+            $this->error('发布失败：' . $err[$res['errcode']]);
+        }
+    }
+
+    /*
+     * 代码上传，审核过程
+     * 为授权的小程序帐号上传小程序代码,并提交审核
+     */
+    function audit_commit()
+    {
+        $publicid = I('id', 0, 'intval');
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $access_token = get_access_token($publicInfo['token']);
+        /*
+         * //模板库模板
+         * $apiUrl = REMOTE_BASE_URL . '/index.php?s=/w0/Api/Center/getTemplateList.html';
+         * $resdata = get_data($apiUrl);
+         * $resdata = json_decode($resdata, true);
+         * dump($resdata);
+         */
+        // 提交代码
+        $extArr['extEnable'] = true;
+        $extArr['extAppid'] = $publicInfo['appid'];
+        $extArr['ext']['appurl'] = REMOTE_BASE_URL . '/news/index.php?s=/w' . $publicInfo['id'] . '/';
+        $extArr['window']['navigationBarTitleText'] = $publicInfo['public_name'];
+        $strExt = json_encode($extArr);
+        $cUrl = 'https://api.weixin.qq.com/wxa/commit?access_token=' . $access_token;
+        $cParam['template_id'] = 1;
+        $cParam['ext_json'] = $strExt;
+        $cParam['user_version'] = 'NEWS1.0';
+        $cParam['user_desc'] = '新闻小程序';
+        $strParam = json_encode($cParam);
+        $cRes = post_data($cUrl, $strParam);
+        
+        $log['commit_code'] = $cRes;
+        // addWeixinLog($cRes,'commit_code_'.$publicid);
+        
+        // 获取授权小程序帐号的可选类目
+        $cateUrl = 'https://api.weixin.qq.com/wxa/get_category?access_token=' . $access_token;
+        $cates = get_data($cateUrl);
+        $cates = json_decode($cates, true);
+        if (empty($cates['category_list'])){
+            $this->error('您的小程序还没有类别，请到小程序后台添加类别');
+        }
+        // addWeixinLog($cates,'categote_'.$publicid);
+        $log['get_category'] = $cates;
+        
+        // 获取小程序的第三方提交代码的页面配置
+        $pageUrl = 'https://api.weixin.qq.com/wxa/get_page?access_token=' . $access_token;
+        $pages = get_data($pageUrl);
+        $pages = json_decode($pages, true);
+        
+        $log['get_page'] = $pages;
+        
+        // 审核
+        foreach ($pages['page_list'] as $k => $v) {
+            if ($k >= 5) {
+                break;
+            }
+            $item['address'] = $v;
+            // 小程序的标签，多个标签用空格分隔，标签不能多于10个，标签长度不超过20
+            $item['tag'] = '新闻 资讯 文娱';
+            if (!isset($cates['category_list'][$k])){
+                $cc=0;
+            }else {
+                $cc=$k;
+            }
+            if (isset($cates['category_list'][$cc]['first_class'])) {
+                $item['first_class'] = $cates['category_list'][$cc]['first_class'];
+                $item['first_id'] = $cates['category_list'][$cc]['first_id'];
+            }
+            if (isset($cates['category_list'][$cc]['second_class'])) {
+                $item['second_class'] = $cates['category_list'][$cc]['second_class'];
+                $item['second_id'] = $cates['category_list'][$cc]['second_id'];
+            }
+            if (isset($cates['category_list'][$cc]['third_class'])) {
+                $item['third_class'] = $cates['category_list'][$cc]['third_class'];
+                $item['third_id'] = $cates['category_list'][$cc]['third_id'];
+            }
+            $item['title'] = '';
+            $isIndex = strpos($v, "index");
+            if ($isIndex) {
+                $item['title'] = '首页';
+            }
+            $isDetail = strpos($v, "detail");
+            if ($isDetail) {
+                $item['title'] = '详情页';
+            }
+            $items[] = $item;
+            unset($item);
+        }
+        $sParam['item_list'] = $items;
+        
+        $log['item_list'] = $sParam;
+        $sUrl = 'https://api.weixin.qq.com/wxa/submit_audit?access_token=' . $access_token;
+        $res = post_data($sUrl, $sParam);
+        $log['submit_audit'] = $res;
+        addWeixinLog($log, 'audit_commit_' . $publicid);
+        if ($res['errcode'] == 0 && $res['auditid']) {
+            $save['mini_auditid'] = $res['auditid'];
+            D('Common/Apps')->updateInfo($publicid, $save);
+            $this->success('提交审核成功', U('audit_page', array(
+                'id' => $publicid
+            )));
+        } else {
+            $err['-1'] = '系统繁忙';
+            $err['86000'] = '不是由第三方代小程序进行调用';
+            $err['86001'] = '不存在第三方的已经提交的代码';
+            $err['85006'] = '标签格式错误';
+            $err['85007'] = '页面路径错误';
+            $err['85008'] = '类目填写错误';
+            $err['85009'] = '已经有正在审核的版本';
+            $err['85010'] = 'item_list有项目为空';
+            $err['85011'] = '标题填写错误';
+            $err['85023'] = '审核列表填写的项目数不在1-5以内';
+            $err['86002'] = '小程序还未设置昵称、头像、简介。请先设置完后再重新提交。';
+            $msg = isset($err[$res['errcode']]) ? $err[$res['errcode']] : '审核失败';
+            $this->error($msg);
+        }
+    }
+
+    /*
+     * 修改小程序线上代码的可见状态
+     */
+    function see_code()
+    {
+        $publicid = I('id', 0, 'intval');
+        $publicInfo = D('Common/Apps')->getInfo($publicid);
+        $access_token = get_access_token($publicInfo['token']);
+        $status = I('status', 'open');
+        $url = 'https://api.weixin.qq.com/wxa/change_visitstatus?access_token=' . $access_token;
+        $param['action'] = $status;
+        $res = post_data($url, $param);
+        dump($res);
+        $err['-1'] = '系统繁忙';
+        $err['85021']='状态不可变';
+        $err['85022']='action非法';
+        dump($err[$res['errcode']]);
+    }
 }

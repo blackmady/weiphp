@@ -306,8 +306,9 @@ class MemberTransitionController extends BaseController {
 			}
 		}
 		
-		$map ['token'] = get_token ();
-		session ( 'common_condition', $map );
+		$log_map ['token'] = get_token ();
+		session ( 'common_condition', $log_map );
+
 		$model = $this->getModel ( 'buy_log' );
 		$list_data = $this->_get_model_list ( $model );
 		if (! empty ( $list_data ['list_data'] )) {
@@ -705,7 +706,7 @@ class MemberTransitionController extends BaseController {
 	function duihuang() {
 		if (IS_POST) {
 			if (! $_POST ['sn_id']) {
-				$this->error( '400062:请输入sn码' );
+				$this->error ( '400062:请输入sn码' );
 			}
 			$map ['sn'] = $_POST ['sn_id'];
 			$id = D ( 'Common/SnCode' )->where ( $map )->getField ( 'id' );
@@ -713,7 +714,7 @@ class MemberTransitionController extends BaseController {
 			if ($res) {
 				$this->success ( '兑换成功' );
 			} else {
-				$this->error( '400063:兑换失败' );
+				$this->error ( '400063:兑换失败' );
 			}
 		}
 		$this->display ();

@@ -81,35 +81,34 @@ class WapController extends WapBaseController {
 				$allNumber = M ( 'card_member' )->where ( $map2 )->getFields ( 'id,number' );
 				$this->assign ( 'all_number', $allNumber );
 			}
-			if (is_install ( 'ShopCoupon' )) {
-				$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
-				$cardMember = M ( 'card_member' )->find ( $data ['member_id'] );
-				$map2 ['uid'] = $this->mid;
-				$map2 ['addon'] = 'ShopCoupon';
-				$map2 ['can_use'] = 1;
-				$snCode = M ( 'sn_code' )->where ( $map2 )->getFields ( 'id,sn,target_id,prize_title' );
-				if ($snCode) {
-					foreach ( $snCode as $s ) {
-						$conponArr [$s ['target_id']] = $s ['target_id'];
-					}
-					$map3 ['id'] = array (
-							'in',
-							$conponArr 
-					);
-					$conpons = M ( 'shop_coupon' )->where ( $map3 )->getFields ( 'id,title,member' );
-					foreach ( $snCode as &$v ) {
-						
-						$memberArr = explode ( ',', $conpons [$v ['target_id']] ['member'] );
-						if (in_array ( 0, $memberArr ) || in_array ( - 1, $memberArr ) || in_array ( $cardMember ['lev'], $memberArr )) {
-							$v ['target_name'] = $conpons [$v ['target_id']] ['title'];
-							$codeArr ['coupon_title'] = $conpons [$v ['target_id']] ['title'];
-							$couponData [$v ['id']] = $v;
-						}
-					}
-					$this->assign ( 'coupon', $couponData );
+			
+			$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
+			$cardMember = M ( 'card_member' )->find ( $data ['member_id'] );
+			$map2 ['uid'] = $this->mid;
+			$map2 ['addon'] = 'ShopCoupon';
+			$map2 ['can_use'] = 1;
+			$snCode = M ( 'sn_code' )->where ( $map2 )->getFields ( 'id,sn,target_id,prize_title' );
+			if ($snCode) {
+				foreach ( $snCode as $s ) {
+					$conponArr [$s ['target_id']] = $s ['target_id'];
 				}
-				$this->assign ( 'shops', $branch );
+				$map3 ['id'] = array (
+						'in',
+						$conponArr 
+				);
+				$conpons = M ( 'shop_coupon' )->where ( $map3 )->getFields ( 'id,title,member' );
+				foreach ( $snCode as &$v ) {
+					
+					$memberArr = explode ( ',', $conpons [$v ['target_id']] ['member'] );
+					if (in_array ( 0, $memberArr ) || in_array ( - 1, $memberArr ) || in_array ( $cardMember ['lev'], $memberArr )) {
+						$v ['target_name'] = $conpons [$v ['target_id']] ['title'];
+						$codeArr ['coupon_title'] = $conpons [$v ['target_id']] ['title'];
+						$couponData [$v ['id']] = $v;
+					}
+				}
+				$this->assign ( 'coupon', $couponData );
 			}
+			$this->assign ( 'shops', $branch );
 		} else if ($info ['number'] && ! $info ['phone'] && $info ['status'] == 2) {
 			// status: 2 体验卡， 1：正常， 0：冻结
 			redirect ( U ( 'get_success', $this->get_param ) );
@@ -318,7 +317,7 @@ class WapController extends WapBaseController {
 	}
 	/**
 	 * 根据两点间的经纬度计算距离
-	 * 
+	 *
 	 * @param float $lat
 	 *        	纬度值
 	 * @param float $lng

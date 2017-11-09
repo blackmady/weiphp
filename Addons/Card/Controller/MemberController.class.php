@@ -259,35 +259,33 @@ class MemberController extends BaseController {
 				$this->assign ( 'all_number', $allNumber );
 			}
 			$cardMember = M ( 'card_member' )->find ( $data ['member_id'] );
-			if (is_install ( 'ShopCoupon' )) {
-				$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
-				$map2 ['uid'] = $cardMember ['uid'];
-				$map2 ['addon'] = 'ShopCoupon';
-				$map2 ['can_use'] = 1;
-				$snCode = M ( 'sn_code' )->where ( $map2 )->getFields ( 'id,sn,target_id,prize_title' );
-				if ($snCode) {
-					foreach ( $snCode as $s ) {
-						$conponArr [$s ['target_id']] = $s ['target_id'];
-					}
-					$map3 ['id'] = array (
-							'in',
-							$conponArr 
-					);
-					$conpons = M ( 'shop_coupon' )->where ( $map3 )->getFields ( 'id,title,member' );
-					foreach ( $snCode as $v ) {
-						if ($conpons [$v ['target_id']]) {
-							$memberArr = explode ( ',', $conpons [$v ['target_id']] ['member'] );
-							if (in_array ( 0, $memberArr ) || in_array ( - 1, $memberArr ) || in_array ( $cardMember ['level'], $memberArr )) {
-								$codeArr ['coupon_title'] = $conpons [$v ['target_id']];
-								$couponData [$v ['target_id']] = $conpons [$v ['target_id']] ['title'];
-							}
+			$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
+			$map2 ['uid'] = $cardMember ['uid'];
+			$map2 ['addon'] = 'ShopCoupon';
+			$map2 ['can_use'] = 1;
+			$snCode = M ( 'sn_code' )->where ( $map2 )->getFields ( 'id,sn,target_id,prize_title' );
+			if ($snCode) {
+				foreach ( $snCode as $s ) {
+					$conponArr [$s ['target_id']] = $s ['target_id'];
+				}
+				$map3 ['id'] = array (
+						'in',
+						$conponArr 
+				);
+				$conpons = M ( 'shop_coupon' )->where ( $map3 )->getFields ( 'id,title,member' );
+				foreach ( $snCode as $v ) {
+					if ($conpons [$v ['target_id']]) {
+						$memberArr = explode ( ',', $conpons [$v ['target_id']] ['member'] );
+						if (in_array ( 0, $memberArr ) || in_array ( - 1, $memberArr ) || in_array ( $cardMember ['level'], $memberArr )) {
+							$codeArr ['coupon_title'] = $conpons [$v ['target_id']];
+							$couponData [$v ['target_id']] = $conpons [$v ['target_id']] ['title'];
 						}
 					}
-					
-					$this->assign ( 'coupon', $couponData );
 				}
-				$this->assign ( 'shop', $branch );
+				
+				$this->assign ( 'coupon', $couponData );
 			}
+			$this->assign ( 'shop', $branch );
 			
 			$this->assign ( 'data', $data );
 		}

@@ -35,7 +35,7 @@ class MemberTransitionController extends BaseController {
 		$this->assign ( 'search_url', addons_url ( "Card://MemberTransition/recharge_lists", array (
 				'mdm' => $_GET ['mdm'] 
 		) ) );
-		$map ['manager_id'] = $this->mid;
+		//$map ['manager_id'] = $this->mid;
 		$map ['token'] = get_token ();
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
@@ -154,13 +154,7 @@ class MemberTransitionController extends BaseController {
 		session ( 'common_condition', $map );
 		$model = $this->getModel ( 'recharge_log' );
 		$list_data = $this->_get_model_list ( $model );
-		// $uInfo = getUserInfo($this->mid);
-		// $levelInfo = D('CardLevel')->getCardMemberLevel($this->mid);
-		
-		$map ['manager_id'] = $this->mid;
-		$map ['token'] = get_token ();
-		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
-		
+
 		$cardMemberDao = M ( 'card_member' );
 		foreach ( $list_data ['list_data'] as &$vo ) {
 			$cardMember = $cardMemberDao->find ( $vo ['member_id'] );
@@ -195,7 +189,7 @@ class MemberTransitionController extends BaseController {
 		$this->assign ( 'search_url', addons_url ( "Card://MemberTransition/buy_lists", array (
 				'mdm' => $_GET ['mdm'] 
 		) ) );
-		$map ['manager_id'] = $this->mid;
+		//$map ['manager_id'] = $this->mid;
 		$map ['token'] = get_token ();
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
@@ -306,8 +300,8 @@ class MemberTransitionController extends BaseController {
 			}
 		}
 		
-		$log_map ['token'] = get_token ();
-		session ( 'common_condition', $log_map );
+		$map ['token'] = get_token ();
+		session ( 'common_condition', $map );
 
 		$model = $this->getModel ( 'buy_log' );
 		$list_data = $this->_get_model_list ( $model );

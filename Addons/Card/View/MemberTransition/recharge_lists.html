@@ -25,7 +25,7 @@
               	<option value="0" <php>if($_GET['pay_shop']==0)echo 'selected=selected';</php>>商户总部</option>
               	<notempty name='shop'>
               		<volist name='shop' key='k' id='s'>
-              			<option value="{$k}" <php>if($_GET['pay_shop']==$k)echo 'selected=selected';</php>>{$s}</option>
+              			<option value="{$key}" <php>if($_GET['pay_shop']==$k)echo 'selected=selected';</php>>{$s}</option>
               
               		</volist>
               	</notempty>

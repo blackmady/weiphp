@@ -367,7 +367,7 @@ class MemberController extends BaseController {
 		$this->display ();
 	}
 	// 通用插件的编辑模型
-	public function edit() {
+	public function edit($id) {
 		$model = $this->model;
 		is_array ( $model ) || $model = $this->getModel ( $model );
 		$id || $id = I ( 'id' );

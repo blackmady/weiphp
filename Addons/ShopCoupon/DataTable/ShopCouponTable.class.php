@@ -66,7 +66,7 @@ class ShopCouponTable {
 							],
 							'1' => [
 									'title' => '领取记录',
-									'url' => 'lists?_controller=Sn&target_id=[id]'
+									'url' => 'Sn/lists?target_id=[id]'
 							],
 							'2' => [
 									'title' => '核销记录',

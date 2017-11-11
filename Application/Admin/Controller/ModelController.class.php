@@ -36,8 +36,9 @@ class ModelController extends AdminController {
 		$dao = D ( 'Common/Model' );
 		foreach ( $list as &$vo ) {
 			$file = $dao->requireFile ( $vo );
-			if(!$file) continue;
-
+			if (! $file)
+				continue;
+			
 			$file_md5 = md5_file ( $file );
 			$vo ['update_db'] = $vo ['file_md5'] != $file_md5 ? 1 : 0;
 			
@@ -490,7 +491,7 @@ class ModelController extends AdminController {
 		if (! $res) {
 			$this->error ( '140160:保存失败' );
 		} else {
-			! empty ( $config ['addon'] ) && $config ['addon'] != 'Core' && $res ['id']>0 && $this->update_sql ( $config ['addon'] );
+			! empty ( $config ['addon'] ) && $config ['addon'] != 'Core' && $res ['id'] > 0 && $this->update_sql ( $config ['addon'] );
 			$this->success ( $res ['id'] ? '更新成功' : '新增成功', Cookie ( '__forward__' ) );
 		}
 	}

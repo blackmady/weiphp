@@ -53,8 +53,10 @@ class JSSDK {
 		}
 		return $data;
 	}
-	private function getAccessToken() {
-		return get_access_token_by_apppid($this->appId, $this->appSecret);
+    private function getAccessToken() {
+		$token=M('apps')->where(array('appid'=>$this->appId))->getField('token');
+// 		return get_access_token_by_apppid($this->appId, $this->appSecret);
+		return get_access_token($token);
 	}
 	private function httpGet($url) {
 		$curl = curl_init ();

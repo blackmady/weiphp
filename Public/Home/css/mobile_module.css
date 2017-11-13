@@ -435,7 +435,7 @@ label {
 .conpons_list .coupon_head img{ width:50px; height:50px; border-radius:100%; vertical-align:-16px; margin-right:5px; color:#fff}
 .conpons_list .coupon_head .line{ height:15px; background:url(../images/coupon_line.png) repeat-x; background-size:auto 15px; position:absolute; bottom:0; right:0; left:0;}
 .conpons_list .conpon_item_disable  .coupon_head .line{background:url(../images/coupon_line_disable.png) repeat-x; background-size:auto 15px;}
-.conpons_list .coupon_bottom{ padding:0 10px 10px; height:25px; line-height:25px; color:#888; font-size:12px;}
+.conpons_list .coupon_bottom{ padding:0 10px 10px; line-height:25px; color:#888; font-size:12px;}
 .conpons_list .coupon_bottom .fl{ width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 
 /* 检查经历值 */

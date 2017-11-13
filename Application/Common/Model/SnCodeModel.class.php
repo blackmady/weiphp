@@ -164,6 +164,10 @@ class SnCodeModel extends Model {
 		
 		return $list;
 	}
+	// 用户领取优惠券后更新缓存
+	function cleanCache($uid, $addon = 'Coupon') {
+		$this->getMyAll ( $uid, $addon, true );
+	}
 	function update($id, $save = array()) {
 		$map ['id'] = $id;
 		$res = $this->where ( $map )->save ( $save );
@@ -191,9 +195,9 @@ class SnCodeModel extends Model {
 		return $res;
 	}
 	function getSnCount($type = '') {
-	    if (!is_install("ShopCoupon")){
-	        return 0;
-	    }
+		if (! is_install ( "ShopCoupon" )) {
+			return 0;
+		}
 		$count = 0;
 		$mid = get_mid ();
 		$list = $this->getMyAll ( $mid, 'ShopCoupon' );
@@ -220,6 +224,7 @@ class SnCodeModel extends Model {
 		$map ['token'] = get_token ();
 		
 		$list = $this->where ( $map )->field ( 'count(can_use) as total,sum(can_use) as left_count, addon' )->group ( 'addon' )->select ();
+		
 		foreach ( $list as $vo ) {
 			$data [$vo ['addon']] ['total'] = $vo ['total'];
 			$data [$vo ['addon']] ['left_count'] = $vo ['left_count'];

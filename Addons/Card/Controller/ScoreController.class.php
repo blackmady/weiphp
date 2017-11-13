@@ -9,7 +9,7 @@ class ScoreController extends ManageBaseController {
 		parent::_initialize ();
 		
 		$type = I ( 'type', 0, 'intval' );
-		$param['mdm']=$_GET['mdm'];
+		$param ['mdm'] = $_GET ['mdm'];
 		$param ['type'] = 0;
 		$res ['title'] = '所有的积分兑换活动';
 		$res ['url'] = addons_url ( 'Card://Score/lists', $param );
@@ -44,7 +44,7 @@ class ScoreController extends ManageBaseController {
 		$list_data = $this->_list_grid ( $model );
 		
 		// 搜索条件
-		$map = $this->_search_map ( $model, $fields );
+		$map = $this->_search_map ( $model );
 		$type = I ( 'type', 0, 'intval' );
 		if ($type == 1) {
 			$map ['start_time'] = array (
@@ -71,11 +71,14 @@ class ScoreController extends ManageBaseController {
 		
 		// 读取模型数据列表
 		$name = parse_name ( get_table_name ( $model ['id'] ), true );
-		$data = M ( $name )->field ( true )->where ( $map )->order ( $order )->page ( $page, $row )->select ();
+		$data = M ( $name )->field ( true )->where ( $map )->order ( 'id desc' )->page ( $page, $row )->select ();
 		
 		$dataTable = D ( 'Common/Model' )->getFileInfo ( $model );
-		$data = $this->parseData ( $data, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
-		
+		$data2 = $this->parseData ( $data, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
+		foreach ( $data2 as $v ) {
+			$urls [$v ['id']] = $v ['urls'];
+		}
+
 		foreach ( $data as &$vo ) {
 			if ($vo ['start_time'] > NOW_TIME) {
 				$vo ['status'] .= '未开始';
@@ -84,20 +87,23 @@ class ScoreController extends ManageBaseController {
 			} else {
 				$vo ['status'] .= '进行中';
 			}
-			$vo ['coupon_id'] = $vo ['score_limit'] . '积分兑换 ' . M ( 'shop_coupon' )->where ( "id='{$vo[coupon_id]}'" )->getField ( 'title' );
-			
+			$vo ['coupon_id'] = $vo ['score_limit'] . '积分兑换 ' . M ( 'coupon' )->where ( "id='{$vo[coupon_id]}'" )->getField ( 'title' );
 			$vo ['start_time'] = time_format ( $vo ['start_time'] ) . ' 至<br/>' . time_format ( $vo ['end_time'] );
 			
 			if ($vo ['member'] == 0) {
 				$vo ['member'] = '所有用户';
-			} elseif ($vo ['member'] == -1) {
+			} elseif ($vo ['member'] == - 1) {
 				$vo ['member'] = '所有会员卡成员';
 			} else {
-			    $memberArr=explode(',', $vo['member']);
-				$card_map ['id'] = array('in',$memberArr);
-				$level_name= M ( 'card_level' )->where ( $card_map )->getFields ( 'level' );
-				$vo['member']=implode('<br/>', $level_name);
+				$memberArr = explode ( ',', $vo ['member'] );
+				$card_map ['id'] = array (
+						'in',
+						$memberArr 
+				);
+				$level_name = M ( 'card_level' )->where ( $card_map )->getFields ( 'level' );
+				$vo ['member'] = implode ( '<br/>', $level_name );
 			}
+			$vo ['urls'] = $urls [$vo ['id']];
 		}
 		
 		/* 查询记录总数 */
@@ -115,7 +121,7 @@ class ScoreController extends ManageBaseController {
 		$this->assign ( $list_data );
 		// dump($list_data);
 		
-		$this->display ( $templateFile );
+		$this->display ();
 	}
 	function add() {
 		$this->_get_card_conpon ();
@@ -127,22 +133,22 @@ class ScoreController extends ManageBaseController {
 		$model = $this->getModel ( 'card_score' );
 		
 		if (IS_POST) {
-		    if (empty($_POST['title'])){
-		        $this->error( '400084:活动名称必须');
-		    }
-		    if (empty($_POST['start_time'])){
-		        $this->error( '400085:开始时间必须');
-		    }
-		    if (empty($_POST['end_time'])){
-		        $this->error( '400086:结束时间必须');
-		    }
-			$score_limit = intval($_POST['score_limit']);
-		    if (empty($score_limit)){
-		        $this->error( '400087:兑换所需积分必须');
-		    }
-		    if (empty($_POST['coupon_id'])){
-		        $this->error( '400088:请选择兑换券，添加兑换券可到奖品库添加！');
-		    }
+			if (empty ( $_POST ['title'] )) {
+				$this->error ( '400084:活动名称必须' );
+			}
+			if (empty ( $_POST ['start_time'] )) {
+				$this->error ( '400085:开始时间必须' );
+			}
+			if (empty ( $_POST ['end_time'] )) {
+				$this->error ( '400086:结束时间必须' );
+			}
+			$score_limit = intval ( $_POST ['score_limit'] );
+			if (empty ( $score_limit )) {
+				$this->error ( '400087:兑换所需积分必须' );
+			}
+			if (empty ( $_POST ['coupon_id'] )) {
+				$this->error ( '400088:请选择兑换券，添加兑换券可到奖品库添加！' );
+			}
 			$_POST ['is_show'] = intval ( $_POST ['is_show'] );
 			
 			$act = empty ( $id ) ? 'add' : 'save';
@@ -155,18 +161,18 @@ class ScoreController extends ManageBaseController {
 				
 				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'], $this->get_param ) );
 			} else {
-				$this->error( '400089:'. $Model->getError () );
+				$this->error ( '400089:' . $Model->getError () );
 			}
 		} else {
 			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
-			$data || $this->error( '400090:数据不存在！' );
+			$data || $this->error ( '400090:数据不存在！' );
 			
 			$token = get_token ();
 			if (isset ( $data ['token'] ) && $token != $data ['token'] && defined ( 'ADDON_PUBLIC_PATH' )) {
-				$this->error( '400091:非法访问！' );
+				$this->error ( '400091:非法访问！' );
 			}
-			$data['member']=explode(',', $data['member']);
+			$data ['member'] = explode ( ',', $data ['member'] );
 			$this->assign ( 'data', $data );
 			
 			$this->_get_card_conpon ( $data ['coupon_type'] );

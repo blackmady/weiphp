@@ -80,7 +80,7 @@ class SnController extends ManageBaseController {
 		$map ['addon'] = $this->addon;
 		$map ['target_id'] = I ( 'target_id' );
 		$map ['token'] = get_token ();
-
+		
 		session ( 'common_condition', $map );
 		
 		parent::common_export ( $model );
@@ -88,22 +88,6 @@ class SnController extends ManageBaseController {
 	function del() {
 		$model = $this->getModel ( 'sn_code' );
 		parent::del ( $model );
-	}
-	function test3() {
-		$id = I ( 'id' );
-		$res = D ( 'Common/SnCode' )->set_use ( $id );
-		if ($res == - 1) {
-			$this->error ( '400139:数据不存在' );
-		} elseif ($res) {
-			$map ['is_use'] = 1;
-			$map ['target_id'] = $data ['target_id'];
-			$map ['addon'] = 'Coupon';
-			$save ['use_count'] = intval ( D ( 'Common/SnCode' )->where ( $map )->count () );
-			D ( 'Coupon' )->update ( $data ['target_id'], $save );
-			$this->success ( '设置成功' );
-		} else {
-			$this->error ( '400140:设置失败' );
-		}
 	}
 	function set_use() {
 		$id = I ( 'id' );
@@ -115,9 +99,11 @@ class SnController extends ManageBaseController {
 		
 		if ($data ['is_use']) {
 			$data ['is_use'] = 0;
+			$data ['can_use'] = 1;
 			$data ['use_time'] = '';
 		} else {
 			$data ['is_use'] = 1;
+			$data ['can_use'] = 0;
 			$data ['use_time'] = time ();
 		}
 		

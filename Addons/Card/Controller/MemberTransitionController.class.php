@@ -35,7 +35,7 @@ class MemberTransitionController extends BaseController {
 		$this->assign ( 'search_url', addons_url ( "Card://MemberTransition/recharge_lists", array (
 				'mdm' => $_GET ['mdm'] 
 		) ) );
-		//$map ['manager_id'] = $this->mid;
+		// $map ['manager_id'] = $this->mid;
 		$map ['token'] = get_token ();
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
@@ -154,7 +154,7 @@ class MemberTransitionController extends BaseController {
 		session ( 'common_condition', $map );
 		$model = $this->getModel ( 'recharge_log' );
 		$list_data = $this->_get_model_list ( $model );
-
+		
 		$cardMemberDao = M ( 'card_member' );
 		foreach ( $list_data ['list_data'] as &$vo ) {
 			$cardMember = $cardMemberDao->find ( $vo ['member_id'] );
@@ -189,7 +189,7 @@ class MemberTransitionController extends BaseController {
 		$this->assign ( 'search_url', addons_url ( "Card://MemberTransition/buy_lists", array (
 				'mdm' => $_GET ['mdm'] 
 		) ) );
-		//$map ['manager_id'] = $this->mid;
+		// $map ['manager_id'] = $this->mid;
 		$map ['token'] = get_token ();
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
@@ -302,7 +302,7 @@ class MemberTransitionController extends BaseController {
 		
 		$map ['token'] = get_token ();
 		session ( 'common_condition', $map );
-
+		
 		$model = $this->getModel ( 'buy_log' );
 		$list_data = $this->_get_model_list ( $model );
 		if (! empty ( $list_data ['list_data'] )) {
@@ -362,30 +362,33 @@ class MemberTransitionController extends BaseController {
 		) ) );
 		$this->assign ( 'search_key', 'username' );
 		$this->assign ( 'placeholder', '请输入用户名或手机号' );
-		$grid ['field'] = 'credit_name';
-		$grid ['title'] = '交易名称';
-		$list_grids [] = $grid;
 		
-		$grid ['field'] = 'username';
-		$grid ['title'] = '用户名';
-		$list_grids [] = $grid;
-		
-		$grid ['field'] = 'phone';
-		$grid ['title'] = '手机号码';
-		$list_grids [] = $grid;
-		
-		$grid ['field'] = 'cTime|time_format';
-		$grid ['title'] = '交易时间';
-		$list_grids [] = $grid;
-		
-		$grid ['field'] = 'score';
-		$grid ['title'] = '积分';
-		$list_grids [] = $grid;
-		
-		$grid ['field'] = 'operator';
-		$grid ['title'] = '操作员';
-		$list_grids [] = $grid;
-		$list_data ['list_grids'] = $list_grids;
+		$list_data ['list_grids'] = [ 
+				'credit_name' => [ 
+						'title' => '交易名称',
+						'name' => 'credit_name' 
+				],
+				'username' => [ 
+						'title' => '用户名',
+						'name' => 'username' 
+				],
+				'phone' => [ 
+						'title' => '手机号码',
+						'name' => 'phone' 
+				],
+				'cTime' => [ 
+						'title' => '交易时间',
+						'name' => 'cTime' 
+				],
+				'score' => [ 
+						'title' => '积分',
+						'name' => 'score' 
+				],
+				'operator' => [ 
+						'title' => '操作员',
+						'name' => 'operator' 
+				] 
+		];
 		// 获取交易方式信息
 		$creditTitle = M ( 'credit_config' )->getFields ( 'name,title' );
 		$i = 1;
@@ -494,7 +497,6 @@ class MemberTransitionController extends BaseController {
 		$map ['token'] = get_token ();
 		$data = M ( 'credit_data' )->where ( $map )->order ( 'id desc' )->selectPage ();
 		$list_data ['list_data'] = $data ['list_data'];
-		// dump($list_data['list_data']);
 		
 		foreach ( $list_data ['list_data'] as &$vo ) {
 			if ($vo ['credit_name'] == 'card_member_update_score') {

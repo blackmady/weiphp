@@ -5,45 +5,47 @@ namespace Addons\Coupon\Controller;
 use Think\WapBaseController;
 
 class WapController extends WapBaseController {
-    
-    function _initialize() {
-        parent::_initialize();
-        if (ACTION_NAME == 'lists'|| ACTION_NAME == 'personal'){
-            $uid=$this->mid;
-            $token = get_token();
-            //获取通知数
-            $key='cardnotic_'.$token.'_'.$uid;
-            $rrs=S($key);
-            if($rrs === false){
-                $beforetime=7 * 24 * 60 * 60;
-                $thetime=strtotime(time_format(time(),'Y-m-d'))-$beforetime;
-                $cmap ['token'] = $token;
-                $cmap ['uid']= $uid;
-                $cardMember=M('card_member')->where($cmap)->find();
-                if (!empty($cardMember['level'])){
-                    $map['cTime']=array('egt',$thetime);
-                    $map['token']=$token;
-        
-                    $notices =M('card_notice')->where($map)->select();
-                    foreach ($notices as $v){
-                        $gradeArr=explode(',',$v['grade']);
-                        if ($v['to_uid']==0){
-                            if (in_array(0, $gradeArr) || in_array($cardMember['level'], $gradeArr)){
-                                $data[]=$v;
-                            }
-                        }else if ($v['to_uid']==$uid){
-                            $data[]=$v;
-                        }
-                    }
-                    $rrs=count($data);
-                    S($key,$rrs);
-                }
-            }else if($rrs <= 0){
-                $rrs='';
-            }
-            $this->assign('notice_num',$rrs);
-        }
-    }
+	function _initialize() {
+		parent::_initialize ();
+		if (ACTION_NAME == 'lists' || ACTION_NAME == 'personal') {
+			$uid = $this->mid;
+			$token = get_token ();
+			// 获取通知数
+			$key = 'cardnotic_' . $token . '_' . $uid;
+			$rrs = S ( $key );
+			if ($rrs === false) {
+				$beforetime = 7 * 24 * 60 * 60;
+				$thetime = strtotime ( time_format ( time (), 'Y-m-d' ) ) - $beforetime;
+				$cmap ['token'] = $token;
+				$cmap ['uid'] = $uid;
+				$cardMember = M ( 'card_member' )->where ( $cmap )->find ();
+				if (! empty ( $cardMember ['level'] )) {
+					$map ['cTime'] = array (
+							'egt',
+							$thetime 
+					);
+					$map ['token'] = $token;
+					
+					$notices = M ( 'card_notice' )->where ( $map )->select ();
+					foreach ( $notices as $v ) {
+						$gradeArr = explode ( ',', $v ['grade'] );
+						if ($v ['to_uid'] == 0) {
+							if (in_array ( 0, $gradeArr ) || in_array ( $cardMember ['level'], $gradeArr )) {
+								$data [] = $v;
+							}
+						} else if ($v ['to_uid'] == $uid) {
+							$data [] = $v;
+						}
+					}
+					$rrs = count ( $data );
+					S ( $key, $rrs );
+				}
+			} else if ($rrs <= 0) {
+				$rrs = '';
+			}
+			$this->assign ( 'notice_num', $rrs );
+		}
+	}
 	
 	// 开始领取页面
 	function prev() {
@@ -87,7 +89,7 @@ class WapController extends WapBaseController {
 		
 		$info = D ( 'Common/SnCode' )->getInfoById ( $id );
 		if ($info ['uid'] != $this->mid) {
-			$this->error( '400144:非法访问' );
+			$this->error ( '400144:非法访问' );
 		}
 		
 		$this->assign ( 'info', $info );
@@ -99,12 +101,12 @@ class WapController extends WapBaseController {
 		$cTime = I ( 'cTime', 0, 'intval' );
 		
 		if ($cTime > 0 && (NOW_TIME * 1000 - $cTime) > 30000) {
-			$this->error( '400145:二维码已过期' );
+			$this->error ( '400145:二维码已过期' );
 		}
 		$id = I ( 'sn_id' );
 		$info = D ( 'Common/SnCode' )->getInfoById ( $id );
 		if (empty ( $info )) {
-			$this->error( '400146:扫描的二维码不对' );
+			$this->error ( '400146:扫描的二维码不对' );
 		}
 		
 		$this->assign ( 'info', $info );
@@ -120,7 +122,7 @@ class WapController extends WapBaseController {
 			$role = M ( 'servicer' )->where ( $map )->getField ( 'role' );
 			$role = explode ( ',', $role );
 			if (! in_array ( 2, $role )) {
-				$this->error( '400147:你需要工作授权才能核销');
+				$this->error ( '400147:你需要工作授权才能核销' );
 			}
 		}
 		
@@ -320,7 +322,7 @@ class WapController extends WapBaseController {
 			$param ['publicid'] = I ( 'publicid' );
 			$param ['rand'] = NOW_TIME . rand ( 10, 99 );
 			
-			$this->error( '400149:排队领取中', U ( 'set_sn_code', $param ) );
+			$this->error ( '400149:排队领取中', U ( 'set_sn_code', $param ) );
 		} else {
 			S ( 'set_sn_code_lock', 1, 30 );
 		}
@@ -337,16 +339,16 @@ class WapController extends WapBaseController {
 		}
 		
 		$info = D ( 'Coupon' )->getInfo ( $id );
-		$member=explode(',', $info['member']);
-		if (!in_array(0, $member)){
-		    //判断是否为会员
-		    $card_map['token']=get_token();
-		    $card_map['uid']=$this->mid;
-		    $card=M('card_member')->where($card_map)->find();
-		    if ($card['member'] !=0 && !in_array(-1, $member) && !in_array($card['level'], $member)){
-		        $msg = '您的等级未满足，还不能领取该优惠券！';
-		        $this->show_error ( $msg, $info );
-		    }
+		$member = explode ( ',', $info ['member'] );
+		if (! in_array ( 0, $member )) {
+			// 判断是否为会员
+			$card_map ['token'] = get_token ();
+			$card_map ['uid'] = $this->mid;
+			$card = M ( 'card_member' )->where ( $card_map )->find ();
+			if ($card ['member'] != 0 && ! in_array ( - 1, $member ) && ! in_array ( $card ['level'], $member )) {
+				$msg = '您的等级未满足，还不能领取该优惠券！';
+				$this->show_error ( $msg, $info );
+			}
 		}
 		
 		if ($info ['collect_count'] >= $info ['num']) {
@@ -471,7 +473,7 @@ class WapController extends WapBaseController {
 		if (! empty ( $list )) {
 			foreach ( $list as $k => &$v ) {
 				$coupon = ( array ) D ( 'Addons://Coupon/Coupon' )->getInfo ( $v ['target_id'] );
-				if ($coupon && $coupon['over_time']>NOW_TIME) {
+				if ($coupon && $coupon ['over_time'] > NOW_TIME) {
 					$v ['sn_id'] = $v ['id'];
 					$v = array_merge ( $v, $coupon );
 				} else {
@@ -513,7 +515,7 @@ class WapController extends WapBaseController {
 		$map ['token'] = get_token ();
 		$data = M ( 'sn_code' )->where ( $map )->find ();
 		if (! $data) {
-			$this->error( '400150:数据不存在' );
+			$this->error ( '400150:数据不存在' );
 		}
 		
 		if ($data ['is_use']) {
@@ -539,7 +541,7 @@ class WapController extends WapBaseController {
 			}
 			$this->success ( '设置成功' );
 		} else {
-			$this->error( '400151:设置失败' );
+			$this->error ( '400151:设置失败' );
 		}
 	}
 	function lists() {
@@ -550,9 +552,9 @@ class WapController extends WapBaseController {
 		$page = I ( 'p', 1, 'intval' ); // 默认显示第一页数据
 		$order = 'id desc';
 		$model = $this->getModel ();
-		//$map['is_show']=1;
-		$map['is_del']=0;
-		session ( 'common_condition' ,$map);
+		// $map['is_show']=1;
+		$map ['is_del'] = 0;
+		session ( 'common_condition', $map );
 		// 解析列表规则
 		$list_data = $this->_list_grid ( $model );
 		
@@ -560,18 +562,21 @@ class WapController extends WapBaseController {
 		$map = $this->_search_map ( $model, $list_data ['fields'] );
 		$row = empty ( $model ['list_row'] ) ? 20 : $model ['list_row'];
 		
-		$map['end_time']=array('gt',NOW_TIME);
-		//获取用户的会员等级
-		$levelInfo=D('Addons://Card/CardLevel')->getCardMemberLevel($this->mid);
+		$map ['end_time'] = array (
+				'gt',
+				NOW_TIME 
+		);
+		// 获取用户的会员等级
+		$levelInfo = D ( 'Addons://Card/CardLevel' )->getCardMemberLevel ( $this->mid );
 		// 读取模型数据列表
-		//dump($map);
+		// dump($map);
 		$list = $dao->field ( 'id,member' )->where ( $map )->order ( $order )->page ( $page, $row )->select ();
-		//lastsql();
+		
 		foreach ( $list as $d ) {
-		    $levelArr=explode(',', $d['member']);
-		    if (in_array(0, $levelArr) || in_array(-1, $levelArr) || in_array($levelInfo['id'], $levelArr)){
-		        $datas [] = $dao->getInfo ( $d ['id'] );
-		    }
+			$levelArr = explode ( ',', $d ['member'] );
+			if (in_array ( 0, $levelArr ) || in_array ( - 1, $levelArr ) || in_array ( $levelInfo ['id'], $levelArr )) {
+				$datas [] = $dao->getInfo ( $d ['id'] );
+			}
 		}
 		
 		/* 查询记录总数 */

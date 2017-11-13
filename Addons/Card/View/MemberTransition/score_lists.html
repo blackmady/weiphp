@@ -24,7 +24,7 @@
               	<option value="0" <php>if($_GET['credit_type']==0)echo 'selected=selected';</php>>全部方式</option>
               	<notempty name='credit_title'>
               		<volist name='credit_title' key='k' id='s'>
-              			<option value="{$k}" <php>if($_GET['credit_type']==$k)echo 'selected=selected';</php>>{$s.title}</option>
+              			<option value="{$key}" <php>if($_GET['credit_type']==$k)echo 'selected=selected';</php>>{$s.title}</option>
               		</volist>
               	</notempty>
               </select>

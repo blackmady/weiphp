@@ -2,7 +2,7 @@
 
 namespace Addons\Card\Controller;
 
-use Addons\Card\Controller\BaseController;
+use Addons\Card\Controller\CardSetController;
 
 class CardController extends CardSetController {
 	function config() {
@@ -61,8 +61,8 @@ class CardController extends CardSetController {
 		$this->display ();
 	}
 	function preview() {
-		$url = addons_url ( 'Card://Wap/index', array (
-				'wpid' => get_token_appinfo ( '', 'id' ) 
+		$url = U ( 'Card/Wap/index', array (
+				'wpid' => WPID 
 		) );
 		$this->assign ( 'url', $url );
 		$this->display ( 'Home@Addons/preview' );

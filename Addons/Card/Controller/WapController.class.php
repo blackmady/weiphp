@@ -1171,7 +1171,7 @@ class WapController extends WapBaseController {
 				$nocount = 1;
 			}
 			
-			if ($logs >= $v ['num_limit']) {
+			if ($logs > 0 && $logs >= $v ['num_limit']) {
 				$nocount = 1;
 			}
 			$v ['no_count'] = $nocount;
@@ -1208,6 +1208,10 @@ class WapController extends WapBaseController {
 			$data ['uid'] = $this->mid;
 			$res = M ( 'score_exchange_log' )->add ( $data );
 			if ($res) {
+				// 清下缓存
+				if ($card_score ['coupon_type'] != 0) {
+					D ( 'Common/SnCode' )->cleanCache ( $this->mid, 'Coupon' );
+				}
 				echo 1;
 			} else {
 				echo 0;

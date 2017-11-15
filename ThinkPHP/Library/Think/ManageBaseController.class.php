@@ -286,6 +286,7 @@ class ManageBaseController extends Controller {
 			} else {
 				$this->error ( '100016:保存失败' );
 			}
+			exit ();
 		}
 		if ($db_config) {
 			foreach ( $addon ['config'] as $key => $value ) {

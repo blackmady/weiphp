@@ -485,11 +485,13 @@ str;
 			$name = $this->where ( [ 
 					'id' => $model 
 			] )->getField ( 'name' );
-		} else {
+		} elseif(isset($model['name'])) {
 			$name = $model ['name'];
+		}else{
+			$name = $model;
 		}
+
 		$table_name = $this->table_name = C ( 'DB_PREFIX' ) . strtolower ( $name );
-		
 		$sql = "SHOW TABLES LIKE '{$table_name}'";
 		$res = $this->query ( $sql );
 		return count ( $res );

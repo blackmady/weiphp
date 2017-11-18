@@ -54,7 +54,7 @@ class VoteOptionTable {
 					'type' => 'num',
 					'is_show' => 4,
 					'is_must' => 1,
-					'auto_rule' => '$_REQUEST['vote_id']',
+					'auto_rule' => '$_REQUEST[\'vote_id\']',
 					'auto_time' => 3,
 					'auto_type' => 'string'
 			],

@@ -21,6 +21,26 @@ class ModelController extends AdminController {
 	 * @author huajie <banhuajie@163.com>
 	 */
 	public function index() {
+		$dao = D ( 'Common/Model' );
+		// 根据文件查找还没安装的模型
+		$files = $this->file_scan ();
+		$modelArr = $dao->getFields ( 'name,id' );
+		$objArr = [ ];
+		foreach ( $files as $file ) {
+			$info = pathinfo ( $file );
+			$class = str_replace ( '.class', '', $info ['filename'] );
+			if (isset ( $objArr [$class] )) {
+				continue;
+			}
+			require_once $file;
+			$objArr [$class] = new $class ();
+			$config = $objArr [$class]->config;
+			
+			if (! isset ( $modelArr [$config ['name']] )) {
+				$dao->add ( $config );
+			}
+		}
+		
 		// 自动加载数据模型文件
 		$map = [ ];
 		if (isset ( $_GET ['title'] )) {
@@ -33,24 +53,31 @@ class ModelController extends AdminController {
 		$list = $this->lists ( 'model', $map );
 		
 		$addonArr = $this->_get_all_addon ();
-		$dao = D ( 'Common/Model' );
-		foreach ( $list as &$vo ) {
+		
+		foreach ( $list as $k => &$vo ) {
 			$file = $dao->requireFile ( $vo );
-			if (! $file)
+			if (! $file) {
+				$dao->delete ( $vo ['id'] );
+				unset ( $list [$k] );
 				continue;
+			}
 			
 			$file_md5 = md5_file ( $file );
-			$vo ['update_db'] = $vo ['file_md5'] != $file_md5 ? 1 : 0;
+			$vo ['update_db'] = ! empty ( $vo ['file_md5'] ) && ($vo ['file_md5'] != $file_md5) ? 1 : 0;
 			
-			require_once $file;
 			$name = parse_name ( $vo ['name'], 1 );
 			$class = $name . 'Table';
-			$obj = new $class ();
+			$obj = $objArr [$class];
 			
 			$fields_md5 = md5 ( json_encode ( $obj->fields ) );
 			// dump ( $fields_md5 );
 			
 			$data = $this->getDBInfo ( $vo ['name'], $obj->fields, '' );
+			if (empty ( $data )) { // 数据表不存在
+				$vo ['table_exists'] = 0;
+			} else {
+				$vo ['table_exists'] = 1;
+			}
 			$data_md5 = md5 ( json_encode ( $data ) );
 			// dump ( $data_md5 );
 			
@@ -287,12 +314,8 @@ class ModelController extends AdminController {
 			if ($obj == false)
 				continue;
 			
-			$data = [ ];
-			// 需要先判断数据表是否存在
-			$table_exist = $dao->checkTableExist ( $vo );
-			if ($table_exist) {
-				$data = $this->getDBInfo ( $vo ['name'] );
-			}
+			$data = $this->getDBInfo ( $vo ['name'] );
+			
 			// 字段比较
 			foreach ( $obj->fields as $name => $f ) {
 				$f ['model_id'] = $vo ['id'];
@@ -331,6 +354,7 @@ class ModelController extends AdminController {
 		
 		$this->success ( '更新完成', U ( 'index' ) );
 	}
+	
 	/**
 	 * 新增页面初始化
 	 *
@@ -520,6 +544,7 @@ class ModelController extends AdminController {
 			}
 		}
 	}
+	
 	/**
 	 * 导出一个模型
 	 */
@@ -713,5 +738,38 @@ sql;
 		
 		$url = U ( 'update_sql', $param );
 		echo '<script>window.location.href="' . $url . '"</script> ';
+	}
+	// 遍历所有的模型文件
+	function file_scan() {
+		$dirs = [ 
+				'Application',
+				'Addons' 
+		];
+		$fileArr = [ ];
+		foreach ( $dirs as $dir ) {
+			$path = SITE_PATH . DIRECTORY_SEPARATOR . $dir;
+			$dirfat = dir ( $path );
+			
+			while ( false !== $entry = $dirfat->read () ) {
+				if ($entry == '.' || $entry == '..') {
+					continue;
+				}
+				if (! is_dir ( $path . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'DataTable' )) {
+					continue;
+				}
+				$fileDir = dir ( $path . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'DataTable' );
+				while ( false !== $file = $fileDir->read () ) {
+					if ($file == '.' || $file == '..') {
+						continue;
+					}
+					$fileArr [] = $path . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'DataTable' . DIRECTORY_SEPARATOR . $file;
+				}
+				$fileDir->close ();
+			}
+			
+			$dirfat->close ();
+		}
+		
+		return $fileArr;
 	}
 }

@@ -103,7 +103,6 @@ class WeixinController extends HomeController {
 		}
 		
 		if (! isset ( $addons [$key] )) {
-			
 			// 自定义菜单，回复素材内容
 			$keyArr = explode ( '::/', $key );
 			if ($keyArr [0] == 'material') {
@@ -306,7 +305,7 @@ class WeixinController extends HomeController {
 		$config = getAddonConfig ( 'UserCenter', $map ['token'] );
 		
 		$guestAccess = strtolower ( CONTROLLER_NAME ) != 'weixin';
-		$userNeed = ($uid > 0 && $user ['status'] < 2) || (empty ( $user ) && $guestAccess);
+		$userNeed = ($user ['uid'] > 0 && $user ['status'] < 2) || (empty ( $user ) && $guestAccess);
 		if ($config ['need_bind'] == 1 && $userNeed && C ( 'USER_OAUTH' )) {
 			unset ( $map ['uid'] );
 			$bind_url = addons_url ( 'UserCenter://Wap/bind', $map );

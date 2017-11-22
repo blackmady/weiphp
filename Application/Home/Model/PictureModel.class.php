@@ -51,6 +51,7 @@ class PictureModel extends Model{
                 /* 记录文件信息 */
                 $value['path'] = substr($setting['rootPath'], 1).$value['savepath'].$value['savename'];	//在模板里的url路径
 				$value['token'] = get_token();
+                $value['url'] = SITE_URL.$value['path'];
                 if($this->create($value) && ($id = $this->add())){
                     $value['id'] = $id;
                 } else {

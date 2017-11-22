@@ -77,7 +77,7 @@ class WapController extends WapBaseController {
 		$verify = I('verify');
 		
 		$voteInfo = D ( 'Addons://Vote/ShopVote' )->getInfo ( $voteId );
-		addWeixinLog($GLOBALS['is_wap'],'_get_file_media_id_vote');
+
 		if (!isWeixinBrowser ()) {
 			// $this->error( "400469:请在指定的时间内投票" );
 			

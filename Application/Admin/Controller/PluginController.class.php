@@ -4,14 +4,14 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <code-tech.diandian.com>
+// | Author: 凡星 <code-tech.diandian.com>
 // +----------------------------------------------------------------------
 namespace Admin\Controller;
 
 /**
  * 扩展后台管理页面
  *
- * @author yangweijie <yangweijiester@gmail.com>
+ * @author 凡星
  */
 class PluginController extends AdminController {
 	public function _initialize() {

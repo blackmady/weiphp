@@ -146,6 +146,7 @@ class Upload {
         
         // 对上传文件数组信息处理
         $files   =  $this->dealFiles($files);   
+        
         foreach ($files as $key => $file) {
             $file['name']  = strip_tags($file['name']);
             if(!isset($file['key']))   $file['key']    =   $key;
@@ -158,8 +159,7 @@ class Upload {
             $file['ext']    =   pathinfo($file['name'], PATHINFO_EXTENSION);
             /* 文件上传检测 */
             if (!$this->check($file)){
-                return false;
-               // continue;
+                continue;
             }
             /* 获取文件hash */
             if($this->hash){
@@ -210,6 +210,7 @@ class Upload {
                     continue;
                 }
             }
+            
             /* 保存文件 并记录保存成功的文件 */
             if ($this->uploader->save($file,$this->replace)) {
                 unset($file['error'], $file['tmp_name']);

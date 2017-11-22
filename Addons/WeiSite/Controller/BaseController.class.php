@@ -32,7 +32,10 @@ class BaseController extends ManageBaseController {
 		$act = strtolower ( ACTION_NAME );
 		$temp = $config ['template_' . $act];
 		$act = ucfirst ( $act );
-		$this->assign ( 'page_title', $config ['title'] );
+		if (!empty($config['title'])){
+		    $this->assign ( 'page_title', $config ['title'] );
+		}
+		
 		define ( 'CUSTOM_TEMPLATE_PATH', ONETHINK_ADDON_PATH . 'WeiSite/View/Template' );
 	}
 }

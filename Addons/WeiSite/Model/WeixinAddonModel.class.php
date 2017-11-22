@@ -11,7 +11,6 @@ class WeixinAddonModel extends WeixinModel {
 	function reply($dataArr, $keywordArr = array()) {
 		// 其中token和openid这两个参数一定要传，否则程序不知道是哪个微信用户进入了系统
 		$param ['token'] = get_token ();
-		U();
 		$param ['openid'] = get_openid ();
 		
 		if ($keywordArr ['extra_text'] == 'custom_reply_news') {

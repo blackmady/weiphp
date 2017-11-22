@@ -434,6 +434,10 @@ abstract class Controller {
 		} else {
 			defined ( 'SITE_VERSION' ) or define ( 'SITE_VERSION', C ( 'SYSTEM_UPDATRE_VERSION' ) );
 		}
+	        //会员卡客户关怀监控
+		if(is_install('Card')){
+		D('Addons://Card/CardCustom')->do_send_crons();
+		}
 	}
 	
 	// ***************************通用的模型数据操作 begin 凡星********************************/

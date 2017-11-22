@@ -343,7 +343,7 @@ function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root 
  * @param array $list
  *        	过渡用的中间数组，
  * @return array 返回排过序的列表数组
- * @author yangweijie <yangweijiester@gmail.com>
+ * @author 凡星
  */
 function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array()) {
 	if (is_array ( $tree )) {
@@ -458,7 +458,7 @@ function hook($hook, $params = array()) {
  */
 function get_addon_class($name) {
 	$class = "Addons\\{$name}\\{$name}Addon";
-	if (! class_exists ( $class )||$name == 'News') {
+	if (! class_exists ( $class ) || $name == 'News') {
 		$class = "Plugins\\{$name}\\{$name}Addon";
 	}
 	return $class;
@@ -1229,7 +1229,7 @@ function keyword_unique($keyword) {
 }
 // 分析枚举类型配置值 格式 a:名称1,b:名称2
 // weiphp 该函数是从admin的function的文件里提取这到里
-function parse_config_attr($string,$preg='/[\s;\r\n]+/') {
+function parse_config_attr($string, $preg = '/[\s;\r\n]+/') {
 	$array = preg_split ( $preg, trim ( $string, ",;\s\r\n" ) );
 	if (strpos ( $string, ':' )) {
 		$value = array ();
@@ -1255,7 +1255,7 @@ function get_hide_attr($str) {
 	return $arr [1];
 }
 // 分析枚举类型字段值 格式 a:名称1,b:名称2
-function parse_field_attr($string,$preg='/[\s;\r\n]+/') {
+function parse_field_attr($string, $preg = '/[\s;\r\n]+/') {
 	if (0 === strpos ( $string, ':' )) {
 		// 采用函数定义
 		return eval ( substr ( $string, 1 ) . ';' );
@@ -1588,7 +1588,7 @@ function execute_sql_file($sql_path) {
 	// 开始安装
 	foreach ( $sql as $value ) {
 		$value = trim ( $value );
-		if (empty ( $value ) || strpos($sql, $prefix.'attribute ')!==false)
+		if (empty ( $value ) || strpos ( $sql, $prefix . 'attribute ' ) !== false)
 			continue;
 		
 		$res = M ()->execute ( $value );
@@ -2780,8 +2780,8 @@ function post_data($url, $param, $type = 'json', $return_array = true, $useCert 
 			$res = $type == 'xml' ? FromXml ( $res ) : json_decode ( $res, true );
 		}
 	}
-	if (is_array($res)){
-	   add_request_log ( $url, $param, $res, $flat, $msg );
+	if (is_array ( $res )) {
+		add_request_log ( $url, $param, $res, $flat, $msg );
 	}
 	
 	return $res;
@@ -3773,6 +3773,28 @@ function is_install($addon_name) {
 	$list = D ( 'Home/Addons' )->getList ();
 	return isset ( $list [$addon_name] );
 }
+// 判断是否为管理员用户,true:是管理员，false:不是管理员
+function is_manager($uid) {
+	$is_manager = M ( 'manager' )->find ( $uid );
+	return empty ( $is_manager ) ? false : true;
+}
+
+// 敏感词过滤
+function filter_badword($str) {
+	$badword_arr = explode ( ',', C ( 'SENSITIVE_WORDS' ) );
+	$badword_arr = array_combine ( $badword_arr, array_fill ( 0, count ( $badword_arr ), '*' ) );
+	$str = strtr ( $str, $badword_arr );
+	return $str;
+}
+// 隐藏手机号
+function hide_mobile($mobile) {
+	$len = strlen ( $mobile );
+	$len = ceil ( $len / 2 );
+	$str = substr ( $mobile, 3, $len );
+	$mobile = str_replace ( $str, implode ( '', array_fill ( 0, $len, '*' ) ), $mobile );
+	return $mobile;
+}
+
 
 /*
  * 上传图片到微信获取url
@@ -3856,7 +3878,6 @@ function mk_rule_image($imgurl, $w, $h) {
 		return str_replace ( './Uploads', SITE_URL . '/Uploads', $dirname_new );
 	}
 	if (preg_match ( '#^(http|https)://#i', $imgurl )) { // 外部
-		addWeixinLog ( $imgurl, '_get_file_media_id1' );
 		$imgurl1 = $imgurl;
 		$imginfo = getimagesize ( $imgurl ); // 图片存在并获取到信息
 		                                     // dump($imginfo);

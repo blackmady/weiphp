@@ -90,7 +90,23 @@
       </if>
       
      <div style="padding: 10px 20px 15px 20px;">
-      	过滤查询：<input type='checkbox' name='state' value="0" id='state'/> <label for='state'>已发奖</label>
+      	过滤查询：
+      	<input type='radio' name='state' value="" id='state_' <if condition="is_null($_GET['state']) or $_GET['state'] eq ''">checked=true</if> /><label for='state_'>全部</label>
+       &nbsp;&nbsp;
+      	<input type='radio' name='state' value="0" id='state_0' <if condition="!is_null($_GET['state'])&&$_GET['state']!=''&&($_GET['state'] == 0)">checked=true</if> /><label for='state_0'>未发奖</label>
+       &nbsp;&nbsp;
+       <input type='radio' name='state' value="2" id='state_2' <if condition="$_GET['state'] == 2">checked=true</if> /><label for='state_2'>扫码验证</label>
+       &nbsp;&nbsp;
+       <input type='radio' name='state' value="1" id='state_1' <if condition="$_GET['state'] == 1">checked=true</if> /><label for='state_1'>已发奖</label>
+         &nbsp;&nbsp;
+       <notempty name="award_data">
+      	 <select name="adid" style="margin-left: 15px;">
+      	 	<option value="0" <if condition="empty($_GET['adid'])">selected=selected</if> >全部</option>
+       		<volist name="award_data" id="ad">
+      			<option value="{$ad.id}" <if condition="$_GET['adid'] eq $ad['id']">selected=selected</if>>{$ad.name}</option>
+      		</volist>
+      	 </select>
+      	</notempty>
       </div>
       <!-- 数据列表 -->
       <div class="data-table">
@@ -141,6 +157,7 @@
 <block name="script"> 
 <script type="text/javascript">
 $(function(){
+	var games_id=parseInt("{$_GET['games_id']}");
 	//搜索功能
 	$("#search,#phone_search,#number_search").click(function(){
 		var url = $(this).attr('url');
@@ -167,12 +184,19 @@ $(function(){
             $("#search").click();
         }
     });
-    var state="{$_GET['state']}";
-    if(state==1){
-		$("input[name='state']").attr('checked','checked');
-    } 
+//     var state="{$_GET['state']}";
+//     if(state==1){
+// 		$("input[name='state']").attr('checked','checked');
+//     } 
 	$("input[name='state']").click(function(){
-		var state="{$_GET['state']}";
+		var state = $("input[name='state']:checked").val();
+		var adid = $("select[name='adid'] option:selected").val();
+		if(state == undefined ||state ==''){
+			location.href="{:U('games_lucky_lists')}&adid="+adid+"&games_id="+games_id;
+		}else{
+			location.href="{:U('games_lucky_lists')}&adid="+adid+"&state="+state+"&games_id="+games_id;
+		}
+		/* var state="{$_GET['state']}";
 		if(state==''){
 			state=0;
 		}
@@ -182,9 +206,18 @@ $(function(){
 		}else{
 			state=1;
 			$("input[name='state']").val(state);
+		} */
+		
+	});
+	$("select[name='adid']").change(function(){
+		var adid = $(this).val();
+		var state = $("input[name='state']:checked").val();
+		if(state == undefined ||state ==''){
+			location.href="{:U('games_lucky_lists')}&adid="+adid+"&games_id="+games_id;
+		}else{
+			location.href="{:U('games_lucky_lists')}&adid="+adid+"&state="+state+"&games_id="+games_id;
 		}
-		var awardId = "{$_GET['awardId']}";
-		location.href="{:U('games_lucky_lists')}&state="+state+"&awardId="+awardId;
+// 		location.href="{:U('games_lucky_lists')}&adid="+adid+"&games_id="+games_id;
 	});
 })
 </script> 

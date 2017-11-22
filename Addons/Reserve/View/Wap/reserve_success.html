@@ -16,7 +16,7 @@
                   <div id="qrCode"></div>
                   <p class="qr_time_tips"></p>
                   <script type="text/javascript">
-                  var textLink = "{:U('scan_success',array('reserve_id'=>$reserve['id'],'scan_code'=>$value_data['scan_code'],'uid'=>$value_data['uid'],'publicid'=>$public['id']))}";
+                  var textLink = "{:U('scan_success',array('reserve_id'=>$reserve['id'],'scan_code'=>$value_data['scan_code'],'uid'=>$value_data['uid'],'wpid' =>$public['id']))}";
                   $('#qrCode').qrcode({width:150,height:150,text:textLink,refresh:true,time:30000}); 
                   </script>
                   <p class="qr_tips"><notempty name="value_data[scan_code]"><span class="colorless">{$value_data.scan_code}</span><br/></notempty>现场出示二维码验证</p>

@@ -359,9 +359,9 @@ function select_type(_this){
 	
 	switch(type){
 		case 'textarea': obj.attr('placeholder','').attr('readonly', true); break;
-		case 'radio': obj.attr('placeholder','多个选项用空格分开，如：男|女').attr('readonly', false); break;
-		case 'checkbox': obj.attr('placeholder','多个选项用空格分开，如：男|女').attr('readonly', false); break;
-		case 'select': obj.attr('placeholder','多个选项用空格分开，如：男|女').attr('readonly', false); break;
+		case 'radio': obj.attr('placeholder','多个选项用空格分开，如：男 女').attr('readonly', false); break;
+		case 'checkbox': obj.attr('placeholder','多个选项用空格分开，如：男 女').attr('readonly', false); break;
+		case 'select': obj.attr('placeholder','多个选项用空格分开，如：男 女').attr('readonly', false); break;
 		case 'datetime': obj.attr('placeholder','').attr('readonly', true); break;
 		case 'picture': obj.attr('placeholder','').attr('readonly', true); break;
 	    default: obj.attr('placeholder','').attr('readonly', true); break;

@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com>
+// | Author: 凡星
 // +----------------------------------------------------------------------
 
 namespace Admin\Controller;
@@ -12,7 +12,7 @@ use Think\Upload\Driver\Qiniu\QiniuStorage;
 
 /**
  * 七牛扩展类测试控制器
- * @author yangweijie <yangweijiester@gmail.com>
+ * @author 凡星
  */
 class QiniuController extends AdminController {
 

@@ -194,7 +194,8 @@ class FileController extends HomeController {
 		$dir = SITE_PATH . '/Public/static/icon/' . $dirName;
 		$dirObj = opendir ( $dir );
 		while ( $file = readdir ( $dirObj ) ) {
-			if ($file === '.' || $file == '..' || $file == '.svn' || $file == 'info.php') {
+		    $fArr = explode('_', $file);
+			if ($file === '.' || $file == '..' || $file == '.svn' || $file == 'info.php' || $fArr[1]) {
 				continue;
 			}
 			$res ['path'] = '/Public/static/icon/' . $dirName . '/' . $file;

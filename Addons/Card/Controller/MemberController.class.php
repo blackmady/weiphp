@@ -69,8 +69,7 @@ class MemberController extends BaseController {
 			$vo ['status'] = $vo ['status'] == 1 ? '正常' : '冻结';
 		}
 		unset ( $list_data ['list_grids'] ['uid'] );
-		// dump($uInfo);
-		// dump($list_data);
+		
 		$this->assign ( $list_data );
 		$this->display ();
 	}

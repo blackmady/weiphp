@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <code-tech.diandian.com>
+// | Author: 凡星 <code-tech.diandian.com>
 // +----------------------------------------------------------------------
 
 namespace Admin\Model;
@@ -12,7 +12,7 @@ use Think\Model;
 
 /**
  * 插件模型
- * @author yangweijie <yangweijiester@gmail.com>
+ * @author 凡星
  * @date    2013-08-14 11:31:21
  */
 

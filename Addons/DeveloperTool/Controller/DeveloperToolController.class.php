@@ -122,8 +122,8 @@ class DeveloperToolController extends ManageBaseController {
 				'MAGIC_QUOTES_GPC' => 'MAGIC_QUOTES_GPC',
 				'NOW_TIME' => '当前请求时间（时间戳）',
 				'BIND_MODULE' => '当前绑定的模块',
-				'BINDCONTROLLER_NAME' => '当前绑定的控制器',
-				'BINDACTION_NAME' => '当前绑定的操作',
+				'BIND_CONTROLLER' => '当前绑定的控制器',
+				'BIND_ACTION' => '当前绑定的操作',
 				'CONF_EXT' => '配置文件后缀',
 				'CONF_PARSE' => '配置文件解析方法',
 				'TMPL_PATH' => '用于改变全局视图目录' 

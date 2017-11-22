@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <http://www.code-tech.diandian.com>
+// | Author: 凡星 <http://www.code-tech.diandian.com>
 // +----------------------------------------------------------------------
 
 namespace Think\Upload\Driver;

@@ -12,7 +12,7 @@ class LuckyFollowModel extends Model {
      * 获取抽奖游戏活动的中奖人列表
      * $uid 不为0 时，则获取个人用户uid 的中奖信息
      */
-    function getGamesLuckyLists($gamesId,$uid=0,$state='-1',$aim_table='lottery_games'){
+    function getGamesLuckyLists($gamesId,$uid=0,$state='-1',$aim_table='lottery_games',$limtNum=0){
         $map['token']=get_token();
         $map['aim_table']=$aim_table;
         $map['draw_id']=$gamesId;
@@ -22,7 +22,12 @@ class LuckyFollowModel extends Model {
         if ($state != '-1'){
             $map['state']=$state;
         }
-        $lists=$this->where($map)->order('id desc')->select();
+        if ($limtNum >0 ){
+            $lists=$this->where($map)->limit($limtNum)->order('id desc')->select();
+        }else{
+            $lists=$this->where($map)->order('id desc')->select();
+        }
+        
         $awardLists=D('Addons://Draw/LotteryGamesAwardLink')->getGamesAwardlists($gamesId);
         foreach ($awardLists as $a){
             $awardData[$a['award_id']]=$a;

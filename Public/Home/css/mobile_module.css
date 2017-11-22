@@ -243,8 +243,8 @@ textarea{ height:120px; min-height:60px;}
 .h_item_line{ height:0; overflow:hidden;border-top:1px solid #ddd;}
 .h_item em{ position:absolute; top:50%; margin-top:-10px; right:5px; width:20px; height:20px; background:url(../images/item_arrow.png) no-repeat; background-size:100% 100%;}
 /* 选项tab */
-.tab_nav{display: -webkit-flex; display: -ms-flexbox; display: flex;display:-webkit-box; background:#fff; border:1px solid #30b0f3}
-.tab_nav a{ text-align:center; color:#30b0f3; border-right:1px solid #30b0f3; padding:6px 0;}
+.tab_nav{display:-webkit-box;display: -webkit-flex; display: flex; background:#fff; border:1px solid #30b0f3}
+.tab_nav a{ -webkit-box-flex:1; -webkit-flex: 1;flex: 1;text-align:center; color:#30b0f3; border-right:1px solid #30b0f3; padding:6px 0;}
 .tab_nav a:last-child{ border:none}
 .tab_nav a.cur{ background-color:#30b0f3; color:#fff;}
 .tab_nav a.p_10{ padding:6px 0;}

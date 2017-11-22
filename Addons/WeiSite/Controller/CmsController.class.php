@@ -16,7 +16,6 @@ class CmsController extends BaseController {
 		session ( 'common_condition', $map );
 		
 		$list_data = $this->_get_model_list ( $this->model );
-		// dump ( $list_data );
 		
 		// 分类数据
 		$map ['is_show'] = 1;

@@ -4,14 +4,14 @@
 // +----------------------------------------------------------------------
 // | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <code-tech.diandian.com>
+// | Author: 凡星 <code-tech.diandian.com>
 // +----------------------------------------------------------------------
 
 namespace Common\Controller;
 
 /**
  * 插件类
- * @author yangweijie <yangweijiester@gmail.com>
+ * @author 凡星
  */
 abstract class Addon{
     /**

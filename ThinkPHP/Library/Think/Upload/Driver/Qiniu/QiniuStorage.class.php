@@ -5,7 +5,7 @@
 
 		public $QINIU_RSF_HOST = 'http://rsf.qbox.me';
 		public $QINIU_RS_HOST = 'http://rs.qbox.me';
-		public $QINIU_UP_HOST = 'http://up-z1.qiniu.com';
+		public $QINIU_UP_HOST = 'http://up.qiniu.com';
 		public $timeout = '';
 
 		public function __construct($config){

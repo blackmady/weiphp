@@ -11,7 +11,7 @@ class CustomModel extends Model {
 	protected $tableName = 'user';
 	/* 回复文本消息 */
 	public function replyText($uid, $content, $msg_add = true) {
-	    $content=str_replace("\"","'",$content);
+		$content = str_replace ( "\"", "'", $content );
 		$param ['text'] ['content'] = $content;
 		return $this->_replyData ( $uid, $param, 'text', $msg_add );
 	}
@@ -105,33 +105,21 @@ class CustomModel extends Model {
 				$art ['title'] = $vo ['title'];
 				$art ['description'] = $vo ['intro'];
 				$openid = get_openid ();
-			    $content = trim($vo['content']);
-			    if (! empty ( $vo ['link'] ) && empty($content)) {
-			        $art ['Url'] = replace_url ( $vo ['link'] );
-			    }
-			    if (empty($art['Url'])){
-			        if (empty ( $vo ['url'] )) {
-			            $public_info = get_token_appinfo ();
-			            $art ['Url'] = U('Home/Wap/news_detail', array (
-			                'id' => $vo ['id'],
-			                'publicid' => $public_info ['id']
-			            ) );
-			        } else {
-			            $art ['Url'] = $vo ['url'];
-			        }
-			    }			    
-				/* if (empty ( $vo ['url'] )) {
+				$content = trim ( $vo ['content'] );
+				if (! empty ( $vo ['link'] ) && empty ( $content )) {
 					$art ['url'] = replace_url ( $vo ['link'] );
-					$public_info = get_token_appinfo ();
-					if (! $art ['url']) {
-						$art ['url'] = U('Home/Wap/news_detail', array (
+				}
+				if (empty ( $art ['url'] )) {
+					if (empty ( $vo ['url'] )) {
+						$public_info = get_token_appinfo ();
+						$art ['url'] = U ( 'Home/Wap/news_detail', array (
 								'id' => $vo ['id'],
 								'publicid' => $public_info ['id'] 
 						) );
+					} else {
+						$art ['url'] = $vo ['url'];
 					}
-				} else {
-					$art ['url'] = $vo ['url'];
-				} */
+				}
 				
 				if (! C ( 'USER_OAUTH' )) {
 					$art ['url'] .= '&openid=' . $openid;
@@ -153,10 +141,10 @@ class CustomModel extends Model {
 	/* 发送回复消息到微信平台 */
 	function _replyData($uid, $param, $msg_type, $msg_add = true) {
 		if (is_numeric ( $uid )) {
-		$map ['token'] = get_token ();
-		$map ['uid'] = $uid;
-		
-		$param ['touser'] = M ( 'apps_follow' )->where ( $map )->getField ( 'openid' );
+			$map ['token'] = get_token ();
+			$map ['uid'] = $uid;
+			
+			$param ['touser'] = M ( 'apps_follow' )->where ( $map )->getField ( 'openid' );
 		} else {
 			$param ['touser'] = $uid;
 		}
@@ -229,7 +217,7 @@ class CustomModel extends Model {
 			$param ['type'] = $type;
 			$param ['media'] = '@' . realpath ( SITE_PATH . $path );
 			$url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token=' . get_access_token ();
-			$res = post_data ( $url, $param,'file', true,[],0 );
+			$res = post_data ( $url, $param, 'file', true, [ ], 0 );
 			if (isset ( $res ['errcode'] ) && $res ['errcode'] != 0) {
 				return 0;
 			}
@@ -267,45 +255,44 @@ class CustomModel extends Model {
 		return $res ['thumb_media_id'];
 	}
 	
-	//  新增永久 voice 语音/ video 视频素材
-	//$ml_file视频素材记录，
+	// 新增永久 voice 语音/ video 视频素材
+	// $ml_file视频素材记录，
 	function get_ever_file_mediaid($ml_file, $type = 'voice', $title = '', $introduction = '') {
-	    $file_id = $ml_file ['file_id'] ;
-	    $fileInfo = M ( 'file' )->find ($file_id);
-	    if ($fileInfo) {
-	        $path = SITE_PATH . '/Uploads/Download/' . $fileInfo ['savepath'] . $fileInfo ['savename'];
-	        if (! file_exists ( $path )) {
-	            addWeixinLog ( '视频/语音素材不存在：' . $file_id, 'get_ever_file_mediaid1' );
-	            return '';
-	        }
-	        $param ['type'] = $type;
-	        $param ['media'] = '@' . realpath ( $path );
-	        if ($type == 'video') {
-	            $param ['description'] ['title'] = $title;
-	            $param ['description'] ['introduction'] = $introduction;
-	            $param ['description'] = JSON ( $param ['description'] );
-	        }
-	        	
-	        $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=' . get_access_token ();
-	        $res = post_data ( $url, $param,'file', true,[],0 );
-	        addWeixinLog ( $res, 'get_ever_file_mediaid2' );
-	        if (! $res) {
-	            addWeixinLog ( error_msg ( $res, '视频/语音素材上传' ), 'get_ever_file_mediaid3' );
-	            return '';
-	        }
-	        if (isset ( $res ['errcode'] ) && $res ['errcode'] != 0) {
-	            addWeixinLog ( error_msg ( $res, '视频/语音素材上传' ), 'get_ever_file_mediaid4' );
-	            return '';
-	        }
-	        if ($res ['media_id']) {
-	            $save ['media_id'] = $res ['media_id'];
-	            M ( 'material_file' )->where ( array (
-	            'id' => $ml_file ['id']
-	            ) )->save ( $save );
-	        }
-	    }
-	    return $res ['media_id'];
+		$file_id = $ml_file ['file_id'];
+		$fileInfo = M ( 'file' )->find ( $file_id );
+		if ($fileInfo) {
+			$path = SITE_PATH . '/Uploads/Download/' . $fileInfo ['savepath'] . $fileInfo ['savename'];
+			if (! file_exists ( $path )) {
+				addWeixinLog ( '视频/语音素材不存在：' . $file_id, 'get_ever_file_mediaid1' );
+				return '';
+			}
+			$param ['type'] = $type;
+			$param ['media'] = '@' . realpath ( $path );
+			if ($type == 'video') {
+				$param ['description'] ['title'] = $title;
+				$param ['description'] ['introduction'] = $introduction;
+				$param ['description'] = JSON ( $param ['description'] );
+			}
+			
+			$url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=' . get_access_token ();
+			$res = post_data ( $url, $param, 'file', true, [ ], 0 );
+			addWeixinLog ( $res, 'get_ever_file_mediaid2' );
+			if (! $res) {
+				addWeixinLog ( error_msg ( $res, '视频/语音素材上传' ), 'get_ever_file_mediaid3' );
+				return '';
+			}
+			if (isset ( $res ['errcode'] ) && $res ['errcode'] != 0) {
+				addWeixinLog ( error_msg ( $res, '视频/语音素材上传' ), 'get_ever_file_mediaid4' );
+				return '';
+			}
+			if ($res ['media_id']) {
+				$save ['media_id'] = $res ['media_id'];
+				M ( 'material_file' )->where ( array (
+						'id' => $ml_file ['id'] 
+				) )->save ( $save );
+			}
+		}
+		return $res ['media_id'];
 	}
-	
 }
 ?>

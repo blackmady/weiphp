@@ -38,13 +38,12 @@ class WeixinController extends HomeController {
 		$this->sendOldMessage ( $data ['ToUserName'], $data ['FromUserName'] );
 		// 结束程序。防止oneThink框架的调试信息输出
 		
-
-		$length = ob_get_length();
-		if(empty($length)){ 
-            exit ( 'success' );
-		}else{
+		$length = ob_get_length ();
+		if (empty ( $length )) {
+			exit ( 'success' );
+		} else {
 			exit ();
-		}			
+		}
 	}
 	private function reply($data, $weixin) {
 		if (isset ( $data ['Recognition'] ) && ! empty ( $data ['Recognition'] )) {
@@ -104,48 +103,41 @@ class WeixinController extends HomeController {
 		}
 		
 		if (! isset ( $addons [$key] )) {
-		    //自定义菜单，回复素材内容
-		    $keyArr=explode('::/', $key);
-		    if ($keyArr[0] == 'material'){
-// 		        $map['from']=1;
-// 		        $map ['material'] = $keyArr[1];
-// 		        $map ['token'] = $data ['ToUserName'];
-// 		        $map ['type'] = 'click';
-// 		        $customMenu = M ( 'custom_menu' )->where ( $map )->order ( 'id desc' )->find ();
-// 		        if (! empty ( $customMenu )) {
-		            $map1 ['token'] = get_token ();
-		            $map1 ['openid'] = $openid;
-		            $uid = M ( 'apps_follow' )->where ( $map1 )->getField ( 'uid' );
-		            $sut = wp_explode ( $keyArr[1], ':' );
-		            switch ($sut [0]) {
-		                case 'news' :
-		                    // 1:图文
-		                    D ( 'Common/Custom' )->replyNews ( $uid,$sut [1] );
-		                    break;
-		                case 'text' :
-		                    // 2:文本
-		                    $textMap ['id'] = $sut [1];
-		                    $content = M ( 'material_text' )->where ( $textMap )->getField ( 'content' );
-		                    D ( 'Common/Custom' )->replyText ( $uid, $content );
-		                    break;
-		                case 'img' :
-		                    // 3:图片
-		                    $textMap ['id'] = $sut [1];
-		                    D ( 'Common/Custom' )->replyImage ( $uid, $sut [1], 'material_image' );
-		                    break;
-		                case 'voice' :
-		                    // 4:语音
-		                    D ( 'Common/Custom' )->replyVoice ( $uid, $sut [1], 'material_file' );
-		                    break;
-		                case 'video' :
-		                    // 5:视频
-		                    D ( 'Common/Custom' )->replyVideo ( $uid, $sut [1], 'material_file', '', '', '' );
-		                    break;
-		            }
-		            exit ();
-// 		        }
-		    }
 			
+			// 自定义菜单，回复素材内容
+			$keyArr = explode ( '::/', $key );
+			if ($keyArr [0] == 'material') {
+				$map1 ['token'] = get_token ();
+				$map1 ['openid'] = $openid;
+				$uid = M ( 'apps_follow' )->where ( $map1 )->getField ( 'uid' );
+				$sut = wp_explode ( $keyArr [1], ':' );
+				switch ($sut [0]) {
+					case 'news' :
+						// 1:图文
+						D ( 'Common/Custom' )->replyNews ( $uid, $sut [1] );
+						break;
+					case 'text' :
+						// 2:文本
+						$textMap ['id'] = $sut [1];
+						$content = M ( 'material_text' )->where ( $textMap )->getField ( 'content' );
+						D ( 'Common/Custom' )->replyText ( $uid, $content );
+						break;
+					case 'img' :
+						// 3:图片
+						$textMap ['id'] = $sut [1];
+						D ( 'Common/Custom' )->replyImage ( $uid, $sut [1], 'material_image' );
+						break;
+					case 'voice' :
+						// 4:语音
+						D ( 'Common/Custom' )->replyVoice ( $uid, $sut [1], 'material_file' );
+						break;
+					case 'video' :
+						// 5:视频
+						D ( 'Common/Custom' )->replyVideo ( $uid, $sut [1], 'material_file', '', '', '' );
+						break;
+				}
+				exit ();
+			}
 		}
 		// 通过插件标识名、插件名或者自定义关键词来定位处理的插件
 		if (! isset ( $addons [$key] )) {
@@ -326,8 +318,8 @@ class WeixinController extends HomeController {
 	}
 	function downloadPic() {
 		$mediaId = I ( 'media_id' );
-		$token=get_token();
-		$token || $token = get_token($_GET['token']);
+		$token = get_token ();
+		$token || $token = get_token ( $_GET ['token'] );
 		if ($mediaId) {
 			$id = down_media ( $mediaId );
 			if ($id) {

@@ -38,6 +38,7 @@ class MenuModel extends Model {
 			$cate ['title'] = $m ['title'];
 			$param ['top'] = $cate ['pid'] = intval ( $m ['pid'] );
 			
+			$cate ['url'] = '';
 			if ($m ['url_type'] == 0) {
 				if (isset ( $addonList [$m ['addon_name']] )) {
 					$cate ['url'] = $addonList [$m ['addon_name']] ['addons_url'];
@@ -49,11 +50,11 @@ class MenuModel extends Model {
 				$cate ['url'] = $m ['url'];
 			} elseif (strpos ( $m ['url'], '://' ) !== false) {
 				$cate ['url'] = addons_url ( $m ['url'] );
-			} else {
+			} elseif (! empty ( $m ['url'] )) {
 				$cate ['url'] = U ( $m ['url'] );
 			}
 			
-			$cate ['url'] .= '&mdm=' . $cate ['pid'] . '|' . $cate ['id'];
+			! empty ( $cate ['url'] ) && $cate ['url'] .= '&mdm=' . $cate ['pid'] . '|' . $cate ['id'];
 			$cate ['addon_name'] = $m ['addon_name'];
 			$res ['core_side_menu'] [$cate ['pid']] [] = $cate;
 			$res ['default_data'] [$cate ['url']] = $param;
@@ -68,8 +69,8 @@ class MenuModel extends Model {
 			$cate ['title'] = $m ['title'];
 			$cate ['pid'] = 0;
 			
+			$cate ['url'] = '';
 			if ($m ['url_type'] == 0) {
-				
 				if (isset ( $addonList [$m ['addon_name']] )) {
 					$cate ['url'] = $addonList [$m ['addon_name']] ['addons_url'];
 				} else {
@@ -88,13 +89,15 @@ class MenuModel extends Model {
 					$cate ['url'] = $m ['url'];
 				} elseif (strpos ( $m ['url'], '://' ) !== false) {
 					$cate ['url'] = addons_url ( $m ['url'] );
-				} else {
+				} elseif (! empty ( $m ['url'] )) {
 					$cate ['url'] = U ( $m ['url'] );
 				}
-				if ($res ['core_side_menu'] [$m ['id']] [0] ['id']) {
-					$cate ['url'] .= '&mdm=' . $m ['id'] . '|' . $res ['core_side_menu'] [$m ['id']] [0] ['id'];
-				} else {
-					$cate ['url'] .= '&mdm=' . $m ['id'];
+				if (! empty ( $cate ['url'] )) {
+					if ($res ['core_side_menu'] [$m ['id']] [0] ['id']) {
+						$cate ['url'] .= '&mdm=' . $m ['id'] . '|' . $res ['core_side_menu'] [$m ['id']] [0] ['id'];
+					} else {
+						$cate ['url'] .= '&mdm=' . $m ['id'];
+					}
 				}
 			}
 			
@@ -111,7 +114,7 @@ class MenuModel extends Model {
 	function get() {
 		// 第一步：获取所有微信插件的入口URL
 		$addonList = D ( 'Home/Addons' )->getWeixinList ( false );
-		//dump($addonList);
+		// dump($addonList);
 		// 第二步：获取导航数据
 		$menus = $this->_get_menu ( $addonList );
 		// dump ( $menus );
@@ -130,18 +133,14 @@ class MenuModel extends Model {
 				$default ['top'] = intval ( $mdm [0] );
 				$default ['side'] = intval ( $mdm [1] );
 			} else {
-				$current_addon = defined ( 'MODULE_NAME' ) ? MODULE_NAME : '';
-				
-				$module_name = MODULE_NAME;
-				$controller_name = CONTROLLER_NAME;
-				$action_name = ACTION_NAME;
-				$current_url = $module_name . '/' . $controller_name . '/' . $action_name;
+				$current_url = MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME;
 				foreach ( $menus ['default_data'] as $k => $v ) {
-					if ((! empty ( $current_addon ) && $k == $current_addon) || stripos ( $k, $current_url ) !== false) {
+					if ($k == MODULE_NAME || stripos ( $k, $current_url ) !== false) {
 						$default = $v;
 					}
 				}
 			}
+			
 			if (empty ( $default ['top'] ) && ! empty ( $menus ['core_top_menu'] )) {
 				$default ['top'] = intval ( $menus ['core_top_menu'] [0] ['id'] );
 			}
@@ -149,7 +148,6 @@ class MenuModel extends Model {
 				$default ['side'] = $menus ['core_side_menu'] [$default ['top']] [0] ['id'];
 			}
 			$default ['top'] = intval ( $default ['top'] );
-			
 			session ( 'menu_default', $default );
 		}
 		// 第五步：设置导航高亮

@@ -72,11 +72,12 @@ class AutoReplyController extends ManageBaseController {
 	}
 	function image() {
 		$list_data = $this->_get_data ( 'image' );
+		
 		$this->assign ( 'normal_tips', '请不设置相同的关键词，相同的关键词只回复最新的设置' );
 		unset ( $list_data ['list_grids'] ['group_id'], $list_data ['list_grids'] ['content'], $list_data ['list_grids'] ['video_id'], $list_data ['list_grids'] ['voice_id'] );
 		
 		foreach ( $list_data ['list_data'] as &$d ) {
-			if ($d ['image_id']) {
+			if (is_numeric ( $d ['image_id'] )) {
 				$d ['image_id'] = url_img_html ( get_cover_url ( $d ['image_id'] ) );
 			} else if ($d ['image_material']) {
 				$map2 ['id'] = $d ['image_material'];
@@ -275,9 +276,9 @@ class AutoReplyController extends ManageBaseController {
 		return $fields;
 	}
 	function checkPostData() {
-	    if (empty($_POST['keyword'])){
-	        $this->error('400017:关键词必填');
-	    }
+		if (empty ( $_POST ['keyword'] )) {
+			$this->error ( '400017:关键词必填' );
+		}
 		$type = I ( 'get.type', 'text' );
 		if ($type == 'text') {
 			$content = I ( 'post.content' );

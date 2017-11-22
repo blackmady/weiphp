@@ -11,7 +11,6 @@ class WeixinAddonModel extends WeixinModel {
 	function reply($dataArr, $keywordArr = array()) {
 		$map ['id'] = $keywordArr ['aim_id'];
 		$token = get_token ();
-		add_debug_log ( $token, 'token' );
 		$info = M ( 'auto_reply' )->where ( $map )->find ();
 		if ($info ['msg_type'] == 'news') {
 			$map_news ['group_id'] = $info ['group_id'];
@@ -35,7 +34,6 @@ class WeixinAddonModel extends WeixinModel {
 			}
 		} elseif ($info ['msg_type'] == 'image') {
 			if ($info ['image_id']) {
-				// $d['image_id']=url_img_html(get_cover_url($d['image_id']));
 				$media_id = D ( 'Common/Custom' )->get_image_media_id ( $info ['image_id'] );
 			} else if ($info ['image_material']) {
 				$map2 ['id'] = $info ['image_material'];
@@ -100,7 +98,7 @@ class WeixinAddonModel extends WeixinModel {
 			$url = replace_url ( $info ['link'] );
 		} else {
 			$param ['id'] = $info ['id'];
-			add_debug_log ( $param, 'param' );
+
 			$url = U ( 'Home/Wap/news_detail', $param );
 		} */
 		return $url;

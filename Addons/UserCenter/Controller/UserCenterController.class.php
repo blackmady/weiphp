@@ -66,12 +66,16 @@ class UserCenterController extends ManageBaseController {
 		$px = C ( 'DB_PREFIX' );
 		if ($isDown) {
 			$ht = array (
-					'头像',
-					'用户昵称',
+					'用户编号',
+					'昵称',
+					'姓名',
+					'联系电话',
 					'性别',
+					'省份',
+					'城市',
 					'分组',
 					'标签',
-					'openId' 
+					'OpenID' 
 			);
 			$dataArr [0] = $ht;
 			$data = M ()->table ( $px . 'apps_follow as f' )->join ( $px . 'user as u ON f.uid=u.uid' )->field ( 'u.uid,f.openid' )->where ( $map )->order ( $order )->select ();
@@ -85,10 +89,13 @@ class UserCenterController extends ManageBaseController {
 			$user ['openid'] = $d ['openid'];
 			$user ['group'] = implode ( ', ', getSubByKey ( $user ['groups'], 'title' ) );
 			if ($isDown) {
-				$arr ['headimgurl'] = $user ['headimgurl'];
+				$arr ['uid'] = $user ['uid'];
 				$arr ['nickname'] = $user ['nickname'];
+				$arr ['truename'] = $user ['truename'];
+				$arr ['mobile'] = $user ['mobile'];
 				$arr ['sex'] = $user ['sex_name'];
-				// $arr['area']=$user['country'].$user['province'].$user['city'];
+				$arr ['province'] = $user ['province'];
+				$arr ['city'] = $user ['city'];
 				$arr ['group'] = isset ( $user ['groups'] ) ? implode ( ', ', getSubByKey ( $user ['groups'], 'title' ) ) : '';
 				$arr ['tag_titles'] = $user ['tag_titles'];
 				$arr ['openid'] = $user ['openid'];

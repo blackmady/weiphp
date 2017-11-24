@@ -56,10 +56,7 @@ class WapController extends WapBaseController {
 		$map ['uid'] = $this->mid;
 		$map ['token'] = get_token ();
 		$info = M ( 'card_member' )->where ( $map )->find ();
-		// $shopInfo=D('Addons://Shop/Shop')->getInfo(0,true);
-		// $gpsArr=wp_explode($shopInfo['gps']);
-		// $shopInfo['gps']=$gpsArr[1].','.$gpsArr['0'];
-		// dump(M ( 'card_member' )->getLastSql());
+		
 		$has_subscribe = isWeixinBrowser () ? intval ( M ( 'apps_follow' )->where ( $map )->getField ( 'has_subscribe' ) ) : 1;
 		$this->assign ( 'has_subscribe', $has_subscribe );
 		if ($has_subscribe == 0) { // 获取需要关注的公众号二维码
@@ -71,7 +68,6 @@ class WapController extends WapBaseController {
 			$tpl = 'card_center';
 			$this->assign ( 'info', $info );
 			// 会员消费
-			$model = $this->getModel ( 'buy_log' );
 			$map ['manager_id'] = session ( 'manager_id' );
 			$map2 ['token'] = $map ['token'] = get_token ();
 			
@@ -116,16 +112,12 @@ class WapController extends WapBaseController {
 			// 未领取
 			$tpl = 'unget';
 		}
-		// $this->assign('shop',$shopInfo);
 		// dump($shopInfo);
 		$this->display ( $tpl );
 	}
 	function do_buy() {
 		$model = $this->getModel ( 'buy_log' );
-		$config = get_addon_config ( 'Card' );
-		if ($config ['managerPassword'] != $_POST ['pay_password']) {
-			$this->error ( '400100:消费密码不正确' );
-		}
+		
 		if ($_POST ['coupon_id']) {
 			$_POST ['sn_id'] = $_POST ['coupon_id'];
 			$code = M ( 'sn_code' )->find ( $_POST ['coupon_id'] );
@@ -146,18 +138,8 @@ class WapController extends WapBaseController {
 		$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 		// 获取模型的字段信息
 		$Model = $this->checkAttr ( $Model, $model ['id'] );
-		if ($Model->create () && $Model->add ()) {
-			if ($_POST ['pay_type'] == 1) {
-				$res = M ( 'card_member' )->where ( $map1 )->setDec ( 'recharge', $_POST ['pay'] );
-			}
-			if ($_POST ['sn_id']) {
-				D ( 'Common/SnCode' )->set_use ( $_POST ['coupon_id'] );
-			}
-			if (is_install ( "ShopReward" )) {
-				$this->_send_reward ( $_POST ['member_id'], 'shop_reward_condition', 'shop_reward', $_POST ['pay'] );
-			}
-			$this->success ( '消费成功' );
-			redirect ( U ( 'index', $this->get_param ) );
+		if ($Model->create () && $id = $Model->add ()) {
+			$this->success ( $id );
 		} else {
 			$this->error ( '400102:消费失败' );
 		}
@@ -225,10 +207,7 @@ class WapController extends WapBaseController {
 			// 获取体验卡
 			$uid = $this->mid;
 			$cardid = D ( 'Addons://Card/Card' )->init_card_member ( '', $uid );
-			// if ($cardid ==0){
-			// $this->error( '400103:ERP同步保存错误！');
-			// $this->assign('is_error','ERP同步保存错误！');
-			// }
+			
 			$cardInfo = M ( 'card_member' )->find ( $cardid );
 		}
 		
@@ -270,13 +249,6 @@ class WapController extends WapBaseController {
 		$is_list = I ( 'is_list', 0, 'intval' );
 		
 		if ($is_list != 0) {
-			// vendor ( 'jsApi.jssdk' );
-			// $info = get_token_appinfo ();
-			// $jssdk = new \JSSDK ( $info ['appid'], $info ['secret'] );
-			// $jsapiParams = $jssdk->GetjsapiParams ();
-			// $this->assign ( 'jsapiParams', $jsapiParams );
-			// $this->assign('coupon_shop',$couponShop);2141018
-			// }else{
 			$latitude = I ( 'latitude' ); // 位置114.057045,22.6302
 			$longitude = I ( 'longitude' );
 			$map ['token'] = get_token ();
@@ -446,36 +418,6 @@ class WapController extends WapBaseController {
 						$this->error ( '400110:ERP同步失败' );
 					}
 				}
-				// $managerId=session ( 'manager_id');
-				// $userInfo=get_userinfo($managerId);
-				// if ($userInfo['secretID'] && $userInfo['secretKey']){
-				// if(empty($openid)){
-				// $openid=getOpenidByUid($uid);
-				// }
-				// $param ['OpenID'] = $openid;
-				// $param ['ShopCode'] = ''; // 898554
-				// $param ['MemberID'] = $data ['number']; // 100856
-				// $param ['Mobile'] = $data ['phone']; // 13510455105
-				// $levelname=M('card_level')->where(array('id'=>$data['level']))->getField('level');
-				// $param ['CustType'] = $levelname; // 1
-				// $param ['CustomerName'] = $data['truename']; // 韦小宝
-				// $param ['Gender'] = $data['sex']==1?'男':'女'; // 男
-				// $param ['Birthday'] = time_format($data['birthday'],'Y-m-d'); // 2015-10-15
-				// $param ['MarryDay'] =''; // 2015-09-15
-				// $res1=D ( 'Common/Server' )->InsertMemberInfo ($openid, $param);
-				// if(strstr($res1['Rows'][0]['状态'],'保存失败')){
-				// //保存失败
-				// $this->error( '400111:ERP 同步保存失败！') ;
-				// }else{
-				// $res = M ( 'card_member' )->add ( $data );
-				// $userSave['status']=3;
-				// $this->_do_card_reward();
-				// }
-				// }else {
-				// $res = M ( 'card_member' )->add ( $data );
-				// $userSave['status']=3;
-				// $this->_do_card_reward();
-				// }
 			}
 			D ( 'Common/User' )->updateInfo ( $this->mid, $userSave );
 			redirect ( addons_url ( 'Card://Wap/index', $this->get_param ) );
@@ -785,7 +727,6 @@ class WapController extends WapBaseController {
 		}
 		
 		$this->assign ( 'lists', $privilege );
-		// dump($privilege);
 		$this->display ();
 	}
 	// 余额
@@ -793,6 +734,8 @@ class WapController extends WapBaseController {
 		$map ['uid'] = $this->mid;
 		$map3 ['token'] = $map2 ['token'] = $map1 ['token'] = $map ['token'] = get_token ();
 		$card_id = M ( 'card_member' )->where ( $map )->getField ( 'id' );
+		$totalData = $data = [ ];
+		$year = $month = '';
 		if ($card_id) {
 			
 			$map3 ['member_id'] = $map2 ['member_id'] = $map1 ['member_id'] = $card_id;
@@ -813,16 +756,17 @@ class WapController extends WapBaseController {
 					0 
 			);
 			$rechargeTotal = M ( 'recharge_log' )->where ( $map1 )->field ( "sum(recharge) total_recharge" )->select ();
-			
 			// 充值时，负数为 手动扣除金额数
 			$map2 ['recharge'] = array (
 					'elt',
 					0 
 			);
 			$delRecharge = M ( 'recharge_log' )->where ( $map2 )->field ( "sum(recharge) total_recharge" )->select ();
-			
+			$map3 ['manager_id'] = [ 
+					'gt',
+					0 
+			];
 			$buyTotal = M ( 'buy_log' )->where ( $map3 )->field ( "sum(pay) total_recharge" )->select ();
-			
 			$totalData ['all_recharge'] = $rechargeTotal [0] ['total_recharge'];
 			$totalData ['all_buy'] = $buyTotal [0] ['total_recharge'] - $delRecharge [0] ['total_recharge'];
 			
@@ -834,12 +778,12 @@ class WapController extends WapBaseController {
 							$end_date 
 					) 
 			);
-			$rechargeData = M ( 'recharge_log' )->where ( $map1 )->field ( "from_unixtime(cTime,'%Y-%m-%d') allday,recharge,remark" )->order ( 'id desc' )->select ();
-			
+			$rechargeData = M ( 'recharge_log' )->where ( $map1 )->field ( "cTime,from_unixtime(cTime,'%Y-%m-%d') allday,recharge,remark" )->order ( 'cTime desc' )->select ();
 			// 扣除
-			$delRechargeData = M ( 'recharge_log' )->where ( $map2 )->field ( "from_unixtime(cTime,'%Y-%m-%d') allday,recharge,remark" )->select ();
+			$delRechargeData = M ( 'recharge_log' )->where ( $map2 )->field ( "cTime,from_unixtime(cTime,'%Y-%m-%d') allday,recharge,remark" )->order ( 'cTime desc' )->select ();
 			// 消费
-			$buyData = M ( 'buy_log' )->where ( $map3 )->field ( "from_unixtime(cTime,'%Y-%m-%d') allday,pay" )->select ();
+			$buyData = M ( 'buy_log' )->where ( $map3 )->field ( "cTime,from_unixtime(cTime,'%Y-%m-%d') allday,pay" )->order ( 'cTime desc' )->select ();
+			
 			foreach ( $rechargeData as $r ) {
 				if (empty ( $r ['remark'] )) {
 					$r ['remark'] = '手动充值';
@@ -857,6 +801,8 @@ class WapController extends WapBaseController {
 				$b ['pay'] = 0 - $b ['pay'];
 				$data [] = $b;
 			}
+			
+			array_multisort ( array_column ( $data, 'cTime' ), SORT_DESC, $data );
 		}
 		$this->assign ( 'totalData', $totalData );
 		$this->assign ( 'data', $data );
@@ -910,8 +856,7 @@ class WapController extends WapBaseController {
 				$mDayArr [] = intval ( time_format ( $s, 'd' ) );
 			}
 		}
-		// $mDay .= implode(',', $mDayArr);
-		// $mDay .= ']';
+		
 		$this->assign ( 'mDays', json_encode ( $mDayArr ) );
 		$this->assign ( 'has_log', $hasLog );
 		// if (!empty($hasLog)){
@@ -1104,26 +1049,6 @@ class WapController extends WapBaseController {
 		echo $res;
 	}
 	
-	// 以下忽略
-	/*
-	 * // 返现
-	 * function money() {
-	 * $this->display ();
-	 * }
-	 * // 会员卡密码
-	 * function password() {
-	 * $this->display ();
-	 * }
-	 * //余额赠送
-	 * function recharge_give() {
-	 * $this->display ();
-	 * }
-	 *
-	 * //优惠券
-	 * function stamp() {
-	 * $this->display ();
-	 * }
-	 */
 	// 积分兑换
 	function score_exchange() {
 		$map1 ['token'] = $map ['token'] = get_token ();
@@ -1412,10 +1337,102 @@ class WapController extends WapBaseController {
 		$returndata ['msg'] = $msg;
 		$this->ajaxReturn ( $returndata );
 	}
-	function test() {
-		$phone = '13049497047';
-		D ( 'Addons://Sms/Sms' )->_sendTencentSms ( $phone );
-		// D('Addons://Sms/Sms')->_sendAliSms($phone);
-		// D('Addons://Sms/Sms')->getSign();
+	private function pay_info() {
+		$check = D ( 'Addons://Servicer/Servicer' )->checkRule ( $this->mid, 2 );
+		if (! $check) {
+			$this->error ( '400147:你需要工作授权才能核销' );
+		}
+		
+		$id = I ( 'id', 0, 'intval' );
+		$info = M ( 'buy_log' )->find ( $id );
+		if (empty ( $info )) {
+			$this->error ( '400146:扫描的二维码不对' );
+		}
+		return $info;
+	}
+	function do_pay() {
+		$cTime = I ( 'cTime', 0, 'intval' );
+		
+		if ($cTime > 0 && (NOW_TIME * 1000 - $cTime) > 30000) {
+			$this->error ( '400145:二维码已过期' );
+		}
+		$info = $this->pay_info ();
+		
+		$map ['token'] = get_token ();
+		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
+		
+		$dao = D ( 'Common/Model' );
+		$dataTable = $dao->getFileInfo ( 'buy_log' );
+		
+		$fields = $dataTable->fields;
+		$info ['pay_type'] = $dao->parseExtra ( $fields ['pay_type'] ['extra'], $info ['pay_type'] );
+		$info ['pay'] = wp_money_format ( $info ['pay'] );
+		$info ['cTime'] = time_format ( $info ['cTime'] );
+		
+		$info ['branch_id'] = $info ['branch_id'] == 0 ? '商店总部' : $branch [$info ['branch_id']];
+		
+		$cardMember = M ( 'card_member' )->find ( $info ['member_id'] );
+		$info ['member_id'] = $cardMember ['username'];
+		$info ['number'] = $cardMember ['number'];
+		
+		$map2 ['id'] = $info ['sn_id'];
+		$info ['sn_id'] = floatval ( M ( 'sn_code' )->where ( $map2 )->getField ( 'prize_title' ) );
+		
+		$this->assign ( 'info', $info );
+		
+		$this->display ();
+	}
+	function do_pay_ok() {
+		$info = $this->pay_info ();
+		
+		$map ['id'] = $info ['id'];
+		M ( 'buy_log' )->where ( $map )->setField ( 'manager_id', $this->mid );
+		
+		if ($info ['pay_type'] == 1) {
+			$map1 ['id'] = $info ['member_id'];
+			$res = M ( 'card_member' )->where ( $map1 )->setDec ( 'recharge', $info ['pay'] );
+		}
+		if ($info ['sn_id']) {
+			D ( 'Common/SnCode' )->set_use ( $info ['sn_id'] );
+		}
+		if (is_install ( "ShopReward" )) {
+			$this->_send_reward ( $info ['member_id'], 'shop_reward_condition', 'shop_reward', $info ['pay'] );
+		}
+		
+		$this->display ();
+	}
+	function notice() {
+		$map ['token'] = get_token ();
+		$uid = $map ['uid'] = $this->mid;
+		$cardMember = M ( 'card_member' )->where ( $map )->find ();
+		// 用户已点进来查看
+		$key = 'cardnotic_' . get_token () . '_' . $uid;
+		$rrs = S ( $key );
+		if ($rrs > 0) {
+			$rrs = 0 - $rrs;
+			S ( $key, $rrs );
+		}
+		$news = abs ( $rrs );
+		$this->assign ( 'newnum', $news );
+		
+		$list = M ( 'card_notice' )->where ( $map )->order ( 'id desc' )->select ();
+		foreach ( $list as $v ) {
+			$gradeArr = explode ( ',', $v ['grade'] );
+			if ($v ['to_uid'] == 0) {
+				if (in_array ( 0, $gradeArr ) || in_array ( $cardMember ['level'], $gradeArr )) {
+					$data [] = $v;
+				}
+			} else if ($v ['to_uid'] == $uid) {
+				$data [] = $v;
+			}
+		}
+		$this->assign ( 'list', $data );
+		$this->display ();
+	}
+	function check_pay() {
+		$map ['id'] = I ( 'pay_id', 0, 'intval' );
+		$manager_id = intval ( M ( 'buy_log' )->where ( $map )->getField ( 'manager_id' ) );
+		echo ($manager_id);
+		exit ();
 	}
 }

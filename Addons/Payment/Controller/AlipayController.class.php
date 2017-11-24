@@ -21,16 +21,16 @@ class AlipayController extends ManageBaseController {
 		) )->find ();
 	}
 	
-// 	//处理from URL字符串
-// 	private function doFromStr($from){
-// 		if($from){
-// 			$fromstr=str_replace('_', '/', $from);
-// 		}
-// 		return $fromstr;
-// 	}
+	// //处理from URL字符串
+	// private function doFromStr($from){
+	// if($from){
+	// $fromstr=str_replace('_', '/', $from);
+	// }
+	// return $fromstr;
+	// }
 	public function pay() {
-		//dump(C('URL_CASE_INSENSITIVE'));
-		//dump($_GET);exit;
+		// dump(C('URL_CASE_INSENSITIVE'));
+		// dump($_GET);exit;
 		header ( "Content-type: text/html; charset=utf-8" );
 		// 参数数据
 		// 订单名称,没有取当前 Unix 时间戳和微秒数
@@ -39,24 +39,40 @@ class AlipayController extends ManageBaseController {
 		
 		$orderNumber = $_GET ['orderNumber'];
 		
-		$price = $_GET ['price'];
+		$price = I ( 'price', 0, 'floatval' );
 		
-		$token=$_GET['token']?$_GET['token']:get_token();
-		$openid=$_GET['wecha_id'];
-		$aimid = $_GET['aim_id'];
+		$token = $_GET ['token'] ? $_GET ['token'] : get_token ();
+		$openid = $_GET ['wecha_id'];
+		$aimid = $_GET ['aim_id'];
 		
 		//
 		$from = isset ( $_GET ['from'] ) ? $_GET ['from'] : 'Payment:__Weixin_payOK';
-// 		if($from!='shop'){
-// 			$from=$this->doFromStr($from);
-// 		}
+		// if($from!='shop'){
+		// $from=$this->doFromStr($from);
+		// }
 		//
 		$alipayConfig = $this->alipayConfig;
 		//
-		if (! $price) {
-			exit ( '必须有价格才能支付' );
+		// if (! $price) {
+		if ($from == 'Payment:__Weixin_payOK' && $_GET ['aim_id']) {
+			$oMap ['id'] = $_GET ['aim_id'];
+			$oMap ['order_number'] = $orderNumber;
+			$order = M ( 'shop_order' )->where ( $oMap )->find ();
+			if ($order ['is_deposit']) {
+				if ($order ['pay_status'] == 0) {
+					// 支付定金
+					$price = $order ['deposit_money'];
+				} else if ($order ['pay_status'] == 2) {
+					// 支付剩余金额
+					$price = $order ['total_price'] - $order ['deposit_money']; // 剩余金额
+				}
+			} else {
+				$price = floatval ( $order ['total_price'] ) + floatval ( $order ['mail_money'] );
+			}
 		}
-		;
+		if (empty ( $price ))
+			exit ( '必须有价格才能支付' );
+			// }
 		$paytype = I ( 'get.paytype', 0, 'intval' );
 		$config = getAddonConfig ( 'Payment' );
 		
@@ -108,33 +124,31 @@ class AlipayController extends ManageBaseController {
 				'price' => $price,
 				'token' => $token,
 				'wecha_id' => $openid,
-				'aim_id'=>$aimid,
+				'aim_id' => $aimid,
 				'paytype' => $alipayConfig ['paytype'] 
 		);
 		if ($alipayConfig ['paytype'] == 'Weixin') {
 			$param ['showwxpaytitle'] = 1;
 		}
-		$map['single_orderid']=$orderNumber;
+		$map ['single_orderid'] = $orderNumber;
 		
-		if($_GET['aim_id']){
-		  $param['aim_id']=$_GET['aim_id'];
+		if ($_GET ['aim_id']) {
+			$param ['aim_id'] = $_GET ['aim_id'];
 		}
-		$res=M('payment_order')->where($map)->getField('id');
-		$param['uid']=$this->mid;
-		if ($res){
-		    $paymentId=$res;
-		}else {
-		    $paymentId=M ( 'payment_order' )->add ( $param );
+		$res = M ( 'payment_order' )->where ( $map )->getField ( 'id' );
+		$param ['uid'] = $this->mid;
+		if ($res) {
+			$paymentId = $res;
+		} else {
+			$paymentId = M ( 'payment_order' )->add ( $param );
 		}
-		if ($paymentId){
-			$param['paymentId']=$paymentId;
+		if ($paymentId) {
+			$param ['paymentId'] = $paymentId;
 		}
 		$url = addons_url ( "Payment://" . $alipayConfig ['paytype'] . "/pay", $param );
-		//dump($url);die;
+		// dump($url);die;
 		header ( 'Location:' . $url );
-// 		redirect ( $url);
+		// redirect ( $url);
 	}
-	
-
 }
 ?>

@@ -2,6 +2,7 @@
 /* CSS Document by jacy use in vipcard */
 html{ height:100%;}
 body{ min-height:100%;}
+.container{ max-width:640px; min-width:320px; margin:0 auto;}
 .card{ position:relative; width:100%; padding:15px auto 0; background:url(bg.jpg) no-repeat; background-size:100% 100%; overflow:hidden}
 .card .card_bg{ display:block; width:90%; margin:15px auto 0; z-index:0; position:relative;}
 .card .card_container{ position:absolute; top:15px; right:5%; left:5%; bottom:0; z-index:10;}
@@ -509,3 +510,6 @@ display: flex;
 .day_recoomend li a{ display:block; background:#fff; border:1px solid #ddd; padding:10px; margin-bottom:15px;}
 .day_recoomend li p{ padding-bottom:5px;}
 
+.sn_box{ line-height:30px; margin:30px;padding:25px 0; color:#444; background:#f0eef5}
+.sn_box .qrCode{ width:150px; height:150px; margin:0 auto; background:#fff}
+.box{ border:1px solid #e5e5e5; background:#fafafa; padding:15px; margin:15px 0; border-radius:5px;}

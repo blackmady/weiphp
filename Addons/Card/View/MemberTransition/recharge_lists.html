@@ -22,10 +22,11 @@
 			
 			&nbsp;&nbsp;充值门店：
               <select name="pay_shop" style="padding:3px 4px; margin-bottom:5px; width:120px" >
-              	<option value="0" <php>if($_GET['pay_shop']==0)echo 'selected=selected';</php>>商户总部</option>
+              	<option value="-1" <php>if($pay_shop==-1)echo 'selected=selected';</php>>全部门店</option>
+              	<option value="0" <php>if($pay_shop==0)echo 'selected=selected';</php>>商户总部</option>
               	<notempty name='shop'>
               		<volist name='shop' key='k' id='s'>
-              			<option value="{$key}" <php>if($_GET['pay_shop']==$k)echo 'selected=selected';</php>>{$s}</option>
+              			<option value="{$key}" <php>if($pay_shop==$key)echo 'selected=selected';</php>>{$s}</option>
               
               		</volist>
               	</notempty>

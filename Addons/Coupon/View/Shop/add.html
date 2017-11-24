@@ -17,16 +17,21 @@
             <div class="controls">
               <input type="text" value="{$data.phone}" name="phone" class="text input-large">
             </div>
-          </div>    
-          <div class="form-item cf">
-            <label class="item-label"> 营业时间 </label>
+          </div>
+           <!--<div class="form-item cf toggle-password">
+            <label class="item-label"><span class="need_flag">*</span> 确认收款密码 </label>
             <div class="controls">
-              <input type="text" value="{$data.open_time}" name="open_time" class="text input-large">
+              <input type="text" value="{$data.password}" name="password" class="text input-large">
             </div>
-          </div> 
+          </div>-->
+           <div class="form-item cf toggle-shop_code">
+            <label class="item-label"><span class="need_flag"><eq name='is_erp' value='1'>*</eq></span>地点编码<span class="check-tips"><eq name='is_erp' value='1'> （由ERP提供，请正确填写）</eq> </span></label>
+            <div class="controls">
+              <input type="text" value="{$data.shop_code}" name="shop_code" class="text input-large">
+            </div>
+          </div>
           <div class="form-item cf toggle-img">
-           <label class="item-label">门店展示图 <span class="check-tips"> </span></label>
-           
+           <label class="item-label">门店展示图 </label>
            <div class="controls uploadrow2" title="点击修改图片" rel="img">
                       <input type="file" id="upload_picture_img">
                       <input type="hidden" name="img" id="cover_id_img"/>
@@ -39,14 +44,19 @@
                         
                       </div>
                     </div>
-           </div>                   
+                </div>        
+          <div class="form-item cf">
+            <label class="item-label"> 营业时间 </label>
+            <div class="controls">
+              <input type="text" value="{$data.open_time}" name="open_time" class="text input-large">
+            </div>
+          </div>                   
           <div class="form-item cf toggle-address">
             <label class="item-label"> <span class="need_flag">*</span> 详细地址 <span class="check-tips">地址输入完按回车可以实时在地图上显示</span></label>
             <div class="controls">
               <input type="text" value="{$data.address}" name="address" id="address" class="text input-large">
             </div>
           </div>
-          
           <div class="form-item cf toggle-gps">
             <label class="item-label"> 地图位置 <span class="check-tips"> （请点击地图，然后拖动图标到你的位置上） </span></label>
             <div class="controls">
@@ -56,6 +66,7 @@
           </div>
 
           <input type="hidden" value="0" name="coupon_id" class="text">
+          <input type="hidden" value="0" name="auth_group" class="text">
           
           <div class="form-item form_bh" style="text-align:center">
             <notempty name="data.id"><input type="hidden" name="id" value="{$data.id}"></notempty>
@@ -68,19 +79,91 @@
   </div>
 </block>
 <block name="script"> 
-  <script type="text/javascript" src="__STATIC__/bdMap.js?v={:SITE_VERSION}"></script> 
+  <script charset="utf-8" src="//map.qq.com/api/js?v=2.exp&key=I2TBZ-LZ3W4-QA3UM-DKVUF-76XZ7-LHBGG"></script>
   <script type="text/javascript">
-function initMap(){
-	var _addr = '';
-	_addr = $('#address').val();
-	ShowMap("map",{city:'深圳',addr:_addr,title:'',lawfirm:'',tel:'',mapx:'{$data.gps}',pic:'',ismove:'1',piobj:'gps'});
-}
-$(function(){
-    showTab();
-	initMap();
-	//初始化上传图片插件
+//初始化上传图片插件
 	initUploadImg();
-	$('#address').keyup(function(){ initMap(); });
-});
+	initUploadFile();
+     //初始化地图函数  自定义函数名init
+     var citylocation,map,marker = null;
+     var initTxMap = function() {
+         var center = new qq.maps.LatLng(39.916527,116.397128);
+         var mapW = $('#map').width();
+         var address = $('#address').val();
+         var gps = $('#gps').val();
+
+         $('#map').css('height',mapW*0.666+'px')
+         map = new qq.maps.Map(document.getElementById('map'),{
+             center: center,
+             zoom: 15
+         });
+         marker = new qq.maps.Marker({
+               position: center,
+               draggable: true,
+               map: map
+              });
+              //调用地址解析类
+              geocoder = new qq.maps.Geocoder()
+              if(address==''){
+                //获取城市列表接口设置中心点
+                citylocation = new qq.maps.CityService({
+                  complete : function(result){
+                    map.setCenter(result.detail.latLng);
+                    //添加可拖动标记
+                 marker.setPosition(result.detail.latLng);
+                    
+                     grsVal(result.detail.latLng)
+                   }
+                 });
+                 //调用searchLocalCity();方法    根据用户IP查询城市信息。
+                 citylocation.searchLocalCity();
+              }else{
+                var latlngStr = gps.split(",",2);
+                var lat = parseFloat(latlngStr[0]);
+                var lng = parseFloat(latlngStr[1]);
+                var latLng = new qq.maps.LatLng(lat, lng);
+                geocoder.getAddress(latLng)
+                geocoder.setComplete(function(result) {
+                  map.setCenter(result.detail.location);
+                  marker.setPosition(result.detail.location)
+                });
+              }
+              //添加监听事件   获取鼠标单击事件
+        qq.maps.event.addListener(map, 'click', function(event) {
+            marker.setPosition(event.latLng);
+            grsVal(event.latLng)    
+        });
+
+        //获取标记的拖动事件
+        qq.maps.event.addListener(marker, 'mouseup', function(event) {
+          marker.setPosition(event.latLng);
+          grsVal(event.latLng) 
+        });
+     }
+
+     function codeAddress() {
+        var address = $('#address').val();
+        //通过getLocation();方法获取位置信息值
+        geocoder.getLocation(address);
+        geocoder.setComplete(function(result) {
+          map.setCenter(result.detail.location);
+          marker.setPosition(result.detail.location)
+          grsVal(result.detail.location)
+        });
+    }
+    //隐藏表单经纬度设置
+    function grsVal(val){
+       $('#gps').val(val.lat+','+val.lng)
+    }
+
+    //调用初始化函数地图
+    initTxMap(); 
+    $('#address').keyup(function () { codeAddress(); });
+	$('input').each(function(index, element) {
+		$(this).keydown(function(event){
+			if(event.keyCode==13)return false;
+		})
+    });
+
 </script> 
 </block>

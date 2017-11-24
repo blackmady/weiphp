@@ -66,13 +66,30 @@
                 <input style="width:175px"  type="datetime" name="end_time" class="text time" value="" placeholder="请选择时间" />
             </div>
             <div class="controls">
-                <label class="item-label"><span class="need_flag">*</span>
-                       优惠券使用有效期
-                </label>
-                <input style="width:175px" type="datetime" name="use_start_time" class="text time" value="" placeholder="请选择时间" />
-                到
-                <input style="width:175px"  type="datetime" name="over_time" class="text time" value="" placeholder="请选择时间" />
+                <div class="check-item"> <input type="radio" class="regular-radio toggle-data" value="0" id="time_0" name="use_time_type" toggle-data="" checked="checked">
+                    <label for="time_0"></label> 
+                </div>
+                <div class="inline-block">
+                    <label class="item-label"><span class="need_flag">*</span>
+                           优惠券使用有效期
+                    </label>
+                    <input style="width:175px" type="datetime" name="use_start_time" class="text time" value="" placeholder="请选择时间" />
+                    到
+                    <input style="width:175px"  type="datetime" name="over_time" class="text time" value="" placeholder="请选择时间" />
+                </div>
             </div>
+            <div class="controls">
+                <div class="check-item"> <input type="radio" class="regular-radio toggle-data" value="1" id="time_1" name="use_time_type" toggle-data="">
+                    <label for="time_1"></label> 
+                </div>
+                <div class="inline-block">
+                    <label class="item-label"><span class="need_flag">*</span>
+                        领取后有效期天数
+                    </label>
+                    <input style="width:175px" type="text" name="use_time_limit" class="text" value=""/> 天
+                </div>
+            </div>
+            
             <div class="controls">
                 <label class="item-label">
                        <a href="javascript:;" class="border-btn" onClick="chooseAddress();">添加适用门店</a>

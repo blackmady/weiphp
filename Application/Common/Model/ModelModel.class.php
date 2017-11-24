@@ -318,13 +318,12 @@ sql;
 			isset ( $f ['auto_time'] ) || $f ['auto_time'] = 3;
 			isset ( $f ['auto_type'] ) || $f ['auto_type'] = 'function';
 			
-			if ($f['type']=='file'){
-			    isset ( $f ['validate_file_exts'] ) || $f ['validate_file_exts'] = '';
-			    isset ( $f ['validate_file_size'] ) || $f ['validate_file_size'] = 10485760;
+			if ($f ['type'] == 'file') {
+				isset ( $f ['validate_file_exts'] ) || $f ['validate_file_exts'] = '';
+				isset ( $f ['validate_file_size'] ) || $f ['validate_file_size'] = 10485760;
 			}
-			
 		}
-		$obj->datatable_path=$file;
+		$obj->datatable_path = $file;
 		return $obj;
 	}
 	public function buildFile($model, $fields = null, $list_grid = null, $config = null) {
@@ -485,12 +484,12 @@ str;
 			$name = $this->where ( [ 
 					'id' => $model 
 			] )->getField ( 'name' );
-		} elseif(isset($model['name'])) {
+		} elseif (isset ( $model ['name'] )) {
 			$name = $model ['name'];
-		}else{
+		} else {
 			$name = $model;
 		}
-
+		
 		$table_name = $this->table_name = C ( 'DB_PREFIX' ) . strtolower ( $name );
 		$sql = "SHOW TABLES LIKE '{$table_name}'";
 		$res = $this->query ( $sql );
@@ -598,5 +597,14 @@ sql;
 sql;
 		$res = $this->execute ( $sql );
 		return $res !== false;
+	}
+	function parseExtra($extra, $val = null) {
+		$arr = parse_config_attr ( $extra );
+		
+		if ($val !== null) {
+			return isset ( $arr [$val] ) ? $arr [$val] : '';
+		} else {
+			return $arr;
+		}
 	}
 }

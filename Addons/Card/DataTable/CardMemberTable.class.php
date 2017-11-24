@@ -90,15 +90,6 @@ class CardMemberTable {
 					'function' => '',
 					'href' => [ ]
 			],
-			'status' => [
-					'title' => '状态',
-					'come_from' => 0,
-					'width' => '',
-					'is_sort' => 0,
-					'name' => 'status',
-					'function' => '',
-					'href' => [ ]
-			],
 			'urls' => [
 					'title' => '操作',
 					'come_from' => 1,
@@ -186,7 +177,7 @@ class CardMemberTable {
 					'title' => '余额',
 					'field' => 'int(10) NULL',
 					'type' => 'num',
-					'is_show' => 1,
+					'is_show' => 0,
 					'placeholder' => '请输入内容'
 			],
 			'status' => [
@@ -213,14 +204,14 @@ class CardMemberTable {
 			'level' => [
 					'title' => '会员卡等级',
 					'field' => 'int(10) NULL',
-					'type' => 'num',
+					'type' => 'dynamic_select',
 					'is_show' => 1,
-					'placeholder' => '请输入内容'
+					'extra' => 'table=card_level&value_field=id&title_field=level&order=id desc&first_option=请选择',
 			],
 			'sex' => [
 					'title' => '性别',
 					'field' => 'int(10) NULL',
-					'type' => 'num',
+					'type' => 'bool',
 					'is_show' => 1,
 					'extra' => '1:男
 2:女',

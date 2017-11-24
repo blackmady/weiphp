@@ -8,7 +8,7 @@
     <section id="contents">
       <div class="tab-content" style="padding:0 20px"> 
         <!-- 表单 -->
-        <form id="form" action="{:U('do_buy?model='.$model['id'])}" method="post" class="form-horizontal">
+        <form id="form" action="{:U('do_buy')}" method="post" class="form-horizontal">
           <ul id="tab" class="tab-pane in">
           	<empty name='data.member_id'>
           		 <li class="form-item cf">
@@ -76,15 +76,7 @@
                      		</notempty>
                      	</select>
                     </div>
-                  </li>  
-                  
-                   <li class="form-item cf">
-                    <label class="item-label"><span class="need_flag">*</span>消费密码</label>
-                    <div class="controls">
-                      <input type="text" class="text input-large" name="pay_password"  placeholder="请输入消费密码" >
-                    </div>
-                  </li>  
-                  
+                  </li>                    
                   <li class="form-item cf" id="event_div" style="display:none">
                     <label class="item-label">消费赠送活动</label>
                     <div class="controls" id="event_html"></div>

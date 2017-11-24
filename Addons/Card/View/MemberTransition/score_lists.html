@@ -1,5 +1,4 @@
 <extend name="Home@Base/common" />
-<extend name="Home@Base/common" />
 <block name="body">
   <div class="span9 page_message">
     <section id="contents"> 
@@ -24,7 +23,7 @@
               	<option value="0" <php>if($_GET['credit_type']==0)echo 'selected=selected';</php>>全部方式</option>
               	<notempty name='credit_title'>
               		<volist name='credit_title' key='k' id='s'>
-              			<option value="{$key}" <php>if($_GET['credit_type']==$k)echo 'selected=selected';</php>>{$s.title}</option>
+              			<option value="{$key}" <php>if($_GET['credit_type']==$key)echo 'selected=selected';</php>>{$s}</option>
               		</volist>
               	</notempty>
               </select>

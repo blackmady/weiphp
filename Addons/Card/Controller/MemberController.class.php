@@ -12,24 +12,6 @@ class MemberController extends BaseController {
 	}
 	// 通用插件的列表模型
 	public function lists() {
-		// 不显示增加按钮
-		$this->assign ( 'add_button', false );
-		$this->assign ( 'del_button', false );
-		$btn [0] ['title'] = '批量解冻';
-		$btn [0] ['is_buttion'] = 1;
-		$btn [0] ['class'] = 'ajax-post confirm';
-		$btn [0] ['url'] = addons_url ( 'Card://Member/changStatus', array (
-				'set_status' => 1,
-				'mdm' => $_GET ['mdm'] 
-		) );
-		$btn [1] ['title'] = '批量冻结';
-		$btn [1] ['is_buttion'] = 1;
-		$btn [1] ['class'] = 'ajax-post confirm';
-		$btn [1] ['url'] = addons_url ( 'Card://Member/changStatus', array (
-				'set_status' => 2,
-				'mdm' => $_GET ['mdm'] 
-		) );
-		
 		$btn [2] ['title'] = '导出会员';
 		$btn [2] ['is_buttion'] = 1;
 		$btn [2] ['class'] = 'export_member';
@@ -217,18 +199,14 @@ class MemberController extends BaseController {
 		$model = $this->getModel ( 'buy_log' );
 		
 		if (IS_POST) {
-			$config = get_addon_config ( 'Card' );
 			if (empty ( $_POST ['member_id'] )) {
 				$this->checkMemberId ();
-			}
-			
-			if ($config ['managerPassword'] != $_POST ['pay_password']) {
-				$this->error ( '400053:消费密码不正确' );
 			}
 			if ($_POST ['sn_id']) {
 				$code = M ( 'sn_code' )->find ( $_POST ['sn_id'] );
 				$_POST ['pay'] = $_POST ['pay'] - $code ['prize_title'];
 			}
+			$_POST ['manager_id'] = $this->mid;
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
@@ -244,7 +222,7 @@ class MemberController extends BaseController {
 					// 消费赠送活动
 					$this->_send_reward ( I ( 'event_id' ), $member_id, 'shop_reward_condition', 'shop_reward' );
 				}
-				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $this->model ['name'], $this->get_param ) );
+				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'MemberTransition/buy_lists', $this->get_param ) );
 			} else {
 				$this->error ( '400054:' . $Model->getError () );
 			}
@@ -410,7 +388,28 @@ class MemberController extends BaseController {
 	
 	// 通用插件的删除模型
 	public function del() {
-		parent::common_del ( $this->model );
+		$map ['member_id'] = $where ['id'] = I ( 'id' );
+		$member = M ( 'card_member' )->where ( $where )->find ();
+		
+		$data = array (
+				'username' => $member ['username'],
+				'phone' => $member ['phone'],
+				'number' => $member ['number'] 
+		);
+		
+		$res = M ( 'buy_log' )->where ( $map )->select ();
+		if ($res) {
+			M ( 'buy_log' )->where ( $map )->setField ( $data );
+		}
+		
+		$res1 = M ( 'recharge_log' )->where ( $map )->select ();
+		if ($res1) {
+			M ( 'recharge_log' )->where ( $map )->setField ( $data );
+		}
+		
+		$res3 = M ( 'card_member' )->where ( $where )->delete ();
+		
+		echo 1;
 	}
 	
 	// 导出会员
@@ -424,27 +423,17 @@ class MemberController extends BaseController {
 			);
 		}
 		$map ['token'] = get_token ();
-		// session ( 'common_condition', $map );
-		// $list_data = $this->_get_model_list ( $this->model );
 		$fieldName = I ( 'names' );
-		// dump($fieldName);
 		$fieldStr = '';
 		foreach ( $fieldName as $ff ) {
 			if ($ff != 'score' && $ff != 'level') {
 				$fieldStr .= $ff . ',';
 			}
 		}
-		// dump($fieldName);exit;
 		$fieldStr = substr ( $fieldStr, 0, strlen ( $fieldStr ) - 1 );
 		$fieldStr .= ",uid";
-		// dump($fieldStr);exit;
-		// die;
-		// $fieldStr='number,username,phone,recharge,cTime,status';
+		
 		$list_data = M ( 'card_member' )->where ( $map )->field ( $fieldStr )->select ();
-		// dump($list_data);exit;
-		// $uInfo = getUserInfo ( $this->mid );
-		// dump($uInfo);exit;
-		// $levelInfo = D ( 'CardLevel' )->getCardMemberLevel ( $this->mid );
 		
 		foreach ( $list_data as &$vo ) {
 			$uInfo = getUserInfo ( $vo ['uid'] );
@@ -488,50 +477,16 @@ class MemberController extends BaseController {
 			}
 		}
 		
-		// foreach ($fieldName as $f){
-		// if ($f=='number'){
-		// $fieldArr['number']='卡号';
-		// }else if($f == 'username'){
-		// $fieldArr['username']='姓名';
-		// }else if($f == 'phone'){
-		// $fieldArr['phone']='手机号';
-		// }else if($f == 'recharge'){
-		// $fieldArr['recharge']='余额';
-		// }else if($f == 'cTime'){
-		// $fieldArr['cTime']='加入时间';
-		// }else if($f == 'status'){
-		// $fieldArr['status']='状态';
-		// }else if($f == 'score'){
-		// $fieldArr['score']='剩余积分';
-		// }else if($f == 'level'){
-		// $fieldArr['level']='会员等级';
-		// }
-		// }
-		// // dump($list_data);
-		// $fieldArr = array (
-		// 'number' => '卡号',
-		// 'username' => '姓名',
-		// 'phone' => '手机号',
-		// 'recharge' => '余额',
-		// 'cTime' => '加入时间',
-		// 'status' => '状态',
-		// 'score' => '剩余积分',
-		// 'level' => '等级'
-		// );
 		foreach ( $fieldArr as $k => $vv ) {
 			$fields [] = $k;
 			$titleArr [] = $vv;
 		}
 		$dataArr [] = $titleArr;
-		// dump($list_data);exit;
-		// dump($fieldArr);exit;
-		// die;
+		
 		foreach ( $list_data as $v ) {
 			unset ( $v ['uid'] );
 			$dataArr [] = $v;
 		}
-		// vendor ( 'out-csv' );
-		// export_csv ( $dataArr, 'card_member' );
 		
 		outExcel ( $dataArr, 'card_member' );
 	}

@@ -16,41 +16,53 @@ class PaymentController extends BaseController {
 			
 			if ($config ["isopenwx"] == 1) {
 				$res ['title'] = '微信支付配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/lists' ,array('mdm'=>I('mdm')));
+				$res ['url'] = addons_url ( 'Payment://Payment/lists', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'lists' ? 'cur' : '';
 				$nav [] = $res;
 			}
 			
 			if ($config ["isopenzfb"] == 1) {
 				$res ['title'] = '支付宝配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/zfbpay',array('mdm'=>I('mdm')));
+				$res ['url'] = addons_url ( 'Payment://Payment/zfbpay', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'zfbpay' ? 'cur' : '';
 				$nav [] = $res;
 			}
 			
 			if ($config ["isopencftwap"] == 1) {
 				$res ['title'] = '财付通(WAP手机接口)配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/cftwappay',array('mdm'=>I('mdm')));
+				$res ['url'] = addons_url ( 'Payment://Payment/cftwappay', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'cftwappay' ? 'cur' : '';
 				$nav [] = $res;
 			}
 			
 			if ($config ["isopencft"] == 1) {
 				$res ['title'] = '财付通(即时到账接口)配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/ctfpay' ,array('mdm'=>I('mdm')));
+				$res ['url'] = addons_url ( 'Payment://Payment/ctfpay', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'ctfpay' ? 'cur' : '';
 				$nav [] = $res;
 			}
 			
 			if ($config ["isopenyl"] == 1) {
 				$res ['title'] = '银联在线配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/quickpay',array('mdm'=>I('mdm')) );
+				$res ['url'] = addons_url ( 'Payment://Payment/quickpay', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'quickpay' ? 'cur' : '';
 				$nav [] = $res;
 			}
 			if ($config ["isopenshop"] == 1) {
 				$res ['title'] = '到店支付配置';
-				$res ['url'] = addons_url ( 'Payment://Payment/shoppay',array('mdm'=>I('mdm')) );
+				$res ['url'] = addons_url ( 'Payment://Payment/shoppay', array (
+						'mdm' => I ( 'mdm' ) 
+				) );
 				$res ['class'] = $action == 'shoppay' ? 'cur' : '';
 				$nav [] = $res;
 			}
@@ -62,44 +74,47 @@ class PaymentController extends BaseController {
 	public function __construct() {
 		parent::__construct ();
 		$this->model = M ( 'Model' )->getByName ( 'payment_set' );
-		$this->model || $this->error( '400307:模型不存在！' );
+		$this->model || $this->error ( '400307:模型不存在！' );
 		$this->assign ( 'model', $this->model );
 	}
-	//复制上传的证书到其他位置，暂时没被调用
-	function uploadCert($fileId){
-        $managerId=$this->mid;
-	    $path=SITE_PATH.'\\Cert\\wxzf\\'.$managerId;
-
-	    $file = M ( 'file' )->find ($fileId);
-	    $file ['savepath']=substr($file['savepath'],0, strlen($file['savepath'])-1);
-	    $filename = SITE_PATH . '\\Uploads\\Download\\' . $file ['savepath'] .'\\'. $file ['savename'];
-//         dump($file);
-//         dump($filename);
-//         dump(file_exists($filename));
-//         die;
-	    if (! file_exists ( $filename )) {
-	        $this->error( '400308:上传失败');
-	        exit();
-	    }
-// 	    $extend = $file ['ext'];
-// 	    if (! ($extend == 'pem' || $extend == 'p12' )) {
-// 	        $this->error( '400309:上传证书格式有误，扩展名应为 pem');
-// 	        exit();
-// 	    }
-	    
-	    $mkres =  mkdirs ( $path );
-	    $content = wp_file_get_contents ( $filename );
-	    $res = file_put_contents ( $path.'\\'.$file['name'], $content );
-	    return $res;
+	// 复制上传的证书到其他位置，暂时没被调用
+	function uploadCert($fileId) {
+		$managerId = $this->mid;
+		$path = SITE_PATH . '\\Cert\\wxzf\\' . $managerId;
+		
+		$file = M ( 'file' )->find ( $fileId );
+		$file ['savepath'] = substr ( $file ['savepath'], 0, strlen ( $file ['savepath'] ) - 1 );
+		$filename = SITE_PATH . '\\Uploads\\Download\\' . $file ['savepath'] . '\\' . $file ['savename'];
+		// dump($file);
+		// dump($filename);
+		// dump(file_exists($filename));
+		// die;
+		if (! file_exists ( $filename )) {
+			$this->error ( '400308:上传失败' );
+			exit ();
+		}
+		// $extend = $file ['ext'];
+		// if (! ($extend == 'pem' || $extend == 'p12' )) {
+		// $this->error( '400309:上传证书格式有误，扩展名应为 pem');
+		// exit();
+		// }
+		
+		$mkres = mkdirs ( $path );
+		$content = wp_file_get_contents ( $filename );
+		$res = file_put_contents ( $path . '\\' . $file ['name'], $content );
+		return $res;
 	}
 	public function lists($type = 0) {
 		// $normal_tips = '支持微信支付、财付通（WAP接口或者即时到帐接口）和支付宝支付（即时到帐接口）。请填写真实信息，否则支付中可能会出现错误<br/>&nbsp;&nbsp;&nbsp;&nbsp;
 		// <a href="' . U ( 'testpay' ) . '">测试支付功能</a>';
 		// $this->assign ( 'normal_tips', $normal_tips );
-		$normal_tips='注意：请在微信公众号配置 微信支付授权目录（http://域名/WxpayAPI/）。 <br/>1.打开微信公众平台,点击侧栏‘微信支付’ <br/>2.在微信支付里的 ‘开发配置’ 添加 ‘支付授权目录’';
-		$this->assign('normal_tips',$normal_tips);
+		$normal_tips = '注意：请在微信公众号配置 微信支付授权目录（http://域名/WxpayAPI/）。 <br/>1.打开微信公众平台,点击侧栏‘微信支付’ <br/>2.在微信支付里的 ‘开发配置’ 添加 ‘支付授权目录’';
+		$this->assign ( 'normal_tips', $normal_tips );
 		$token = get_token ();
-		
+		$paymentConfig = getAddonConfig ( 'Payment' );
+		if ($paymentConfig ['isopenwx'] != 1 && $paymentConfig ['isopenshop'] == 1) {
+			$type = 5;
+		}
 		// 获取模型信息
 		$payid = M ( "payment_set" )->where ( array (
 				"token" => $token 
@@ -111,9 +126,9 @@ class PaymentController extends BaseController {
 		if (IS_POST) {
 			$isadd = I ( 'get.isadd', 0, 'intval' );
 			$savetype = I ( 'get.savetype', 0, 'intval' );
-// 			dump($_POST);
-// 			dump(get_file_title($_POST['wx_cert_pem']));
-// 			die;
+			// dump($_POST);
+			// dump(get_file_title($_POST['wx_cert_pem']));
+			// die;
 			if (strpos ( $_POST ["id"], "*" ) != false) {
 				unset ( $_POST ["id"] );
 			}
@@ -169,19 +184,18 @@ class PaymentController extends BaseController {
 				unset ( $_POST ["quick_merabbr"] );
 			}
 			if (strpos ( $_POST ["wxmchid"], "*" ) != false) {
-			    unset ( $_POST ["wxmchid"] );
+				unset ( $_POST ["wxmchid"] );
 			}
 			if (strpos ( $_POST ["wx_cert_pem"], "*" ) != false) {
-			    unset ( $_POST ["wx_cert_pem"] );
+				unset ( $_POST ["wx_cert_pem"] );
 			}
 			if (strpos ( $_POST ["wx_key_pem"], "*" ) != false) {
-			    unset ( $_POST ["wx_key_pem"] );
+				unset ( $_POST ["wx_key_pem"] );
 			}
 			
-// 			if ($_POST['wx_cert_pem']){
-// 			    $this->uploadCert($_POST['wx_cert_pem']);
-// 			}
-			
+			// if ($_POST['wx_cert_pem']){
+			// $this->uploadCert($_POST['wx_cert_pem']);
+			// }
 			
 			$Model = D ( parse_name ( get_table_name ( $this->model ['id'] ), 1 ) );
 			if ($isadd == 1) {
@@ -193,26 +207,38 @@ class PaymentController extends BaseController {
 				if ($Model->create () && $micsetid = $Model->add ()) {
 					switch ($savetype) {
 						case 0 : // 微信支付
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'lists' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'lists', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 1 : // 支付宝
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'zfbpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'zfbpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 2 : // 财付通wap
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'cftwappay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'cftwappay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 3 : // 财付通
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'ctfpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'ctfpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 4 : // 银联在线
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'quickpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'quickpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 5 : // 到店支付
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'shoppay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'shoppay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 					}
 				} else {
-					$this->error( '400310:'. $Model->getError () );
+					$this->error ( '400310:' . $Model->getError () );
 				}
 			} else {
 				// 获取模型的字段信息
@@ -220,37 +246,53 @@ class PaymentController extends BaseController {
 				if ($Model->create () && $Model->save ()) {
 					switch ($savetype) {
 						case 0 : // 微信支付
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'lists' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'lists', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 1 : // 支付宝
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'zfbpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'zfbpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 2 : // 财付通wap
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'cftwappay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'cftwappay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 3 : // 财付通
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'ctfpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'ctfpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 4 : // 银联在线
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'quickpay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'quickpay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 						case 5 : // 到店支付
-							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'shoppay' ,array('mdm'=>I('mdm'))) );
+							$this->success ( '保存' . $this->model ['title'] . '成功！', U ( 'shoppay', array (
+									'mdm' => I ( 'mdm' ) 
+							) ) );
 							break;
 					}
 				} else {
-					$this->error( '400311:'. $Model->getError () );
+					$this->error ( '400311:' . $Model->getError () );
 				}
 			}
 		} else {
 			$fields = get_model_attribute ( $this->model ['id'] );
 			// 获取数据
 			$data = M ( get_table_name ( $this->model ['id'] ) )->find ( $id );
-			if ($data['wx_cert_pem'] && $data['wx_key_pem']){
-			    $certFile = M ( 'file' )->where(array('id'=>$data['wx_cert_pem']))->getfield('name');
-			    $keyFile = M ( 'file' )->where(array('id'=>$data['wx_key_pem']))->getfield('name');
-			    $this->assign('certfile',$certFile);
-			    $this->assign('keyfile',$keyFile);
+			if ($data ['wx_cert_pem'] && $data ['wx_key_pem']) {
+				$certFile = M ( 'file' )->where ( array (
+						'id' => $data ['wx_cert_pem'] 
+				) )->getfield ( 'name' );
+				$keyFile = M ( 'file' )->where ( array (
+						'id' => $data ['wx_key_pem'] 
+				) )->getfield ( 'name' );
+				$this->assign ( 'certfile', $certFile );
+				$this->assign ( 'keyfile', $keyFile );
 			}
 			// 是否新增
 			$isadd = 0;
@@ -273,14 +315,15 @@ class PaymentController extends BaseController {
 					unset ( $fields ["quick_merid"] );
 					unset ( $fields ["quick_merabbr"] );
 					unset ( $fields ["shop_pay_score"] );
+					unset ( $fields ["deposit"] );
 					break;
 				case 1 : // 支付宝
 					unset ( $fields ["wxappsecret"] );
 					unset ( $fields ["wxpaysignkey"] );
 					unset ( $fields ["wxappid"] );
 					unset ( $fields ["wxmchid"] );
-					unset($fields["wx_cert_pem"]);
-					unset($fields["wx_key_pem"]);
+					unset ( $fields ["wx_cert_pem"] );
+					unset ( $fields ["wx_key_pem"] );
 					unset ( $fields ["partnerid"] );
 					unset ( $fields ["partnerkey"] );
 					unset ( $fields ["wappartnerid"] );
@@ -291,6 +334,7 @@ class PaymentController extends BaseController {
 					unset ( $fields ["quick_merid"] );
 					unset ( $fields ["quick_merabbr"] );
 					unset ( $fields ["shop_pay_score"] );
+					unset ( $fields ["deposit"] );
 					break;
 				case 2 : // 财付通wap
 					unset ( $fields ["pid"] );
@@ -299,8 +343,8 @@ class PaymentController extends BaseController {
 					unset ( $fields ["wxpaysignkey"] );
 					unset ( $fields ["wxappid"] );
 					unset ( $fields ["wxmchid"] );
-					unset($fields["wx_cert_pem"]);
-					unset($fields["wx_key_pem"]);
+					unset ( $fields ["wx_cert_pem"] );
+					unset ( $fields ["wx_key_pem"] );
 					unset ( $fields ["zfbname"] );
 					unset ( $fields ["wappartnerid"] );
 					unset ( $fields ["wappartnerkey"] );
@@ -310,6 +354,7 @@ class PaymentController extends BaseController {
 					unset ( $fields ["quick_merid"] );
 					unset ( $fields ["quick_merabbr"] );
 					unset ( $fields ["shop_pay_score"] );
+					unset ( $fields ["deposit"] );
 					break;
 				case 3 : // 财付通
 					unset ( $fields ["pid"] );
@@ -318,8 +363,8 @@ class PaymentController extends BaseController {
 					unset ( $fields ["wxpaysignkey"] );
 					unset ( $fields ["wxappid"] );
 					unset ( $fields ["wxmchid"] );
-					unset($fields["wx_cert_pem"]);
-					unset($fields["wx_key_pem"]);
+					unset ( $fields ["wx_cert_pem"] );
+					unset ( $fields ["wx_key_pem"] );
 					unset ( $fields ["zfbname"] );
 					unset ( $fields ["partnerid"] );
 					unset ( $fields ["partnerkey"] );
@@ -329,6 +374,7 @@ class PaymentController extends BaseController {
 					unset ( $fields ["quick_merid"] );
 					unset ( $fields ["quick_merabbr"] );
 					unset ( $fields ["shop_pay_score"] );
+					unset ( $fields ["deposit"] );
 					break;
 				case 4 :
 					unset ( $fields ["pid"] );
@@ -337,8 +383,8 @@ class PaymentController extends BaseController {
 					unset ( $fields ["wxpaysignkey"] );
 					unset ( $fields ["wxappid"] );
 					unset ( $fields ["wxmchid"] );
-					unset($fields["wx_cert_pem"]);
-					unset($fields["wx_key_pem"]);
+					unset ( $fields ["wx_cert_pem"] );
+					unset ( $fields ["wx_key_pem"] );
 					unset ( $fields ["zfbname"] );
 					unset ( $fields ["wappartnerid"] );
 					unset ( $fields ["wappartnerkey"] );
@@ -347,6 +393,7 @@ class PaymentController extends BaseController {
 					unset ( $fields ["wxpartnerkey"] );
 					unset ( $fields ["wxpartnerid"] );
 					unset ( $fields ["shop_pay_score"] );
+					unset ( $fields ["deposit"] );
 					break;
 				case 5 :
 					unset ( $fields ["pid"] );
@@ -355,8 +402,8 @@ class PaymentController extends BaseController {
 					unset ( $fields ["wxpaysignkey"] );
 					unset ( $fields ["wxappid"] );
 					unset ( $fields ["wxmchid"] );
-					unset($fields["wx_cert_pem"]);
-					unset($fields["wx_key_pem"]);
+					unset ( $fields ["wx_cert_pem"] );
+					unset ( $fields ["wx_key_pem"] );
 					unset ( $fields ["zfbname"] );
 					unset ( $fields ["wappartnerid"] );
 					unset ( $fields ["wappartnerkey"] );
@@ -367,7 +414,6 @@ class PaymentController extends BaseController {
 					unset ( $fields ["quick_security_key"] );
 					unset ( $fields ["quick_merid"] );
 					unset ( $fields ["quick_merabbr"] );
-					
 					
 					break;
 			}
@@ -377,7 +423,7 @@ class PaymentController extends BaseController {
 			$newdata = array ();
 			foreach ( $data as $key => $v ) {
 				// 加密处理
-				if ($key == "id" || $key == "shop_pay_score"||$key=="wx_cert_pem"||$key=="wx_key_pem") {
+				if ($key == "id" || $key == "shop_pay_score" || $key == "wx_cert_pem" || $key == "wx_key_pem" && $key == "deposit") {
 					$newdata [$key] = $v;
 				} else {
 					$newdata [$key] = $this->hideStr ( $v, (strlen ( $v ) / 3), (strlen ( $v ) / 3) );
@@ -539,53 +585,56 @@ class PaymentController extends BaseController {
 		// $normal_tips = '';
 		// $this->assign ( 'normal_tips', $normal_tips );
 		if (IS_POST) {
+			if ($_POST ['config'] ['isopen'] == 1 && $_POST ['config'] ['isopenwx'] == 0 && $_POST ['config'] ['isopenshop'] == 0) {
+				$this->error ( '至少开启一种支付功能！' );
+			}
 			$flag = D ( 'Common/AddonConfig' )->set ( MODULE_NAME, $_POST ['config'] );
 			
 			if ($flag !== false) {
 				$this->success ( '保存成功' );
 			} else {
-				$this->error( '400312:保存失败' );
+				$this->error ( '400312:保存失败' );
 			}
 			exit ();
 		}
 		
 		parent::config ();
 	}
-	//通用的支付确认界面
-	function confirm(){
-	    $publicInfo=get_token_appinfo();
-	    // 初始化微信JSAPI需要的参数
-	    Vendor ( 'jssdk.jssdk' );
-	    $jssdk = new \JSSDK ( $publicInfo ['appid'], $publicInfo ['secret'] );
-	    $jsapiParams = $jssdk->GetsignPackage ();
-	    $this->assign ( 'jsapiParams', $jsapiParams );
-	    
-	    $price=I('price');
-	    $aimId=I('aim_id');
-	    $from=I('from');
-	    if ($from == 'reserve'){
-	    	$fromUrl = 'Reserve:__Wap_payOK';
-	    }
-	    $title=I('title');
-	 
-	    $orderNumber= date ( 'YmdHis' ) . substr ( uniqid (), 4 );
-	    $token=get_token();
-	    $openid=get_openid();
-	    $param = array (
-	        'aim_id'=>$aimId,
-	        'from' => $fromUrl,
-	        'orderName' => $title,
-	        'orderNumber' => $orderNumber,
-	        'price' => $price,
-	        'token' => $token,
-	        'wecha_id' => $openid,
-	        'paytype' =>0
-	    );
-	    $url=addons_url('Payment://Alipay/pay',$param);
-	    $this->assign('url',$url);
-	    $this->assign('pubilc_name',$publicInfo['public_name']);
-	    $this->assign('title',$title);
-	    $this->assign('price',$price);
-		$this -> display();
+	// 通用的支付确认界面
+	function confirm() {
+		$publicInfo = get_token_appinfo ();
+		// 初始化微信JSAPI需要的参数
+		Vendor ( 'jssdk.jssdk' );
+		$jssdk = new \JSSDK ( $publicInfo ['appid'], $publicInfo ['secret'] );
+		$jsapiParams = $jssdk->GetsignPackage ();
+		$this->assign ( 'jsapiParams', $jsapiParams );
+		
+		$price = I ( 'price' );
+		$aimId = I ( 'aim_id' );
+		$from = I ( 'from' );
+		if ($from == 'reserve') {
+			$fromUrl = 'Reserve:__Wap_payOK';
+		}
+		$title = I ( 'title' );
+		
+		$orderNumber = date ( 'YmdHis' ) . substr ( uniqid (), 4 );
+		$token = get_token ();
+		$openid = get_openid ();
+		$param = array (
+				'aim_id' => $aimId,
+				'from' => $fromUrl,
+				'orderName' => $title,
+				'orderNumber' => $orderNumber,
+				'price' => $price,
+				'token' => $token,
+				'wecha_id' => $openid,
+				'paytype' => 0 
+		);
+		$url = addons_url ( 'Payment://Alipay/pay', $param );
+		$this->assign ( 'url', $url );
+		$this->assign ( 'pubilc_name', $publicInfo ['public_name'] );
+		$this->assign ( 'title', $title );
+		$this->assign ( 'price', $price );
+		$this->display ();
 	}
 }

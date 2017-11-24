@@ -100,7 +100,11 @@ function checkMember(number){
 	$.post(url,{number:number},function(data){
 		var data = $.parseJSON(data);
 		if(data.status==0){
-			$('#number_tips').html('此会员不存在！');
+			if(data.name != ''){
+				$('#number_tips').html('会员：'+data.name);
+			}else{
+				$('#number_tips').html('此会员不存在！');
+			}
 			$('#event_div').hide();
 		}else{
 			$('#number_tips').html('会员：'+data.name);

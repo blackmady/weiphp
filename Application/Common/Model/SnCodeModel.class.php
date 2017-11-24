@@ -151,6 +151,7 @@ class SnCodeModel extends Model {
 		} else if ($ids == false || $update) {
 			$map ['uid'] = $uid;
 			$map ['addon'] = $addon;
+			$map ['token'] = get_token ();
 			if ($can_use != '') {
 				$map ['can_use'] = $can_use;
 			}
@@ -184,6 +185,7 @@ class SnCodeModel extends Model {
 		if ($data ['is_use']) {
 			$data ['is_use'] = 0;
 			$data ['use_time'] = '';
+			$data ['can_use'] = 1;
 		} else {
 			$data ['is_use'] = 1;
 			$data ['use_time'] = time ();
@@ -223,12 +225,11 @@ class SnCodeModel extends Model {
 		$map ['uid'] = $uid;
 		$map ['token'] = get_token ();
 		
-		$list = $this->where ( $map )->field ( 'count(can_use) as total,sum(can_use) as left_count, addon' )->group ( 'addon' )->select ();
-		
+		$list = $this->where ( $map )->field ( 'count(is_use) as total,sum(is_use) as use_count, addon' )->group ( 'addon' )->select ();
 		foreach ( $list as $vo ) {
 			$data [$vo ['addon']] ['total'] = $vo ['total'];
-			$data [$vo ['addon']] ['left_count'] = $vo ['left_count'];
-			$data [$vo ['addon']] ['use_count'] = $vo ['total'] - $vo ['left_count'];
+			$data [$vo ['addon']] ['left_count'] = $vo ['total'] - $vo ['use_count'];
+			$data [$vo ['addon']] ['use_count'] = $vo ['use_count'];
 		}
 		return $data;
 	}

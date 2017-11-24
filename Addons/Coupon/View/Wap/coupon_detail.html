@@ -10,9 +10,11 @@
       </div>
       <p class="title">使用说明</p>
       <div class="content">
-        <if condition="!empty($info['use_start_time']) && !empty($info['over_time'])"> 
+        <php>if($info['use_time_type'] == 0 && !empty($info['use_start_time']) && !empty($info['over_time'])) { </php>
             <p>· 有效期：{$info.use_start_time|time_format}至{$info.over_time|time_format}</p>
-         </if>	
+         <php> }elseif($info['use_time_type'] == 1 && $info['use_time_limit']>0) { </php>
+            <p>· 有效期：{$info.use_time_limit}天</p>
+         <php> }</php>      
         <if condition="$info[max_num]!=0">
         	<p>· 每人限领取{$info.max_num}张</p>
         </if>

@@ -434,9 +434,9 @@ abstract class Controller {
 		} else {
 			defined ( 'SITE_VERSION' ) or define ( 'SITE_VERSION', C ( 'SYSTEM_UPDATRE_VERSION' ) );
 		}
-	        //会员卡客户关怀监控
-		if(is_install('Card')){
-		D('Addons://Card/CardCustom')->do_send_crons();
+		// 会员卡客户关怀监控
+		if (is_install ( 'Card' )) {
+			D ( 'Addons://Card/CardCustom' )->do_send_crons ();
 		}
 	}
 	
@@ -727,7 +727,7 @@ abstract class Controller {
 						'function' 
 				);
 			} elseif ('mult_picture' == $attr ['type']) { // 多图片
-			    $_POST[$key]=array_filter($_POST[$key]);//去除数组中空的值
+				$_POST [$key] = array_filter ( $_POST [$key] ); // 去除数组中空的值
 				$auto [] = array (
 						$attr ['name'],
 						'arr2str',
@@ -778,13 +778,13 @@ abstract class Controller {
 			case 'mult_picture' :
 				break;
 			case 'dynamic_select' :
-			    parse_str ( $field ['extra'], $arr );
-			    $table = ! empty ( $arr ['table'] ) ? $arr ['table'] : 'common_category';//表名
-			    $value_field = ! empty ( $arr ['value_field'] ) ? $arr ['value_field'] : 'id';//值对应的字段名
-			    $title_field = ! empty ( $arr ['title_field'] ) ? $arr ['title_field'] : 'title';//显示的内容
-			    $map[$value_field]=$val;
-			    //查询对应选中值对应的显示内容
-			    $val = M($table)->where($map)->getField($title_field);
+				parse_str ( $field ['extra'], $arr );
+				$table = ! empty ( $arr ['table'] ) ? $arr ['table'] : 'common_category'; // 表名
+				$value_field = ! empty ( $arr ['value_field'] ) ? $arr ['value_field'] : 'id'; // 值对应的字段名
+				$title_field = ! empty ( $arr ['title_field'] ) ? $arr ['title_field'] : 'title'; // 显示的内容
+				$map [$value_field] = $val;
+				// 查询对应选中值对应的显示内容
+				$val = M ( $table )->where ( $map )->getField ( $title_field );
 				break;
 			case 'dynamic_checkbox' :
 				break;
@@ -865,7 +865,7 @@ abstract class Controller {
 							// 排除GET里的参数影响到已赋值的参数
 							$url_param = array ();
 							foreach ( $GLOBALS ['get_param'] as $key => $gp ) {
-								if (strpos ( $href, $key . '=' ) === false && $key != 'p' ) {
+								if (strpos ( $href, $key . '=' ) === false && $key != 'p') {
 									$url_param [$key] = $gp;
 								}
 							}

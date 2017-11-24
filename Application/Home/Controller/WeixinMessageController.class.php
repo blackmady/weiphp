@@ -110,7 +110,7 @@ class WeixinMessageController extends HomeController {
 	}
 	function person() {
 		$this->assign ( 'nav', array () );
-		$map ['FromUserName'] = I ( 'openid' );
+		$map ['FromUserName'] = I ( 'person_openid' );
 		$map ['ToUserName'] = get_token ();
 		$list = M ( 'weixin_message' )->where ( $map )->order ( 'id desc' )->selectPage ();
 		$dao = D ( 'Common/User' );
@@ -149,6 +149,9 @@ class WeixinMessageController extends HomeController {
 		vendor ( "qqface" );
 		$data ['Content'] = qqface_convert_html ( $data ['Content'] );
 		$dd ['Content'] = parseHtmlemoji ( $data ['Content'] );
+		if ($dd ['Content'] == '【收到不支持的消息类型，暂无法显示】'){
+		    $dd ['Content'] = '【该消息为名片消息类型，暂无法显示】';
+		}
 		switch ($data ['MsgType']) {
 			case 'image' :
 				$msgtype = 'image';
@@ -218,11 +221,13 @@ class WeixinMessageController extends HomeController {
 				$data ['Content'] = 'video'; // TODO
 				break;
 			case 'shortvideo' :
-				$msgtype = 'shortvideo';
+			    $msgtype='shortvideo';
+			    $dd['Content']='【该消息为短视频消息类型，暂无法显示】';
 				$data ['Content'] = 'shortvideo'; // TODO
 				break;
 			case 'location' :
-				$msgtype = 'location';
+			    $msgtype='location';
+			    $dd['Content']='【该消息为地理位置消息类型，暂无法显示】';
 				$data ['Content'] = 'location'; // TODO
 				break;
 			case 'link' :
@@ -409,7 +414,9 @@ class WeixinMessageController extends HomeController {
 			case 'text' :
 				$param ['touser'] = I ( 'openid' );
 				$param ['msgtype'] = 'text';
-				$param ['text'] ['content'] = I ( 'content' );
+				$content = I('content');
+				$content=str_replace("\"","'",$content);
+				$param ['text'] ['content'] = $content;
 				break;
 			case 'appmsg' :
 				$param ['touser'] = I ( 'openid' );
@@ -524,7 +531,7 @@ class WeixinMessageController extends HomeController {
 			M ( 'weixin_message' )->add ( $data );
 			if ($msg_type == 'text') {
 				$this->success ( '回复成功', U ( 'person', array (
-						'openid' => $data ['FromUserName'],
+						'person_openid' => $data ['FromUserName'],
 						'text_content' => $param ['text'] ['content'] 
 				) ) );
 			} else {

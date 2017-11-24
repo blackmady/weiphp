@@ -105,10 +105,16 @@ class CouponModel extends Model {
 	// 赠送优惠券
 	function sendCoupon($id, $uid) {
 		$param ['id'] = $id;
-		
 		$info = $this->getInfo ( $id );
 		
+		$snDao = D ( 'Common/SnCode' );
+		$snMap ['target_id'] = $info ['id'];
+		$snMap ['addon'] = "Coupon";
+		$info ['collect_count'] = $snDao->where ( $snMap )->count ();
 		$flat = true;
+		if ($info ['is_del']) {
+			$flat = false;
+		}
 		if ($info ['collect_count'] >= $info ['num']) {
 			$flat = false;
 		} else if (! empty ( $info ['start_time'] ) && $info ['start_time'] > NOW_TIME) {
@@ -116,8 +122,10 @@ class CouponModel extends Model {
 		} else if (! empty ( $info ['end_time'] ) && $info ['end_time'] < NOW_TIME) {
 			$flat = false;
 		}
-		
-		$list = D ( 'Common/SnCode' )->getMyList ( $uid, $id, 'Coupon' );
+		if ($uid <= 0) {
+			$flat = false;
+		}
+		$list = $snDao->getMyList ( $uid, $id, 'Coupon' );
 		$my_count = count ( $list );
 		
 		if ($info ['max_num'] > 0 && $my_count >= $info ['max_num']) {
@@ -133,16 +141,16 @@ class CouponModel extends Model {
 		$data ['cTime'] = NOW_TIME;
 		$data ['token'] = $info ['token'];
 		
-		$sn_id = D ( 'Common/SnCode' )->add ( $data );
+		$sn_id = $snDao->add ( $data );
 		return $sn_id;
 	}
 	function getSelectList() {
 		$map ['end_time'] = array (
 				'gt',
-				NOW_TIME
+				NOW_TIME 
 		);
 		$map ['token'] = get_token ();
-		$map ['is_del']=0;
+		$map ['is_del'] = 0;
 		$list = $this->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
 		return $list;
 	}

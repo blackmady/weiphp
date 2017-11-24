@@ -321,7 +321,26 @@ invite:微邀约'
 			'is_del' => [
 					'title' => '是否删除',
 					'field' => 'int(10) NULL',
-					'type' => 'num'
+					'type' => 'num',
+					'placeholder' => '请输入内容'
+			],
+			'use_time_type' => [
+					'title' => '有效时间类型',
+					'type' => 'bool',
+					'field' => 'tinyint(2) NULL',
+					'extra' => '0:固定时间段
+1:领取后多少天内',
+					'is_show' => 1,
+					'placeholder' => '请输入内容'
+			],
+			'use_time_limit' => [
+					'title' => '领取后多少天内有效',
+					'type' => 'num',
+					'field' => 'int(10) NULL',
+					'value' => 0,
+					'remark' => '0 表示不限制',
+					'is_show' => 1,
+					'is_must' => 0
 			]
 	];
 }	

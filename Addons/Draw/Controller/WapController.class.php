@@ -774,15 +774,9 @@ class WapController extends WapBaseController {
 				$this->error( '400233:二维码已经过期' );
 			}
 		}
-		// 扫码员id
-		$mid = $this->mid;
 		// 授权表查询
-		$map ['uid'] = $mid;
-		$map ['token'] = get_token ();
-		$map ['enable'] = 1;
-		$role = M ( 'servicer' )->where ( $map )->getField ( 'role' );
-		$roleArr = explode ( ',', $role );
-		if (! in_array ( 2, $roleArr )) {
+		$check = D ( 'Addons://Servicer/Servicer' )->checkRule ( $this->mid, 2 );
+			if (! $check) {
 			$this->error( '400234:你还没有扫码验证的权限' );
 			exit ();
 		}

@@ -46,6 +46,7 @@ a.block{ display:block}
 .hide{ display:none}
 .qr_time_tips{ font-size:12px; text-align:center;}
 #qrCode{ text-align:center}
+.qr_tips{text-align: center;color: #444;}
 /* common */
 .copyright{ text-align:center; line-height:60px; color:#999; font-size:13px;}
 .block_content_bg{ border-radius:5px; background:#fff; box-shadow:0 1px 1px #ccc;}

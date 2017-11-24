@@ -29,7 +29,7 @@
         </if>
         <!-- 多维过滤 -->
         <notempty name="muti_search">
-        <form class="muti_search cf">
+        <form class="muti_search cf" action="{$search_url}" method="get">
           <div class="" style="line-height: 30px;">
           <volist name='muti_search' id='vo'>
           <switch name="vo.type">
@@ -37,7 +37,7 @@
                     <span>{$vo.title}：</span>
                     <select name="{$vo.name}" class="search-input input-small">
                     <volist name='vo.options' id='option'>
-                    <option value="{$option.value}" <eq name='option.default_value' value='option.value'>selected</eq> >{$option.title}</option>
+                    <option value="{$option.value}" <eq name='option.default_value' value='$option.value'>selected</eq> >{$option.title}</option>
                     </volist>                    
                     </select>
                 </case>
@@ -50,13 +50,13 @@
                 <case value="checkbox">
                     <span>{$vo.title}：</span>
                     <volist name='vo.options' id='option'>
-                    <input autocomplete="off"  type="checkbox" name="{$option.name}" class="" value="{$option.value}" <eq name='option.default_value' value='option.value'>checked</eq> >{$option.title}
+                    <input autocomplete="off"  type="checkbox" name="{$option.name}" class="" value="{$option.value}" <eq name='option.default_value' value='$option.value'>checked</eq> >{$option.title}
                     </volist>
                 </case>
                 <case value="radio">
                     <span>{$vo.title}：</span>
                     <volist name='vo.options' id='option'>
-                    <input type="radio" name="{$option.name}" class="" value="{$option.value}" <eq name='option.default_value' value='option.value'>checked</eq> >{$option.title}
+                    <input type="radio" name="{$option.name}" class="" value="{$option.value}" id="{$option.name}_{$option.value}" <eq name='option.default_value' value='$option.value'>checked</eq> ><label for="{$option.name}_{$option.value}">{$option.title}</label>
                     </volist>
                 </case>
                   
@@ -65,7 +65,7 @@
             </volist>
              
              <!-- <a class="sort " href="#" title="排序">排序:高->低</a> -->
-             <button type="button" class="sch-btn btn" href="javascript:;" id="search">搜索</button> </div>
+             <button type="button" class="sch-btn btn" href="javascript:;" id="muti_search">搜索</button> </div>
         </form>
         </notempty>
       </div>
@@ -141,6 +141,11 @@ $(function(){
         }
     });
 
+    $("#muti_search").click(function(){
+    	var url = $(".muti_search").attr('action');
+    	var data=$(".muti_search").serialize();
+    	 window.location.href = url+'&'+data;
+    });
 })
 </script>
 </block>

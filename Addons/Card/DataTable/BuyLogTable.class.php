@@ -59,6 +59,12 @@ class BuyLogTable {
 					'come_from' => 0,
 					'width' => '',
 					'is_sort' => 0
+			],
+			'manager_id' => [
+					'title' => '核销员',
+					'come_from' => 0,
+					'width' => '',
+					'is_sort' => 0
 			]
 	];
 	
@@ -118,10 +124,7 @@ class BuyLogTable {
 					'title' => '管理员ID',
 					'field' => 'int(10) NULL',
 					'type' => 'num',
-					'is_show' => 1,
-					'auto_rule' => 'get_mid',
-					'auto_time' => 3,
-					'auto_type' => 'function'
+					'is_show' => 0
 			]
 	];
 }	

@@ -1,4 +1,4 @@
-<extend name="Base/common" />
+<extend name="Home@Base/common" />
 <block name="body">
 <style text='text/css'>
 .image_material{
@@ -48,9 +48,9 @@
                 <a class="voice" href="javascript:;">语音消息</a>
                 <a class="video" href="javascript:;">视频消息</a>
                         </div>
-                    	<form id="form" action="{:U('reply')}" method="post" class="form-horizontal form-center">
+                    	<form id="form" action="{:U('reply',array('mdm'=>$_GET['mdm']))}" method="post" class="form-horizontal form-center">
                         	<input type="hidden" name="msg_type" value="text"/>
-                        	<input type="hidden" class="text input-large" name="openid" value="{:I('openid')}">
+                        	<input type="hidden" class="text input-large" name="openid" value="{:I('person_openid')}">
                             <label class="textarea input-large">
                              	<textarea name="content" placeholder="请输入要发送的文本" id='message_text'></textarea>
                                 <div style="display:none" class="appmsg_area" id="appmsg_area">
@@ -171,7 +171,9 @@
 			                    </notempty>
 			                    </div>
 			                <elseif condition="$vo['Content']['msg_type'] eq 'shortvideo'" />
+			                {$vo.Content.Content}
 			                <elseif condition="$vo['Content']['msg_type'] eq 'location'" />
+			                {$vo.Content.Content}
 			                <elseif condition="$vo['Content']['msg_type'] eq 'link'" />  
 			                	<a  target='_blank' href="{$vo.Content.url}"><h3>"{$vo.Content.title}"</h3><br>{$vo.Content.description}</a>  
 	                        <else />

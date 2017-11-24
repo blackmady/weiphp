@@ -14,28 +14,18 @@ class CardLevelModel extends Model{
 		$creditInfo=get_userinfo($uid);
 		$map1['uid']=$uid;
 		$cardMember = M('card_member')->where($map1)->find();
-		if ($cardMember['level']==0){
-		    $data=array(
-		        'id'=>0,
-		        'level'=>'体验卡',
-		        'score'=>'0',
-		        'recharge'=>'0',
-		        'discount'=>'0'
-		    );
-		    return $data;
-		}
 		$cardLevel=M('card_level')->find($cardMember['level']);
 		foreach($levelList as $vo){
 		    if (empty($cardLevel) || $vo['score']>$cardLevel['score'] || $vo['recharge'] >$cardLevel['recharge']){
-		        if ($vo['score'] && $vo['recharge']){
+		        if ($vo['score']>=0 && $vo['recharge']>=0){
 		            if($vo['score']<=$creditInfo ['score'] && $vo['recharge']<=$cardMember['recharge']){
 		                $levelInfo = $vo;
 		            }
-		        }else if($vo['score']){
+		        }else if($vo['score']>=0){
 		            if($vo['score']<=$creditInfo ['score']){
 		                $levelInfo = $vo;
 		            }
-		        }else if($vo['recharge']){
+		        }else if($vo['recharge']>=0){
 		            if( $vo['recharge']<=$cardMember['recharge']){
 		                $levelInfo = $vo;
 		            }
@@ -45,15 +35,27 @@ class CardLevelModel extends Model{
 		if ($levelInfo){
 			$cardMember['level']=$levelInfo['id'];
 		    $is_erp=D('Addons://Card/Card')->updateERPMember($cardMember,$uid,'',$levelInfo);
-		    if ($is_erp != 0){
+		    if ($is_erp['res'] != 0){
 		        $save['level']=$levelInfo['id'];
 		        $map['id']=$cardMember['id'];
 		        M('card_member')->where($map)->save($save);
 		    }
 		    return $levelInfo;
 		}else{
-		    return $cardLevel;
-		    
+		   if (empty($cardLevel)){
+// 		       if ($cardMember['level']==0){
+		           $data=array(
+		               'id'=>0,
+		               'level'=>'体验卡',
+		               'score'=>'0',
+		               'recharge'=>'0',
+		               'discount'=>'0'
+		           );
+		           return $data;
+// 		       }
+            } else {
+                return $cardLevel;
+            }
 		}
 	}
 	

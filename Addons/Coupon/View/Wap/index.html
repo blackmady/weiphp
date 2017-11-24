@@ -6,7 +6,15 @@
           
          <p class="title">
           	{$info.title}<br/>
-          	<span class="time">有效期：<span class="use_start_time">{$info.use_start_time|time_format}</span> - <span class="over_time">{$info.over_time|time_format}</span></span> 
+          	<span class="time">有效期：
+            <span class="use_start_time">
+        <php>if($info['use_time_type'] == 0 && !empty($info['use_start_time']) && !empty($info['over_time'])) { </php> 
+            {$info.use_start_time|time_format}至{$info.over_time|time_format}
+         <php> }elseif($info['use_time_type'] == 1 && $info['use_time_limit']>0) { </php>
+            {$info.use_time_limit}天
+         <php> }</php>
+         </span>           
+            </span> 
           </p>
           <div class="line"></div>
       </div>
@@ -25,9 +33,9 @@
 		 				<span style="padding-left: 8px;">营业时间：{$vo.open_time}</span>
 		                <br/>
                          <notempty name="$vo[gps]">
-                        	<a href="http://api.map.baidu.com/marker?location={$vo.gps}&title={$vo.name}&content={$vo.address}&output=html">{$vo.address}</a>
+                        	<a href="//api.map.baidu.com/marker?location={$vo.gps}&title={$vo.name}&content={$vo.address}&output=html">{$vo.address}</a>
                         <else />
-                        	<a href="http://api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
+                        	<a href="//api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
                         </notempty>
                         <a href="tel:{$vo.phone}"><em>&nbsp;</em></a>
                     </li>

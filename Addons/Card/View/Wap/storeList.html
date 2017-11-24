@@ -60,9 +60,9 @@
             <div style="line-height: 40px;"> 
             	 
             	<notempty name="vo.gps">
-                    <a href="http://apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"><img src="{:ADDON_PUBLIC_PATH}/navi.png" width="30px" height="30px" style="vertical-align:middle;"/> 导航</a>
+                    <a href="//apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"><img src="{:ADDON_PUBLIC_PATH}/navi.png" width="30px" height="30px" style="vertical-align:middle;"/> 导航</a>
                 <else />
-                    <a href="http://api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}"><img src="{:ADDON_PUBLIC_PATH}/navi.png" width="30px" height="30px" style="vertical-align:middle;"/> 导航</a>
+                    <a href="//api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}"><img src="{:ADDON_PUBLIC_PATH}/navi.png" width="30px" height="30px" style="vertical-align:middle;"/> 导航</a>
                 </notempty>
             
             </div>

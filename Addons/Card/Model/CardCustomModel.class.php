@@ -19,8 +19,8 @@ class CardCustomModel extends Model {
 		}
 		foreach($lists_data as $vo){
 			$member=explode(',', $vo['member']);
-			$saxArr=null;
-			$levelarr=null;
+			$saxArr=array();
+			$levelarr=array();
 			foreach ($member as $m){
 				if ($m == -2){
 					$saxArr[]=2;//女
@@ -41,6 +41,8 @@ class CardCustomModel extends Model {
 			}
 			//两种方式
 			$this->_add_log($vo,$map);
+			unset($map['level']);
+			unset($map['sex']);
 		}
 	}
 	//会员生日
@@ -60,11 +62,17 @@ class CardCustomModel extends Model {
 				}
 			}else{
 				//公历节日
-				$oldtime=time_format($data['end_time'],'Y-m-d');
-				$nowtime=time_format(time(),'Y-m-d');
-				if ($oldtime == $nowtime){
-					$is_add=1;
-				}
+// 				$oldtime=time_format($data['end_time'],'Y-m-d');
+// 				$nowtime=time_format(time(),'Y-m-d');
+
+			    $oldtime = $data['end_time'];
+			    $nowtime = time();
+			    if ( $nowtime >= $oldtime && $nowtime <= $oldtime + 60){
+			        $is_add=1;
+			    }
+// 				if ($oldtime == $nowtime){
+// 					$is_add=1;
+// 				}
 			}
 			
 			if ($is_add == 1){

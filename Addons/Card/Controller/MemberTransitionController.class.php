@@ -17,17 +17,7 @@ class MemberTransitionController extends BaseController {
 	
 	// 会员充值列表
 	function recharge_lists() {
-		$param ['mdm'] = $_GET ['mdm'];
-		$res ['title'] = '会员交易';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
-		$res ['class'] = ACTION_NAME == 'lists' ? 'current' : '';
-		$nav [] = $res;
-		
-		$res ['title'] = '充值查询';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/recharge_lists', $param );
-		$res ['class'] = ACTION_NAME == 'recharge_lists' ? 'current' : '';
-		$nav [] = $res;
-		$this->assign ( 'nav', $nav );
+		$this->_navShow ( '充值查询', 'recharge_lists' );
 		
 		$this->assign ( 'add_button', false );
 		$this->assign ( 'del_button', false );
@@ -40,45 +30,30 @@ class MemberTransitionController extends BaseController {
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
 		
-		$search = $_REQUEST ['operator'];
-		if ($search) {
-			$this->assign ( 'search', $search );
-			$map1 ['username'] = array (
-					'like',
-					'%' . htmlspecialchars ( $search ) . '%' 
-			);
-			$map1 ['token'] = $map2 ['token'] = get_token ();
-			$u_card_id = D ( 'card_member' )->where ( $map1 )->getFields ( 'id' );
-			$u_card_id = implode ( ',', $u_card_id );
-			
-			$map2 ['phone'] = array (
-					'like',
-					'%' . htmlspecialchars ( $search ) . '%' 
-			);
-			
-			$p_card_id = D ( 'card_member' )->where ( $map2 )->getFields ( 'id' );
-			$p_card_id = implode ( ',', $p_card_id );
+		$key = I ( 'operator' );
+		$this->assign ( 'search', $key );
+		if ($key) {
+			$where = "username LIKE '%{$key}%' OR phone LIKE '%{$key}%'";
+			$map1 ['token'] = get_token ();
+			$u_card_id = ( array ) D ( 'card_member' )->where ( $map1 )->where ( $where )->getFields ( 'id' );
 			if (! empty ( $u_card_id )) {
+				$u_card_id = implode ( ',', $u_card_id );
 				$map ['member_id'] = array (
 						'exp',
 						' in (' . $u_card_id . ') ' 
 				);
-			} else if (! empty ( $p_card_id )) {
-				$map ['member_id'] = array (
-						'exp',
-						' in (' . $p_card_id . ') ' 
-				);
 			} else {
 				$map ['operator'] = array (
 						'like',
-						'%' . htmlspecialchars ( $search ) . '%' 
+						'%' . $key . '%' 
 				);
 			}
-			unset ( $_REQUEST ['operator'] );
+			unset ( $_REQUEST ['operator'] ); // 去掉对核心common_condition的影响
 		}
 		
-		$shop_id = I ( 'pay_shop' );
-		if ($shop_id != null) {
+		$shop_id = I ( 'pay_shop', - 1, 'intval' );
+		$this->assign ( 'pay_shop', $shop_id );
+		if ($shop_id != - 1) {
 			$map ['branch_id'] = $shop_id;
 		}
 		$isRecharge = I ( 'is_recharge' );
@@ -152,6 +127,7 @@ class MemberTransitionController extends BaseController {
 		}
 		$map ['token'] = get_token ();
 		session ( 'common_condition', $map );
+		
 		$model = $this->getModel ( 'recharge_log' );
 		$list_data = $this->_get_model_list ( $model );
 		
@@ -171,17 +147,7 @@ class MemberTransitionController extends BaseController {
 	}
 	// 会员消费列表
 	function buy_lists() {
-		$param ['mdm'] = $_GET ['mdm'];
-		$res ['title'] = '会员交易';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
-		$res ['class'] = ACTION_NAME == 'lists' ? 'current' : '';
-		$nav [] = $res;
-		
-		$res ['title'] = '消费查询';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/buy_lists', $param );
-		$res ['class'] = ACTION_NAME == 'buy_lists' ? 'current' : '';
-		$nav [] = $res;
-		$this->assign ( 'nav', $nav );
+		$this->_navShow ( '消费查询', 'buy_lists' );
 		
 		$this->assign ( 'add_button', false );
 		$this->assign ( 'del_button', false );
@@ -193,41 +159,27 @@ class MemberTransitionController extends BaseController {
 		$map ['token'] = get_token ();
 		$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
 		$this->assign ( 'shop', $branch );
-		$search = $_REQUEST ['member'];
+		
+		$search = I ( 'member' );
+		$this->assign ( 'search', $search );
 		if ($search) {
-			$this->assign ( 'search', $search );
-			$map1 ['username'] = array (
-					'like',
-					'%' . htmlspecialchars ( $search ) . '%' 
-			);
+			$where = "username LIKE '%{$search}%' OR phone LIKE '%{$search}%'";
 			$map1 ['token'] = $map2 ['token'] = get_token ();
-			$u_card_id = D ( 'card_member' )->where ( $map1 )->getFields ( 'id' );
-			$u_card_id = implode ( ',', $u_card_id );
-			
-			$map2 ['phone'] = array (
-					'like',
-					'%' . htmlspecialchars ( $search ) . '%' 
-			);
-			
-			$p_card_id = D ( 'card_member' )->where ( $map2 )->getFields ( 'id' );
-			$p_card_id = implode ( ',', $p_card_id );
+			$u_card_id = D ( 'card_member' )->where ( $map1 )->where ( $where )->getFields ( 'id' );
 			if (! empty ( $u_card_id )) {
+				$u_card_id = implode ( ',', $u_card_id );
 				$map ['member_id'] = array (
 						'exp',
 						' in (' . $u_card_id . ') ' 
-				);
-			} else if (! empty ( $p_card_id )) {
-				$map ['member_id'] = array (
-						'exp',
-						' in (' . $p_card_id . ') ' 
 				);
 			} else {
 				$map ['id'] = 0;
 			}
 			unset ( $_REQUEST ['member'] );
 		}
-		$shop_id = I ( 'pay_shop' );
-		if ($shop_id != null) {
+		$shop_id = I ( 'pay_shop', - 1, 'intval' );
+		$this->assign ( 'pay_shop', $shop_id );
+		if ($shop_id != - 1) {
 			$map ['branch_id'] = $shop_id;
 		}
 		$isRecharge = I ( 'is_recharge' );
@@ -301,14 +253,30 @@ class MemberTransitionController extends BaseController {
 		}
 		
 		$map ['token'] = get_token ();
+		$map ['manager_id'] = [ 
+				'gt',
+				0 
+		];
 		session ( 'common_condition', $map );
 		
 		$model = $this->getModel ( 'buy_log' );
 		$list_data = $this->_get_model_list ( $model );
-		if (! empty ( $list_data ['list_data'] )) {
-			// $uInfo = getUserInfo($this->mid);
-			// $levelInfo = D('CardLevel')->getCardMemberLevel($this->mid);
+		$is_export = I ( 'is_export', 0, 'intval' );
+		$dataArr = $ht = [ ];
+		if ($is_export) {
+			foreach ( $list_data ['list_grids'] as $grid ) {
+				$ht [] = $grid ['title'];
+			}
+			$dataArr [0] = $ht;
 			
+			$list_data ['list_data'] = M ( 'buy_log' )->where ( $map )->order ( 'id desc' )->limit ( 10000 )->select (); // 最多能导出1万条
+		}
+		
+		$pay_type = [ 
+				1 => '会员卡余额消费',
+				2 => '现金或POS机消费' 
+		];
+		if (! empty ( $list_data ['list_data'] )) {
 			$map ['manager_id'] = $this->mid;
 			$map ['token'] = get_token ();
 			$branch = M ( 'coupon_shop' )->where ( $map )->getFields ( 'id,name' );
@@ -326,32 +294,36 @@ class MemberTransitionController extends BaseController {
 			
 			foreach ( $list_data ['list_data'] as &$vo ) {
 				$cardMember = $cardMemberDao->find ( $vo ['member_id'] );
-				// $vo['member_id']=$cardMember['number'];
-				$vo ['member_id'] = $cardMember ['username'];
-				$vo ['phone'] = $cardMember ['phone'];
-				$vo ['branch_id'] = $vo ['branch_id'] == 0 ? '商店总部' : $branch [$vo ['branch_id']];
-				$vo ['sn_id'] = floatval ( $prizeData [$vo ['sn_id']] );
+				
+				$data [0] = $vo ['member_id'] = $cardMember ['username'];
+				$data [1] = $vo ['phone'] = $cardMember ['phone'];
+				$data [2] = $is_export ? time_format ( $vo ['cTime'] ) : $vo ['cTime'];
+				$data [3] = $vo ['branch_id'] = $vo ['branch_id'] == 0 ? '商店总部' : $branch [$vo ['branch_id']];
+				$data [4] = $vo ['pay'];
+				$data [5] = $vo ['sn_id'] = floatval ( $prizeData [$vo ['sn_id']] );
+				$data [6] = $is_export ? $pay_type [$vo ['pay_type']] : $vo ['pay_type'];
+				$data [7] = $vo ['manager_id'] = get_nickname ( $vo ['manager_id'] );
+				
+				$dataArr [] = $data;
 			}
 		}
-		// dump($uInfo);
-		// dump($list_data);
+		
+		if ($is_export) {
+			outExcel ( $dataArr, 'buy_list_' . date ( 'YmdHis' ) );
+			exit ();
+		}
+		
+		$get_param = $this->get_param;
+		$get_param ['is_export'] = 1;
+		$this->assign ( 'export_url', U ( 'buy_lists', $get_param ) );
+		
 		$this->assign ( $list_data );
 		$this->display ();
 	}
 	
 	// 积分查询
 	function score_lists() {
-		$param ['mdm'] = $_GET ['mdm'];
-		$res ['title'] = '会员交易';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
-		$res ['class'] = ACTION_NAME == 'lists' ? 'current' : '';
-		$nav [] = $res;
-		
-		$res ['title'] = '积分查询';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/score_lists', $param );
-		$res ['class'] = ACTION_NAME == 'score_lists' ? 'current' : '';
-		$nav [] = $res;
-		$this->assign ( 'nav', $nav );
+		$this->_navShow ( '积分查询', 'score_lists' );
 		
 		$this->assign ( 'add_button', false );
 		$this->assign ( 'del_button', false );
@@ -390,41 +362,25 @@ class MemberTransitionController extends BaseController {
 				] 
 		];
 		// 获取交易方式信息
-		$creditTitle = M ( 'credit_config' )->getFields ( 'name,title' );
-		$i = 1;
-		foreach ( $creditTitle as $k => $c ) {
-			$title ['name'] = $k;
-			$title ['title'] = $c;
-			$creditArr [$i ++] = $title;
-		}
-		$title1 ['name'] = 'addAuto';
-		$title1 ['title'] = '手动增加';
-		$creditArr [$i ++] = $title1;
-		$title2 ['name'] = 'delAuto';
-		$title2 ['title'] = '手动扣除';
-		$creditArr [$i ++] = $title2;
-		
-		$this->assign ( 'credit_title', $creditArr );
+		$creditTitle = M ( 'credit_data' )->group ( 'credit_name' )->getFields ( 'credit_name,credit_title' );
+		$this->assign ( 'credit_title', $creditTitle );
 		
 		// 交易方式查询
 		$creditType = I ( 'credit_type' );
 		if ($creditType) {
-			foreach ( $creditArr as $key => $cr ) {
+			foreach ( $creditTitle as $key => $cr ) {
 				if ($creditType == $key) {
+					$map ['credit_name'] = $creditType;
 					if ($cr ['name'] == 'addAuto') {
-						$map ['credit_name'] = 'card_member_update_score';
 						$map ['score'] = array (
 								'egt',
 								0 
 						);
 					} else if ($cr ['name'] == 'delAuto') {
-						$map ['credit_name'] = 'card_member_update_score';
 						$map ['score'] = array (
 								'elt',
 								0 
 						);
-					} else {
-						$map ['credit_name'] = $cr ['name'];
 					}
 				}
 			}
@@ -467,31 +423,14 @@ class MemberTransitionController extends BaseController {
 			}
 		}
 		// 搜索查询
-		$search = $_REQUEST ['username'];
-		if ($search) {
-			$this->assign ( 'search', $search );
-			$map3 ['mobile'] = array (
-					'like',
-					'%' . htmlspecialchars ( $search ) . '%' 
-			);
+		$search = I ( 'username' );
+		$this->assign ( 'search', $search );
+		if (! empty ( $search )) {
 			$nickname_follow_ids = D ( 'Common/User' )->searchUser ( $search );
-			$mobile_follow_ids = M ( 'user' )->where ( $map3 )->getFields ( 'uid' );
-			$nickname_follow_ids = implode ( ',', $nickname_follow_ids );
-			$mobile_follow_ids = implode ( ',', $mobile_follow_ids );
-			if (! empty ( $nickname_follow_ids )) {
-				$map ['uid'] = array (
-						'exp',
-						' in (' . $nickname_follow_ids . ') ' 
-				);
-			} else if (! empty ( $mobile_follow_ids )) {
-				$map ['uid'] = array (
-						'exp',
-						' in (' . $mobile_follow_ids . ') ' 
-				);
-			} else {
-				$map ['id'] = 0;
-			}
-			unset ( $_REQUEST ['username'] );
+			$map ['uid'] = array (
+					'exp',
+					' in (' . $nickname_follow_ids . ') ' 
+			);
 		}
 		
 		$map ['token'] = get_token ();
@@ -499,6 +438,7 @@ class MemberTransitionController extends BaseController {
 		$list_data ['list_data'] = $data ['list_data'];
 		
 		foreach ( $list_data ['list_data'] as &$vo ) {
+			$vo ['cTime'] = time_format ( $vo ['cTime'] );
 			if ($vo ['credit_name'] == 'card_member_update_score') {
 				if ($vo ['score'] > 0) {
 					$vo ['credit_name'] = '手动增加';
@@ -523,23 +463,167 @@ class MemberTransitionController extends BaseController {
 				$vo ['username'] = $userInfo ['truename'] ? $userInfo ['truename'] : $userInfo ['nickname'];
 				$vo ['phone'] = $userInfo ['mobile'];
 			}
+			if (empty ( $vo ['credit_name'] )) {
+				$vo ['credit_name'] = $vo ['credit_title'];
+			}
 		}
+		
+		$this->assign ( $list_data );
+		$this->display ();
+	}
+	private function _navShow($title, $act) {
+		$param ['mdm'] = $_GET ['mdm'];
+		$res ['title'] = '会员交易';
+		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
+		$res ['class'] = '';
+		$nav [] = $res;
+		
+		$res ['title'] = $title;
+		$res ['url'] = addons_url ( 'Card://MemberTransition/' . $act, $param );
+		$res ['class'] = 'current';
+		$nav [] = $res;
+		$this->assign ( 'nav', $nav );
+	}
+	function sncode_lists() {
+		$this->_navShow ( '优惠券核销查询', 'sncode_lists' );
+		
+		$this->assign ( 'add_button', false );
+		$this->assign ( 'del_button', false );
+		$this->assign ( 'check_all', false );
+		$this->assign ( 'search_url', addons_url ( "Card://MemberTransition/sncode_lists", array (
+				'mdm' => $_GET ['mdm'] 
+		) ) );
+		$this->assign ( 'search_key', 'username' );
+		$this->assign ( 'placeholder', '请输入用户名或手机号' );
+		
+		$list_data ['list_grids'] = [ 
+				'username' => [ 
+						'title' => '用户名',
+						'name' => 'username' 
+				],
+				'phone' => [ 
+						'title' => '手机号码',
+						'name' => 'phone' 
+				],
+				'credit_name' => [ 
+						'title' => '优惠券',
+						'name' => 'credit_name' 
+				],
+				'use_time' => [ 
+						'title' => '使用时间',
+						'name' => 'cTime' 
+				],
+				'operator' => [ 
+						'title' => '核销员',
+						'name' => 'operator' 
+				] 
+		];
+		// 获取交易方式信息
+		$coupon_map ['token'] = get_token ();
+		$creditTitle = M ( 'coupon' )->where ( $coupon_map )->getFields ( 'id,title' );
+		$this->assign ( 'credit_title', $creditTitle );
+		
+		// 交易方式查询
+		$coupon_id = I ( 'coupon_id' );
+		if ($coupon_id > 0) {
+			$map ['target_id'] = $coupon_id;
+		}
+		// 时间查询
+		$isCTime = I ( 'is_ctime' );
+		if ($isCTime) {
+			$startVal = I ( 'start_ctime', 0, 'strtotime' );
+			$endVal = I ( 'end_ctime', 0, 'strtotime' );
+			$endVal = $endVal == 0 ? 0 : $endVal + 86400 - 1;
+			if ($startVal && $endVal) {
+				$startVal < $endVal && $map ['use_time'] = array (
+						'between',
+						array (
+								$startVal,
+								$endVal 
+						) 
+				);
+				$startVal > $endVal && $map ['use_time'] = array (
+						'between',
+						array (
+								$startVal,
+								$endVal 
+						) 
+				);
+				$startVal == $endVal && $map ['use_time'] = array (
+						'egt',
+						$startVal 
+				);
+			} else if (! empty ( $startVal )) {
+				$map ['use_time'] = array (
+						'egt',
+						$startVal 
+				);
+			} else if (! empty ( $endVal )) {
+				$map ['use_time'] = array (
+						'elt',
+						$endVal 
+				);
+			}
+		}
+		// 搜索查询
+		$search = I ( 'username' );
+		$this->assign ( 'search', $search );
+		if (! empty ( $search )) {
+			$nickname_follow_ids = D ( 'Common/User' )->searchUser ( $search );
+			$map ['uid'] = array (
+					'exp',
+					' in (' . $nickname_follow_ids . ') ' 
+			);
+		}
+		
+		$map ['token'] = get_token ();
+		$map ['is_use'] = 1;
+		
+		$is_export = I ( 'is_export', 0, 'intval' );
+		$dataArr = [ ];
+		if ($is_export) {
+			$ht = [ 
+					0 => '用户名',
+					1 => '手机号码',
+					2 => '优惠券',
+					3 => '使用时间',
+					4 => '核销员' 
+			];
+			$dataArr [0] = $ht;
+			
+			$data ['list_data'] = M ( 'sn_code' )->where ( $map )->order ( 'id desc' )->limit ( 10000 )->select (); // 最多能导出1万条
+		} else {
+			$data = M ( 'sn_code' )->where ( $map )->order ( 'id desc' )->selectPage ();
+		}
+		
+		$list_data ['list_data'] = $data ['list_data'];
+		
+		foreach ( $list_data ['list_data'] as &$vo ) {
+			$userInfo = get_userinfo ( $vo ['uid'] );
+			$data = [ ];
+			$data [0] = $vo ['username'] = $userInfo ['truename'] ? $userInfo ['truename'] : $userInfo ['nickname'];
+			$data [1] = $vo ['phone'] = $userInfo ['mobile'];
+			$data [2] = $vo ['credit_name'] = $creditTitle [$vo ['target_id']];
+			$data [3] = $vo ['use_time'] = time_format ( $vo ['use_time'] );
+			$data [4] = $vo ['operator'] = get_nickname ( $vo ['admin_uid'] );
+			
+			$dataArr [] = $data;
+		}
+		
+		if ($is_export) {
+			outExcel ( $dataArr, 'coupon_use_list_' . date ( 'YmdHis' ) );
+			exit ();
+		}
+		
+		$get_param = $this->get_param;
+		$get_param ['is_export'] = 1;
+		$this->assign ( 'export_url', U ( 'sncode_lists', $get_param ) );
 		$this->assign ( $list_data );
 		$this->display ();
 	}
 	// 消费统计
 	function buy_tongji() {
-		$param ['mdm'] = $_GET ['mdm'];
-		$res ['title'] = '会员交易';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
-		$res ['class'] = ACTION_NAME == 'lists' ? 'current' : '';
-		$nav [] = $res;
-		
-		$res ['title'] = '消费统计';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/buy_tongji', $param );
-		$res ['class'] = ACTION_NAME == 'buy_tongji' ? 'current' : '';
-		$nav [] = $res;
-		$this->assign ( 'nav', $nav );
+		$this->_navShow ( '消费统计', 'buy_tongji' );
 		
 		$year = I ( 'year' );
 		$month = I ( 'month' );
@@ -566,6 +650,10 @@ class MemberTransitionController extends BaseController {
 			);
 		}
 		// 本月总消费金额
+		$map ['manager_id'] = [ 
+				'gt',
+				0 
+		];
 		$totalPay = M ( 'buy_log' )->where ( $map )->field ( "sum(pay) totalPay" )->select ();
 		$totalPay = round ( floatval ( $totalPay [0] ['totalPay'] ), 2 );
 		$this->assign ( 'total_pay', $totalPay );
@@ -603,17 +691,7 @@ class MemberTransitionController extends BaseController {
 	// 积分统计
 	// 消费统计
 	function score_tongji() {
-		$param ['mdm'] = $_GET ['mdm'];
-		$res ['title'] = '会员交易';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/lists', $param );
-		$res ['class'] = ACTION_NAME == 'lists' ? 'current' : '';
-		$nav [] = $res;
-		
-		$res ['title'] = '当月用户积分统计';
-		$res ['url'] = addons_url ( 'Card://MemberTransition/score_tongji', $param );
-		$res ['class'] = ACTION_NAME == 'score_tongji' ? 'current' : '';
-		$nav [] = $res;
-		$this->assign ( 'nav', $nav );
+		$this->_navShow ( '当月用户积分统计', 'score_tongji' );
 		
 		$year = I ( 'year' );
 		$month = I ( 'month' );
@@ -705,8 +783,12 @@ class MemberTransitionController extends BaseController {
 				$this->error ( '400062:请输入sn码' );
 			}
 			$map ['sn'] = $_POST ['sn_id'];
-			$id = D ( 'Common/SnCode' )->where ( $map )->getField ( 'id' );
-			$res = D ( 'Common/SnCode' )->set_use ( $id );
+			$info = D ( 'Common/SnCode' )->where ( $map )->find ();
+			if ($info ['is_use']) {
+				$this->error ( '400064:该sn码已被使用过' );
+			}
+			
+			$res = D ( 'Common/SnCode' )->set_use ( $info ['id'] );
 			if ($res) {
 				$this->success ( '兑换成功' );
 			} else {

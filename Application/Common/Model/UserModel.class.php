@@ -374,7 +374,7 @@ class UserModel extends Model {
 			return 0;
 			
 			// 搜索用户表
-		$where = "nickname LIKE '%$key%' OR truename LIKE '%$key%'";
+		$where = "nickname LIKE '%{$key}%' OR truename LIKE '%{$key}%' OR mobile LIKE '%{$key}%'";
 		$uids = ( array ) $this->where ( $where )->getFields ( 'uid' );
 		// 搜索用户名备注
 		$where2 = "remark LIKE '%$key%'";

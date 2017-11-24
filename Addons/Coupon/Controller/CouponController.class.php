@@ -9,14 +9,15 @@ class CouponController extends ManageBaseController {
 		parent::_initialize ();
 		
 		$res ['title'] = '优惠券';
-		$res ['url'] = addons_url ( 'Coupon://Coupon/lists' ,array('mdm'=>$_GET['mdm']));
+		$res ['url'] = addons_url ( 'Coupon://Coupon/lists', array (
+				'mdm' => $_GET ['mdm'] 
+		) );
 		$res ['class'] = 'current';
 		$nav [] = $res;
 		
 		$res ['title'] = '门店管理';
 		$res ['url'] = addons_url ( 'Coupon://Shop/lists', array (
-				'coupon_id' => I ( 'coupon_id' ) ,
-		    'mdm'=>$_GET['mdm']
+				'coupon_id' => I ( 'coupon_id' ) 
 		) );
 		$res ['class'] = '';
 		$nav [] = $res;
@@ -63,7 +64,7 @@ class CouponController extends ManageBaseController {
 		/* 查询记录总数 */
 		$count = $dao->where ( $map )->count ();
 		$dataTable = D ( 'Common/Model' )->getFileInfo ( $model );
-		$datas= $this->parseData ( $datas, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
+		$datas = $this->parseData ( $datas, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
 		$list_data ['list_data'] = $datas;
 		// 分页
 		if ($count > $row) {
@@ -109,6 +110,7 @@ class CouponController extends ManageBaseController {
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
 			if ($Model->create () && $Model->save ()) {
+				D ( 'Coupon' )->getInfo ( $id, true );
 				$this->_saveKeyword ( $model, $id );
 			}
 			// 清空缓存
@@ -219,25 +221,34 @@ class CouponController extends ManageBaseController {
 			$this->error ( '400126:每人最多领取数量不能小于0' );
 		}
 		
-		if (strtotime ( I ( 'post.start_time' ) ) >= strtotime ( I ( 'post.end_time' ) )) {
-			$this->error ( '400127:领取优惠券开始时间不能大于等于结束时间' );
-		}
-		
-		if (! I ( 'post.use_start_time' )) {
-			$this->error ( '400128:请选择优惠券使用开始时间' );
-		} else if (! I ( 'post.over_time' )) {
-			$this->error ( '400129:请选择优惠券使用结束时间' );
-		} else if (strtotime ( I ( 'post.use_start_time' ) ) > strtotime ( I ( 'post.over_time' ) )) {
-			$this->error ( '400130:优惠券使用开始时间不能大于结束时间' );
-		} else if (strtotime ( I ( 'post.use_start_time' ) ) < strtotime ( I ( 'post.start_time' ) )) {
-			$this->error ( '400131:使用时间不能早于领取时间' );
-		} else if (strtotime ( I ( 'post.end_time' ) ) > strtotime ( I ( 'post.over_time' ) )) {
-			$this->error ( '400132:发放结束时间不能大于使用结束领取时间' );
+		$use_time_type = I ( 'use_time_type', 0, 'intval' );
+		if ($use_time_type == 0) {
+			if (strtotime ( I ( 'post.start_time' ) ) >= strtotime ( I ( 'post.end_time' ) )) {
+				$this->error ( '400127:领取优惠券开始时间不能大于等于结束时间' );
+			}
+			if (! I ( 'post.use_start_time' )) {
+				$this->error ( '400128:请选择优惠券使用开始时间' );
+			} else if (! I ( 'post.over_time' )) {
+				$this->error ( '400129:请选择优惠券使用结束时间' );
+			} else if (strtotime ( I ( 'post.use_start_time' ) ) > strtotime ( I ( 'post.over_time' ) )) {
+				$this->error ( '400130:优惠券使用开始时间不能大于结束时间' );
+			} else if (strtotime ( I ( 'post.use_start_time' ) ) < strtotime ( I ( 'post.start_time' ) )) {
+				$this->error ( '400131:使用时间不能早于领取时间' );
+			} else if (strtotime ( I ( 'post.end_time' ) ) > strtotime ( I ( 'post.over_time' ) )) {
+				$this->error ( '400132:发放结束时间不能大于使用结束领取时间' );
+			}
+		} else {
+			$limit = I ( 'post.use_time_limit', 0, 'intval' );
+			if (! ($limit > 0)) {
+				$this->error ( '400134:请填写领取后有效期天数' );
+			}
 		}
 	}
 	function preview() {
 		$id = I ( 'id', 0, 'intval' );
-		$url = addons_url ( 'Coupon://Wap/index', ['id' => $id ] );
+		$url = addons_url ( 'Coupon://Wap/index', [ 
+				'id' => $id 
+		] );
 		$this->assign ( 'url', $url );
 		$this->display ( 'Home@Addons/preview' );
 	}

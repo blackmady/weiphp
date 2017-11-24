@@ -97,16 +97,7 @@ return array (
 						'1'=>'需要',
 				),	
 				'tip'=>'勾选后，用户领取会员卡时则必须验证（需开通短信包）'
-				),
-		'managerPassword' => array ( // 配置在表单中的键名 ,这个会是config[random]
-				'title' => '商家确认消费密码', // 表单的文字
-				'type' => 'text', // 表单的类型：text、textarea、checkbox、radio、select等
-				'value' => '',
-				'tip'=>'手机端确认使用优惠券等输入此密码，不超过20个字。'
-				),
-		
-		
-		
+		),	
 		'background_custom' => array ( // 配置在表单中的键名 ,这个会是config[random]
 				'type' => 'hidden', // 表单的类型：text、textarea、checkbox、radio、select等
 		),	

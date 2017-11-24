@@ -1234,7 +1234,7 @@ function parse_config_attr($string, $preg = '/[\s;\r\n]+/') {
 	if (strpos ( $string, ':' )) {
 		$value = array ();
 		foreach ( $array as $val ) {
-			list ( $k, $v ) = explode ( ':', $val );
+			list ( $k, $v ) = explode ( ':', $val, 2 );
 			$value [$k] = $v;
 		}
 	} else {
@@ -3794,7 +3794,6 @@ function hide_mobile($mobile) {
 	$mobile = str_replace ( $str, implode ( '', array_fill ( 0, $len, '*' ) ), $mobile );
 	return $mobile;
 }
-
 
 /*
  * 上传图片到微信获取url

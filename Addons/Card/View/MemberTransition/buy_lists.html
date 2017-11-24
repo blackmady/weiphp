@@ -1,5 +1,4 @@
 <extend name="Home@Base/common" />
-<extend name="Home@Base/common" />
 <block name="body">
   <div class="span9 page_message">
     <section id="contents"> 
@@ -11,6 +10,7 @@
 			<div class="tools">
 				<if condition="$add_button"><php> $add_url || $add_url = U('add?model='.$model['id'], $get_param);</php><a class="btn" href="{$add_url}">新 增</a></if>
 				<if condition="$del_button"><php> $del_url || $del_url = U('del?model='.$model['id'], $get_param);</php><button class="btn ajax-post confirm" target-form="ids" url="{$del_url}">删 除</button></if>    
+                <a class="btn" href="{$export_url}">导出数据</a>
                 <volist name="top_more_button" id="vo">
                 <if condition="$vo[is_buttion]">
                 <button class="btn {$vo.class}" target-form="ids" url="{$vo.url}">{$vo.title}</button>
@@ -23,10 +23,11 @@
 			
 			&nbsp;&nbsp;消费门店：
               <select name="pay_shop" style="padding:3px 4px; margin-bottom:5px; width:120px" >
-              	<option value="0" <php>if($_GET['pay_shop']==0)echo 'selected=selected';</php>>商户总部</option>
+              	<option value="-1" <php>if($pay_shop==-1)echo 'selected=selected';</php>>全部门店</option>
+              	<option value="0" <php>if($pay_shop==0)echo 'selected=selected';</php>>商户总部</option>
               	<notempty name='shop'>
               		<volist name='shop' key='k' id='s'>
-              			<option value="{$key}" <php>if($_GET['pay_shop']==$k)echo 'selected=selected';</php>>{$s}</option>
+              			<option value="{$key}" <php>if($pay_shop==$key)echo 'selected=selected';</php>>{$s}</option>
               
               		</volist>
               	</notempty>

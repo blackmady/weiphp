@@ -1,4 +1,4 @@
-<extend name="Base/common" />
+<extend name="Home@Base/common" />
 <block name="body">
   <div class="span9 page_message">
     <section id="contents"> <include file="Home@Addons/_nav" />
@@ -82,7 +82,9 @@
 			                    </notempty>
 			                    </div>
 			                <elseif condition="$vo['Content']['msg_type'] eq 'shortvideo'" />
+			                 {$vo.Content.Content}
 			                <elseif condition="$vo['Content']['msg_type'] eq 'location'" />
+			                 {$vo.Content.Content}
 			                <elseif condition="$vo['Content']['msg_type'] eq 'link'" />  
 			                	<a  target='_blank' href="{$vo.Content.url}"><h3>"{$vo.Content.title}"</h3><br>{$vo.Content.description}</a>  
 	                        <else />
@@ -93,7 +95,7 @@
                 </td>
                 <td valign="top">{$vo.CreateTime|time_format}</td>
                 <td valign="top">
-                <a href="{:U('person',array('openid'=>$vo[openid],'mdm'=>I('mdm')))}">会话详情</a>
+                <a href="{:U('person',array('person_openid'=>$vo[openid],'id'=>$vo['id'],'mdm'=>I('mdm')))}">会话详情</a>
                 </td>
               </tr>
               </volist>

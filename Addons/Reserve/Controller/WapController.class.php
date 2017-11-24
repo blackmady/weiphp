@@ -258,14 +258,8 @@ class WapController extends WapBaseController {
 			}
 		}
 		// 扫码员id
-		$mid = $this->mid;
-		// 授权表查询
-		$map4 ['uid'] = $mid;
-		$map4 ['token'] = $map3 ['token'] = $map2 ['token'] = get_token ();
-		$map4 ['enable'] = 1;
-		$role = M ( 'servicer' )->where ( $map4 )->getField ( 'role' );
-		$roleArr = explode ( ',', $role );
-		if (! in_array ( 2, $roleArr )) {
+		$check = D ( 'Addons://Servicer/Servicer' )->checkRule ( $this->mid, 2 );
+		if (! $check) {
 			$this->error ( '400388:你还没有扫码验证的权限' );
 			exit ();
 		}

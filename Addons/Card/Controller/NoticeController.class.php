@@ -102,32 +102,4 @@ class NoticeController extends BaseController {
 	public function del() {
 		parent::common_del ( $this->model );
 	}
-	function show() {
-		$map ['token'] = get_token ();
-		$uid=$map['uid']=$this->mid;
-		$cardMember=M('card_member')->where($map)->find();
-		//用户已点进来查看
-		$key='cardnotic_'.get_token().'_'.$uid;
-		$rrs=S($key);
-		if ($rrs > 0){
-			$rrs = 0-$rrs;
-			S($key,$rrs);
-		}
-		$news=abs($rrs);
-		$this->assign('newnum',$news);
-		
-		$list = M ( 'card_notice' )->where ( $map )->order ( 'id desc' )->select ();
-		foreach ($list as $v){
-		    $gradeArr=explode(',',$v['grade']);
-		    if ($v['to_uid']==0){
-		        if (in_array(0, $gradeArr) || in_array($cardMember['level'], $gradeArr)){
-		            $data[]=$v;
-		        }
-		    }else if ($v['to_uid']==$uid){
-		        $data[]=$v;
-		    }
-		}
-		$this->assign ( 'list', $data );
-		$this->display ();
-	}
 }

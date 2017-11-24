@@ -65,7 +65,7 @@ class WapController extends WapBaseController {
 		
 		$this->assign ( 'my_sn_list', $list );
 		
-		$data = $this->_detail ();
+		$data = $this->_detail ( false, $list [0] );
 		$tpl = isset ( $_GET ['has_get'] ) ? 'has_get' : 'prev';
 		
 		$info = get_followinfo ( $this->mid );
@@ -111,19 +111,16 @@ class WapController extends WapBaseController {
 		
 		$this->assign ( 'info', $info );
 		$data = D ( 'Coupon' )->getInfo ( $info ['target_id'] );
+		$data = $this->dealOverTime ( $data, $info ['cTime'] );
 		$this->assign ( 'coupon', $data );
 		// dump ( $info );
+		if ($data ['over_time'] < NOW_TIME) {
+			$this->error ( '400160:该券已过期' );
+		}
 		
-		if (empty ( $data ['pay_password'] )) { // 通过工作授权来核销
-			$map ['token'] = get_token ();
-			$map ['uid'] = $this->mid;
-			$map ['enable'] = 1;
-			
-			$role = M ( 'servicer' )->where ( $map )->getField ( 'role' );
-			$role = explode ( ',', $role );
-			if (! in_array ( 2, $role )) {
-				$this->error ( '400147:你需要工作授权才能核销' );
-			}
+		$check = D ( 'Addons://Servicer/Servicer' )->checkRule ( $this->mid, 2 );
+		if (! $check) {
+			$this->error ( '400147:你需要工作授权才能核销' );
 		}
 		
 		$this->display ();
@@ -135,29 +132,11 @@ class WapController extends WapBaseController {
 		$id = I ( 'sn_id' );
 		$info = $dao->getInfoById ( $id );
 		$data = D ( 'Coupon' )->getInfo ( $info ['target_id'] );
+		$data = $this->dealOverTime ( $data, $info ['cTime'] );
 		$this->assign ( 'coupon', $data );
-		
-		if (! empty ( $data ['pay_password'] )) {
-			$pay_password = I ( 'pay_password' );
-			if (empty ( $pay_password )) {
-				$msg = '核销密码不能为空';
-			}
-			
-			if (empty ( $msg )) {
-				if ($data ['pay_password'] != $pay_password) {
-					$msg = '核销密码不正确';
-				}
-			}
-		} else {
-			$map ['token'] = get_token ();
-			$map ['uid'] = $this->mid;
-			$map ['enable'] = 1;
-			
-			$role = M ( 'servicer' )->where ( $map )->getField ( 'role' );
-			$role = explode ( ',', $role );
-			if (! in_array ( 2, $role )) {
-				$msg = '你需要工作授权才能核销';
-			}
+		$check = D ( 'Addons://Servicer/Servicer' )->checkRule ( $this->mid, 2 );
+		if (! $check) {
+			$msg = '你需要工作授权才能核销';
 		}
 		
 		if (empty ( $msg )) {
@@ -194,7 +173,7 @@ class WapController extends WapBaseController {
 		$this->display ();
 	}
 	function show_error($error, $info = '') {
-		empty ( $info ) && $info = D ( 'Coupon' )->getInfo ( $id );
+		empty ( $info ) && $info = D ( 'Coupon' )->getInfo ( $info );
 		$this->assign ( 'info', $info );
 		
 		$this->assign ( 'error', $error );
@@ -203,7 +182,6 @@ class WapController extends WapBaseController {
 		exit ();
 	}
 	function show() {
-		// dump ( $this->mid );
 		$id = I ( 'id', 0, 'intval' );
 		
 		$sn_id = I ( 'sn_id', 0, 'intval' );
@@ -218,16 +196,7 @@ class WapController extends WapBaseController {
 		} else {
 			$sn = $list [0];
 		}
-		/*
-		 * if (empty ( $sn )) {
-		 * $param ['source'] = 'Coupon';
-		 * $param ['id'] = $id;
-		 * redirect ( addons_url ( 'Sucai://Sucai/show', $param ) );
-		 *
-		 * // $this->error( '400148:非法访问' );
-		 * exit ();
-		 * }
-		 */
+		
 		$maps ['coupon_id'] = $id;
 		$list = M ( 'coupon_shop_link' )->where ( $maps )->select ();
 		$shop_ids = getSubByKey ( $list, 'shop_id' );
@@ -242,13 +211,16 @@ class WapController extends WapBaseController {
 		$this->assign ( 'sn', $sn );
 		// dump($sn);
 		
-		$this->_detail ( $my_count );
+		$this->_detail ( $my_count, $sn );
 		
-		$this->display ( 'show' );
+		$this->display ();
 	}
-	function _detail($my_count = false) {
+	function _detail($my_count = false, $sn = []) {
 		$id = I ( 'id', 0, 'intval' );
 		$data = D ( 'Coupon' )->getInfo ( $id );
+		if (isset ( $sn ['cTime'] )) {
+			$data = $this->dealOverTime ( $data, $sn ['cTime'] );
+		}
 		$this->assign ( 'data', $data );
 		// dump ( $data );
 		
@@ -397,9 +369,6 @@ class WapController extends WapBaseController {
 		redirect ( U ( 'show', $param ) );
 	}
 	function coupon_detail() {
-		// dump ( get_openid () );
-		// dump ( get_token () );
-		// dump ( $this->mid );
 		$id = $param ['id'] = I ( 'id', 0, 'intval' );
 		$info = D ( 'Coupon' )->getInfo ( $id );
 		$this->assign ( 'info', $info );
@@ -463,6 +432,13 @@ class WapController extends WapBaseController {
 		
 		$this->display ();
 	}
+	// 统一处理优惠券有效期
+	private function dealOverTime($coupon, $get_time) {
+		if ($coupon ['use_time_type'] == 1) {
+			$coupon ['over_time'] = $get_time + $coupon ['use_time_limit'] * 86400;
+		}
+		return $coupon;
+	}
 	function personal() {
 		$isUse = I ( 'get.use' );
 		if ($isUse != '') {
@@ -471,18 +447,18 @@ class WapController extends WapBaseController {
 		
 		$list = D ( 'Common/SnCode' )->getMyAll ( $this->mid, 'Coupon', false, '', $can_use );
 		if (! empty ( $list )) {
-			foreach ( $list as $k => &$v ) {
+			foreach ( $list as $k => $v ) {
 				$coupon = ( array ) D ( 'Addons://Coupon/Coupon' )->getInfo ( $v ['target_id'] );
+				$coupon = $this->dealOverTime ( $coupon, $v ['cTime'] );
 				if ($coupon && $coupon ['over_time'] > NOW_TIME) {
+					$key = $v ['is_use'] == 0 ? 0 : 1;
 					$v ['sn_id'] = $v ['id'];
-					$v = array_merge ( $v, $coupon );
-				} else {
-					unset ( $list [$k] );
+					$res [$key] [] = array_merge ( $v, $coupon );
 				}
 			}
 		}
 		// dump ( $list );
-		$this->assign ( 'list', $list );
+		$this->assign ( 'list', $res );
 		
 		$this->display ();
 	}

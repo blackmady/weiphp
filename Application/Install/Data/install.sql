@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : localhost
 Source Server Version : 50505
 Source Host           : localhost:3306
-Source Database       : weishop
+Source Database       : weiphp4.0
 
 Target Server Type    : MYSQL
 Target Server Version : 50615
 File Encoding         : 65001
 
-Date: 2017-09-27 11:06:23
+Date: 2017-11-24 19:10:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1792,6 +1792,8 @@ CREATE TABLE `wp_coupon` (
   `template` varchar(255) DEFAULT 'default' COMMENT '素材模板',
   `member` varchar(100) DEFAULT '0' COMMENT '选择人群',
   `is_del` int(10) DEFAULT '0' COMMENT '是否删除',
+  `use_time_type` tinyint(2) DEFAULT '0' COMMENT '有效时间类型',
+  `use_time_limit` int(10) DEFAULT '0' COMMENT '领取后多少天内有效',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
@@ -4041,7 +4043,7 @@ CREATE TABLE `wp_sport_award` (
   `score` int(10) DEFAULT '0' COMMENT '积分数',
   `uid` int(10) DEFAULT NULL COMMENT 'uid',
   `token` varchar(255) DEFAULT NULL COMMENT 'token',
-  `coupon_id` char(50) DEFAULT NULL COMMENT '选择赠送券',
+  `coupon_id` char(50) DEFAULT NULL COMMENT '选择优惠券',
   `money` float DEFAULT NULL COMMENT '返现金额',
   `aim_table` varchar(255) DEFAULT NULL COMMENT '活动标识',
   PRIMARY KEY (`id`)

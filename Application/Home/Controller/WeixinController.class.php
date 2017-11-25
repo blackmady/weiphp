@@ -78,6 +78,15 @@ class WeixinController extends HomeController {
 			if ($event == 'click' && ! empty ( $data ['EventKey'] )) {
 				$key = $data ['Content'] = $data ['EventKey'];
 			} else {
+				if ($data ['MsgType'] == 'location') {
+					$loca ['Location_X'] = $data ['Location_X'];
+					$loca ['Location_Y'] = $data ['Location_Y'];
+					$loca ['Scale'] = $data ['Scale'];
+					$loca ['Label'] = $data ['Label'];
+					$data ['Content'] = json_encode ( $loca );
+					M ( 'weixin_message' )->add ( $data );
+				}
+				
 				$key = $data ['Content'] = $event;
 			}
 		} else {

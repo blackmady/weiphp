@@ -8,6 +8,8 @@ img{ border:none; max-width:100%;}
 a,a:visited,a:active{ text-decoration:none; color:#1d98d6;}
 a.black{color:#555;}
 a.block{ display:block}
+.f12{font-size: 12px;}
+.f14{font-size: 14px;}
 .fr{ float:right}
 .fl{ float:left}
 .gray_txt{ color:#999; font-size:13px;}

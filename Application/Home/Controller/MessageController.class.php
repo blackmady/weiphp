@@ -152,7 +152,7 @@ class MessageController extends HomeController {
 			$paramStr .= '"text":{"content":"' . $info ['media_id'] . '"},"msgtype":"text"}';
 		} else if ($info ['msgtype'] == 'mpnews') {
 			// $param ['mpnews'] ['media_id'] = $info ['media_id'];
-			$paramStr .= '"mpnews":{"media_id":"' . $info ['media_id'] . '"},"msgtype":"mpnews"}';
+			$paramStr .= '"mpnews":{"media_id":"' . $info ['media_id'] . '"},"msgtype":"mpnews","send_ignore_reprint":1}';
 		} else if ($info ['msgtype'] == 'voice') {
 			// $param ['mpnews'] ['media_id'] = $info ['media_id'];
 			$paramStr .= '"voice":{"media_id":"' . $info ['media_id'] . '"},"msgtype":"voice"}';
@@ -195,6 +195,8 @@ class MessageController extends HomeController {
 		} else if ($info ['msgtype'] == 'mpnews') {
 			$param ['mpnews'] ['media_id'] = $info ['media_id'];
 			$param ['msgtype'] = $info ['msgtype'];
+			$param ['send_ignore_reprint'] = 1;
+			
 		} else if ($info ['msgtype'] == 'voice') {
 			$param ['voice'] ['media_id'] = $info ['media_id'];
 			$param ['msgtype'] = $info ['msgtype'];
@@ -251,7 +253,7 @@ class MessageController extends HomeController {
 		} else if ($type == 'appmsg') {
 			if (empty ( $appmsg_id ))
 				$this->error ( '110151:图文素材不能为空' );
-			$res ['media_id'] = D ( 'Home/Material' )->getMediaIdByGroupId ( $appmsg_id );
+			$res ['media_id'] = D ( 'Home/Material' )->getMediaIdByGroupId ( $appmsg_id ,'sendall');
 			$_POST ['media_id'] = $res ['media_id'];
 			$res ['msgtype'] = 'mpnews';
 		} else if ($type == 'voice') {

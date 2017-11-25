@@ -57,8 +57,8 @@ class ModelController extends AdminController {
 		foreach ( $list as $k => &$vo ) {
 			$file = $dao->requireFile ( $vo );
 			if (! $file) {
-				$dao->delete ( $vo ['id'] );
-				unset ( $list [$k] );
+				//$dao->delete ( $vo ['id'] );
+				//unset ( $list [$k] );
 				continue;
 			}
 			
@@ -185,6 +185,141 @@ class ModelController extends AdminController {
 		}
 		// exit ();
 		$this->success ( '更新完成', U ( 'index' ) );
+	}
+	function all() {
+		set_time_limit ( 0 );
+		$list = M ( 'model_copy' )->where ( $map )->select ();
+		foreach ( $list as $vo ) {
+			$this->buildFile ( $vo );
+		}
+	}
+	function buildFile($vo = []) {
+		$dao = D ( 'Common/Model' );
+		if (empty ( $vo )) {
+			set_time_limit ( 0 );
+			$id_map ['id'] = I ( 'id', 0, 'intval' );
+			$vo = M ( 'model_copy' )->where ( $id_map )->find ();
+		}
+		
+		$model_map ['name'] = $vo ['name'];
+		if (! $dao->where ( $model_map )->find ()) {
+			$add = $vo;
+			unset ( $add ['id'] );
+			$dao->add ( $add );
+		}
+		// dump ( $vo );
+		$map ['model_id'] = $vo ['id'];
+		$fields = M ( 'attribute_copy' )->where ( $map )->select ();
+		//dump ( $fields );exit;
+		// =================================================//
+		$list_grid = wp_explode ( $vo ['list_grid'], "\r\n" );
+		
+		$list_grid_arr = [ ];
+		foreach ( $list_grid as $v ) {
+			$func = $href = $title = '';
+			$hrefArr = [ ];
+			list ( $field, $title ) = explode ( ':', $v, 2 );
+			if (strpos ( $field, '|' ) !== false) {
+				list ( $field, $func ) = explode ( '|', $field, 2 );
+			}
+			if (strpos ( $title, '操作' ) !== false) {
+				$field = 'urls';
+				$href = str_replace ( '操作:', '', $title );
+				$title = '操作';
+				$arr1 = explode ( ',', $href );
+				foreach ( $arr1 as $k => $h ) {
+					$arr2 = explode ( '|', $h );
+					$hrefArr [$k] ['title'] = $arr2 [1];
+					$hrefArr [$k] ['url'] = $arr2 [0];
+				}
+			}
+			
+			if (empty ( $hrefArr )) {
+				$list_grid_arr [$field] = [ 
+						'title' => $title,
+						'function' => $func,
+						'come_from' => 0,
+						'width' => '',
+						'is_sort' => 0 
+				];
+			} else {
+				$list_grid_arr [$field] = [ 
+						'title' => $title,
+						'function' => $func,
+						'come_from' => 1,
+						'width' => '',
+						'is_sort' => 0,
+						'href' => $hrefArr 
+				];
+			}
+		}
+		
+		$config = [ 
+				'name' => $vo ['name'],
+				'title' => $vo ['title'],
+				'search_key' => $vo ['search_key'],
+				'add_button' => 1,
+				'del_button' => 1,
+				'search_button' => 1,
+				'check_all' => 1,
+				'list_row' => $vo ['list_row'],
+				'addon' => $vo ['addon'] 
+		];
+		
+		// =================================================//
+		// 组装数据
+		$newList = $newList2 = [ ];
+		foreach ( $fields as $v ) {
+			$name = $v ['name'];
+			
+			$data = [ ];
+			
+			$data ['title'] = $v ['title'];
+			$data ['field'] = $v ['field'];
+			$data ['type'] = $v ['type'];
+			empty ( $v ['placeholder'] ) || $data ['placeholder'] = $v ['placeholder'];
+			empty ( $v ['remark'] ) || $data ['remark'] = $v ['remark'];
+			empty ( $v ['is_show'] ) || $data ['is_show'] = $v ['is_show'];
+			empty ( $v ['extra'] ) || $data ['extra'] = $v ['extra'];
+			
+			if (! empty ( $v ['validate_rule'] )) {
+				$data ['validate_type'] = $v ['validate_type'];
+				$data ['validate_rule'] = $v ['validate_rule'];
+				$data ['validate_time'] = $v ['validate_time'];
+				$data ['error_info'] = $v ['error_info'];
+			}
+			if (! empty ( $v ['auto_rule'] )) {
+				$data ['auto_rule'] = $v ['auto_rule'];
+				$data ['auto_time'] = $v ['auto_time'];
+				$data ['auto_type'] = $v ['auto_type'];
+			}
+			
+			$newList [$name] = $data;
+		}
+		// 保持字段排序
+		if (! empty ( $vo ['field_sort'] )) {
+			$data = json_decode ( $vo ['field_sort'] );
+			
+			foreach ( $data as $name ) {
+				if (isset ( $newList [$name] )) {
+					$newList2 [$name] = $newList [$name];
+					unset ( $newList [$name] );
+				}
+			}
+			
+			// 新增加的字段放最后
+			foreach ( $newList as $name => $f ) {
+				$newList2 [$name] = $f;
+			}
+		} else {
+			$newList2 = $newList;
+		}
+		// dump ( $vo );
+		// dump ( $newList2 );
+		// dump ( $list_grid_arr );
+		// dump ( $config );
+		$dao->buildFile ( $vo, $newList2, $list_grid_arr, $config );
+		unset ( $vo );
 	}
 	function freshAttrtoFile() {
 		set_time_limit ( 0 );
@@ -354,7 +489,6 @@ class ModelController extends AdminController {
 		
 		$this->success ( '更新完成', U ( 'index' ) );
 	}
-	
 	/**
 	 * 新增页面初始化
 	 *
@@ -544,7 +678,6 @@ class ModelController extends AdminController {
 			}
 		}
 	}
-	
 	/**
 	 * 导出一个模型
 	 */

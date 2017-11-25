@@ -857,25 +857,25 @@ function simpleColorPicker(_this,callback){
 		}
 		var $contentHtml = $('<div class="appmsg_dialog" style="padding:10px; max-height:560px;overflow-y:auto;overflow-x:hidden;">'+
 			'<iframe id="usersIframe" name="usersIframe" style="height:530px;width:100%; border:none" border="0" src="'+dataUrl+'"><ul class="mt_10"><center><br/><br/><br/><img src="'+IMG_PATH+'/loading.gif"/></center></ul></iframe></div>');
-		$.Dialog.open(title?title:"选择图文素材",{width:1000,height:640},$contentHtml);
-		$.ajax({
-			url:dataUrl,
-			data:{'type':'ajax'},
-			dataType:'html',
-			success:function(data){
-				$data = $(data);
-				$('ul',$contentHtml).html($data);
-				$data.find('.material_list').masonry({
-					// options
-					itemSelector : '.appmsg_li'
-					//columnWidth : 308
-				  });
-				$('iframe').load(function () {
-				$("iframe").contents().find("li").on('click',function(){
-					callback(this);
-				});
+		$.Dialog.open(title?title:"选择图文素材",{width:1010,height:640},$contentHtml);
+		// $.ajax({
+		// 	url:dataUrl,
+		// 	data:{'type':'ajax'},
+		// 	dataType:'html',
+		// 	success:function(data){
+		// 		$data = $(data);
+		// 		$('ul',$contentHtml).html($data);
+		// 		$data.find('.material_list').masonry({
+		// 			// options
+		// 			itemSelector : '.appmsg_li'
+		// 			//columnWidth : 308
+		// 		  });
+		// 	}
+		// })
+		$("#usersIframe").on('load',function(){
+			$("#usersIframe").contents().find(".appmsg_li").on('click',function(){
+				callback(this);
 			});
-			}
 		})
 	}
 		/* 选择文本素材 */

@@ -150,10 +150,15 @@ class IndexController extends HomeController {
 			) );
 			redirect ( $url );
 		}
-		$map ['is_show']=1;
+		// 切换公众号时防止老的__forward__影响
+		if (Cookie ( '__forward__' )) {
+			Cookie ( '__forward__', null );
+		}
+		
+		$map ['is_show'] = 1;
 		$map ['status'] = 1;
 		$data = M ( 'addons' )->where ( $map )->order ( 'id DESC' )->select ();
-		unset($map);
+		unset ( $map );
 		$token_status = D ( 'Common/AddonStatus' )->getList ( true );
 		foreach ( $data as $k => &$vo ) {
 			if ($token_status [$vo ['name']] === '-1') {

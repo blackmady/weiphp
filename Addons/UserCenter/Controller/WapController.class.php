@@ -326,12 +326,12 @@ class WapController extends WapBaseController {
 	
 	// 检查公众号基础功能
 	function check() {
-	    $token=I ( 'token' ,'');
-	    if (empty($token)){
-	        $map['id']=WPID;
-	    }else {
-	        $map ['token'] = $token;
-	    }
+		$token = I ( 'token', '' );
+		if (empty ( $token )) {
+			$map ['id'] = WPID;
+		} else {
+			$map ['token'] = $token;
+		}
 		$info = M ( 'apps' )->where ( $map )->find ();
 		$type = $info ['type'];
 		
@@ -379,14 +379,12 @@ class WapController extends WapBaseController {
 			addAutoCheckLog ( 'massage', '收发消息失败', $info ['token'] );
 		}
 		
-		$nextUrl = U ( 'check2', array (
-				'token' => $info ['token'] 
-		) );
+		$nextUrl = U ( 'check2' );
 		$this->assign ( 'nextUrl', $nextUrl );
 		$this->display ();
 	}
 	function check2() {
-		$token = I ( 'token' );
+		$token = get_token ();
 		
 		// get_openid
 		$callback = GetCurUrl ();
@@ -402,7 +400,7 @@ class WapController extends WapBaseController {
 		$this->display ();
 	}
 	function check3() {
-		$token = I ( 'token' );
+		$token = get_token ();
 		$msg = I ( 'msg' );
 		addAutoCheckLog ( 'jsapi', $msg, $token );
 	}

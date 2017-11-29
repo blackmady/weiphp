@@ -29,7 +29,8 @@ class WeixinController extends HomeController {
 		}
 		$this->token = $data ['ToUserName'];
 		// 记录日志
-		addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
+		$content = file_get_contents ( 'php://input' );
+		addWeixinLog ( $data, $content );
 		// 初始化用户
 		$data ['ToUserName'] == 'gh_3c884a361561' || $this->init_follow ( $data, $weixin );
 		// 回复数据
@@ -295,6 +296,9 @@ class WeixinController extends HomeController {
 		D ( 'Common/Keyword' )->where ( $map )->setInc ( 'request_count' );
 	}
 	private function init_follow($data, $dao = '') {
+		if ($data ['Content'] == '自动检测')
+			return false;
+		
 		$info = get_token_appinfo ( $data ['ToUserName'] );
 		$config = S ( 'PUBLIC_AUTH_' . $info ['type'] );
 		if (! $config) {

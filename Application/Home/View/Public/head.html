@@ -40,3 +40,11 @@ var  UPLOAD_DIALOG_URL = "{:U('Home/File/uploadDialog',array('session_id'=>sessi
 </script>
 <!-- 页面header钩子，一般用于加载插件CSS文件和代码 -->
 {:hook('pageHeader')}
+
+<!-- 提示 -->
+<div id="top-alert" class="top-alert-tips alert-error" style="display:none">
+  <notempty name="code"><a class="code" href="">解决方法 ></a></notempty>
+  <div class="code_box"></div>
+  <a class="close" href="javascript:;"><b class="fa fa-times-circle"></b></a>
+  <div class="alert-content"></div>
+</div>

@@ -75,8 +75,11 @@ class NoticeController extends Controller {
 		if (count ( $arr ) != 3) {
 			$this->return_error ( 'callback格式出错' );
 		}
-		
-		$mod = $arr [0] . '/' . $arr [1];
+		if(is_install($arr[0])){
+		    $mod = 'Addons://'.$arr [0] . '/' . $arr [1];
+		}else{
+		    $mod = $arr [0] . '/' . $arr [1];
+		}
 		$act = $arr [2];
 		$res = D ( $mod )->$act ( $data, $payment );
 		if ($res ['status'] == 0) {

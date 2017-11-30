@@ -17,14 +17,7 @@ class UserTagLinkTable {
 	];
 	
 	// 列表定义
-	public $list_grid = [
-			'' => [
-					'title' => '',
-					'come_from' => 0,
-					'width' => '',
-					'is_sort' => 0
-			]
-	];
+	public $list_grid = [ ];
 	
 	// 字段定义
 	public $fields = [

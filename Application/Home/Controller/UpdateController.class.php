@@ -10,7 +10,7 @@ class UpdateController extends HomeController {
 	}
 	function dealNickName() {
 		set_time_limit ( 0 );
-		$list = M ( 'user' )->order('id desc')->field ( 'uid,nickname' )->select ();
+		$list = M ( 'user' )->order('uid desc')->field ( 'uid,nickname' )->select ();
 		foreach ( $list as $vo ) {
 			$save ['nickname'] = deal_emoji ( $vo ['nickname'], 1 );
 			if ($save ['nickname'] != $vo ['nickname']) {

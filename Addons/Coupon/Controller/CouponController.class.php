@@ -111,6 +111,7 @@ class CouponController extends ManageBaseController {
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
 			if ($Model->create () && $Model->save ()) {
 				D ( 'Coupon' )->getInfo ( $id, true );
+				$this->_saveKeyword ( $model, $id );
 			}
 			// 清空缓存
 			method_exists ( $Model, 'clear' ) && $Model->clear ( $id, 'edit' );
@@ -160,6 +161,7 @@ class CouponController extends ManageBaseController {
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
 			if ($Model->create () && $id = $Model->add ()) {
+				$this->_saveKeyword ( $model, $id );
 				$this->save_shop ( $id, $_POST ['shop_id'] );
 				
 				// 清空缓存

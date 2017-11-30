@@ -432,6 +432,9 @@ class AppsController extends ManageBaseController {
 	// 微信支付配置
 	function payment_set() {
 		$id = I ( 'id' );
+		if (!$id){
+		    $id=WPID;
+		}
 		$data = D ( 'Common/Apps' )->getInfo ( $id );
 		if (! empty ( $data ) && $data ['uid'] != $this->mid) {
 			$this->error ( '110022:非法操作' );
@@ -445,7 +448,7 @@ class AppsController extends ManageBaseController {
 			}
 			$save ['appid'] = I ( 'appid' );
 			if (empty ( $save ['appid'] )) {
-				$this->error ( '110101:小程序APPID不能为空' );
+				$this->error ( '110101:APPID不能为空' );
 			}
 			$save ['mch_id'] = I ( 'mch_id' );
 			if (empty ( $save ['mch_id'] )) {
@@ -468,7 +471,7 @@ class AppsController extends ManageBaseController {
 			// 更新缓存
 			D ( 'Common/User' )->clear ( $this->mid );
 			
-			$this->success ( '保存成功！', U ( 'lists' ) );
+			$this->success ( '保存成功！', U ( 'payment_set' ) );
 		} else {
 			$data ['type'] = intval ( $data ['type'] );
 			$this->assign ( 'info', $data );

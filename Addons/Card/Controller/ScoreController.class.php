@@ -3,6 +3,7 @@
 namespace Addons\Card\Controller;
 
 use Think\ManageBaseController;
+
 // 积分兑换活动
 class ScoreController extends ManageBaseController {
 	function _initialize() {
@@ -78,7 +79,7 @@ class ScoreController extends ManageBaseController {
 		foreach ( $data2 as $v ) {
 			$urls [$v ['id']] = $v ['urls'];
 		}
-
+		
 		foreach ( $data as &$vo ) {
 			if ($vo ['start_time'] > NOW_TIME) {
 				$vo ['status'] .= '未开始';
@@ -124,8 +125,14 @@ class ScoreController extends ManageBaseController {
 		$this->display ();
 	}
 	function add() {
-		$this->_get_card_conpon ();
 		$this->_card_level ();
+		if (! is_install ( "ShopCoupon" )) {
+			$data ['coupon_type'] = 1;
+			$this->assign ( 'data', $data );
+			$this->_get_card_conpon ( 1 );
+		} else {
+			$this->_get_card_conpon ( 0 );
+		}
 		$this->display ( 'edit' );
 	}
 	function edit() {
@@ -133,6 +140,18 @@ class ScoreController extends ManageBaseController {
 		$model = $this->getModel ( 'card_score' );
 		
 		if (IS_POST) {
+			if (! is_install ( "ShopCoupon" )) {
+				$_POST ['coupon_type'] = 1;
+			}
+			if ($_POST ['member']) {
+				$member = $_POST ['member'];
+				$arr [] = '';
+				foreach ( $member as $m ) {
+					$arr [] = $m;
+				}
+				$arr [] = '';
+				$_POST ['member'] = $arr;
+			}
 			if (empty ( $_POST ['title'] )) {
 				$this->error ( '400084:活动名称必须' );
 			}
@@ -184,13 +203,21 @@ class ScoreController extends ManageBaseController {
 	// 获取优惠券列表
 	function _get_card_conpon($type = 0) {
 		$map ['end_time'] = array (
-				'gt',
-				NOW_TIME 
+				array (
+						'gt',
+						NOW_TIME 
+				),
+				array (
+						'exp',
+						'IS NULL' 
+				),
+				'or' 
 		);
 		$map ['token'] = get_token ();
 		if ($type == 0) {
 			$list = M ( 'shop_coupon' )->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
 		} else {
+			$map ['is_public'] = 1;
 			$list = M ( 'coupon' )->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
 		}
 		$this->assign ( 'shop_conpon_list', $list );

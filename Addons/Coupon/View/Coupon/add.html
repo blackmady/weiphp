@@ -4,10 +4,9 @@
   <section id="contents"> <include file="Home@Addons/_nav" />
     <div class="tab-content"> 
       <!-- 表单 -->
-      <h4>添加优惠券</h4>
       <php> $post_url || $post_url = U('add?model='.$model['id'], $get_param);</php>
       <form id="form" action="{$post_url}" method="post" class="form-horizontal" style="overflow:hidden">
-           <div class="fl" style="width:500px;">
+           <div class="fl" style="width:80%;">
             <div class="controls">
                 <label class="item-label"><span class="need_flag">*</span>
                        优惠劵标题
@@ -35,6 +34,19 @@
                 <input type="text" name="num" class="text input-large" />
             </div>
             
+         <div class="controls ">
+          <label class="item-label"> 发放途径 </label>
+          <div class="controls">
+            <div class="check-item">
+              <input type="radio" name="is_public" id="is_public_0" value="0" class="regular-radio is_public" <if condition="intval($data[is_public])==0">checked="checked"</if> >
+              <label for="is_public_0"></label>
+              通用券（在会员卡中可领取） </div>
+            <div class="check-item">
+              <input type="radio" name="is_public" id="is_public_1" value="1" class="regular-radio is_public" <if condition="$data[is_public]==1">checked="checked"</if> >
+              <label for="is_public_1"></label>
+              活动券（参与活动后赠送，如积分兑换优惠券） </div>
+          </div>
+        </div>                   
             
  <div class="controls">
 <label class="item-label">

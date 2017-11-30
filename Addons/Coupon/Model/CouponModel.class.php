@@ -146,12 +146,90 @@ class CouponModel extends Model {
 	}
 	function getSelectList() {
 		$map ['end_time'] = array (
-				'gt',
-				NOW_TIME 
+				array (
+						'gt',
+						NOW_TIME 
+				),
+				array (
+						'exp',
+						'IS NULL' 
+				),
+				'or' 
 		);
 		$map ['token'] = get_token ();
 		$map ['is_del'] = 0;
 		$list = $this->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
 		return $list;
+	}
+	function getUnCollectWhere($uid, $is_public = null) {
+		if ($is_public !== null) {
+			$map ['is_public'] = $is_public;
+		}
+		$map ['token'] = get_token ();
+		$map ['is_del'] = 0;
+		// 搜索条件
+		$map ['end_time'] = array (
+				array (
+						'gt',
+						NOW_TIME 
+				),
+				array (
+						'exp',
+						'IS NULL' 
+				),
+				'or' 
+		);
+		$map ['start_time'] = array (
+				array (
+						'lt',
+						NOW_TIME 
+				),
+				array (
+						'exp',
+						'IS NULL' 
+				),
+				'or' 
+		);
+		$map ['collect_count'] = array (
+				'exp',
+				'<= `num`' 
+		);
+		
+		// 获取用户的会员等级
+		$levelInfo = D ( 'Addons://Card/CardLevel' )->getCardMemberLevel ( $uid );
+		// 读取模型数据列表
+		// dump($map);
+		$map ['member'] = array (
+				array (
+						'LIKE',
+						'%,0,%' 
+				),
+				array (
+						'LIKE',
+						'%,-1,%' 
+				) 
+		);
+		if ($levelInfo) {
+			$levelId = $levelInfo ['id'];
+			$map ['member'] [] = [ 
+					'LIKE',
+					"%,{$levelId},%" 
+			];
+		}
+		$map ['member'] [] = 'or';
+		
+		$map2 = $conponArr = [ ];
+		
+		$map2 ['uid'] = $uid;
+		$map2 ['addon'] = 'Coupon';
+		$snCode = M ( 'sn_code' )->where ( $map2 )->getFields ( 'target_id' );
+		if ($snCode) {
+			$map ['id'] = array (
+					'not in',
+					$snCode 
+			);
+		}
+		
+		return $map;
 	}
 }

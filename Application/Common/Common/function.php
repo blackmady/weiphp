@@ -52,7 +52,7 @@ function is_administrator($uid = null) {
  * @return array
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function str2arr($str, $glue = ',') {
+function str2arr($str = '', $glue = ',') {
 	return explode ( $glue, $str );
 }
 
@@ -66,7 +66,7 @@ function str2arr($str, $glue = ',') {
  * @return string
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function arr2str($arr, $glue = ',') {
+function arr2str($arr = [], $glue = ',') {
 	return implode ( $glue, $arr );
 }
 

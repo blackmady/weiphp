@@ -528,31 +528,16 @@ class WapController extends WapBaseController {
 		$page = I ( 'p', 1, 'intval' ); // 默认显示第一页数据
 		$order = 'id desc';
 		$model = $this->getModel ();
-		// $map['is_show']=1;
-		$map ['is_del'] = 0;
-		session ( 'common_condition', $map );
 		// 解析列表规则
 		$list_data = $this->_list_grid ( $model );
 		
 		// 搜索条件
-		$map = $this->_search_map ( $model, $list_data ['fields'] );
 		$row = empty ( $model ['list_row'] ) ? 20 : $model ['list_row'];
 		
-		$map ['end_time'] = array (
-				'gt',
-				NOW_TIME 
-		);
-		// 获取用户的会员等级
-		$levelInfo = D ( 'Addons://Card/CardLevel' )->getCardMemberLevel ( $this->mid );
-		// 读取模型数据列表
-		// dump($map);
-		$list = $dao->field ( 'id,member' )->where ( $map )->order ( $order )->page ( $page, $row )->select ();
-		
+		$map = $dao->getUnCollectWhere ( $this->mid, 0 );
+		$list = $dao->field ( 'id' )->where ( $map )->order ( $order )->page ( $page, $row )->select ();
 		foreach ( $list as $d ) {
-			$levelArr = explode ( ',', $d ['member'] );
-			if (in_array ( 0, $levelArr ) || in_array ( - 1, $levelArr ) || in_array ( $levelInfo ['id'], $levelArr )) {
-				$datas [] = $dao->getInfo ( $d ['id'] );
-			}
+			$datas [] = $dao->getInfo ( $d ['id'] );
 		}
 		
 		/* 查询记录总数 */
@@ -568,5 +553,28 @@ class WapController extends WapBaseController {
 		$this->assign ( $list_data );
 		
 		$this->display ();
+	}
+	// 一键领取全部优惠券
+	function collect_all() {
+		$config = getAddonConfig ( 'UserCenter' );
+		$follow = get_followinfo ( $this->mid );
+		if ($config ['need_bind'] && ! (defined ( 'IN_WEIXIN' ) && IN_WEIXIN) && ! isset ( $_GET ['is_stree'] ) && $this->mid != 1 && (empty ( $follow ['mobile'] ) || empty ( $follow ['truename'] ))) {
+			Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
+			redirect ( addons_url ( 'UserCenter://Wap/bind_prize_info' ) );
+		}
+		
+		$dao = D ( 'Coupon' );
+		$map = $dao->getUnCollectWhere ( $this->mid );
+		$lists = $dao->where ( $map )->select ();
+		foreach ( $lists as $info ) {
+			$data ['target_id'] = $info ['id'];
+			$data ['uid'] = $this->mid;
+			$data ['addon'] = 'Coupon';
+			$data ['sn'] = uniqid ();
+			$data ['cTime'] = NOW_TIME;
+			$data ['token'] = $info ['token'];
+			$res = D ( 'Common/SnCode' )->delayAdd ( $data );
+		}
+		redirect ( U ( 'personal' ) );
 	}
 }

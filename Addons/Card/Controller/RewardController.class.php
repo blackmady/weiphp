@@ -3,13 +3,14 @@
 namespace Addons\Card\Controller;
 
 use Think\ManageBaseController;
+
 // 开卡即送活动
 class RewardController extends ManageBaseController {
 	function _initialize() {
 		parent::_initialize ();
 		
 		$type = I ( 'type', 0, 'intval' );
-		$param['mdm']=$_GET['mdm'];
+		$param ['mdm'] = $_GET ['mdm'];
 		$param ['type'] = 0;
 		$res ['title'] = '所有的开卡即送活动';
 		$res ['url'] = addons_url ( 'Card://Reward/lists', $param );
@@ -44,7 +45,7 @@ class RewardController extends ManageBaseController {
 		$list_data = $this->_list_grid ( $model );
 		
 		// 搜索条件
-		$map = $this->_search_map ( $model, $fields );
+		$map = $this->_search_map ( $model, $list_data ['fields'] );
 		$type = I ( 'type', 0, 'intval' );
 		if ($type == 1) {
 			$map ['start_time'] = array (
@@ -71,10 +72,7 @@ class RewardController extends ManageBaseController {
 		
 		// 读取模型数据列表
 		$name = parse_name ( get_table_name ( $model ['id'] ), true );
-		$data = M ( $name )->field ( true )->where ( $map )->order ( $order )->page ( $page, $row )->select ();
-		
-		$dataTable = D ( 'Common/Model' )->getFileInfo ( $model );
-		$data = $this->parseData ( $data, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
+		$data = M ( $name )->field ( true )->where ( $map )->order ( 'id desc' )->page ( $page, $row )->select ();
 		
 		foreach ( $data as &$vo ) {
 			if ($vo ['start_time'] > NOW_TIME) {
@@ -90,7 +88,13 @@ class RewardController extends ManageBaseController {
 				$vo ['type'] = '送： ' . M ( 'shop_coupon' )->where ( "id='{$vo[coupon_id]}'" )->getField ( 'title' );
 			}
 			
-			$vo ['start_time'] = time_format ( $vo ['start_time'] ) . ' 至<br/>' . time_format ( $vo ['end_time'] );
+			$vo ['start_time_text'] = time_format ( $vo ['start_time'] ) . ' 至<br/>' . time_format ( $vo ['end_time'] );
+		}
+		$dataTable = D ( 'Common/Model' )->getFileInfo ( $model );
+		$data = $this->parseData ( $data, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
+		
+		foreach ( $data as &$v ) {
+			$v ['start_time'] = $vo ['start_time_text'];
 		}
 		
 		/* 查询记录总数 */
@@ -108,10 +112,14 @@ class RewardController extends ManageBaseController {
 		$this->assign ( $list_data );
 		// dump($list_data);
 		
-		$this->display ( $templateFile );
+		$this->display ();
 	}
 	function add() {
 		$this->_get_card_conpon ();
+		if (! is_install ( "ShopCoupon" )) {
+			$data ['type'] = 0;
+			$this->assign ( 'data', $data );
+		}
 		$this->display ( 'edit' );
 	}
 	function edit() {
@@ -119,40 +127,45 @@ class RewardController extends ManageBaseController {
 		$model = $this->getModel ( 'card_reward' );
 		
 		if (IS_POST) {
-		    if (empty($_POST['title'])){
-		        $this->error( '400076:请填写活动名称');
-		    }
-		    if (empty($_POST['start_time'])){
-		        $this->error( '400077:请填写开始时间');
-		    }
-		    if (empty($_POST['end_time'])){
-		        $this->error( '400078:请填写结束时间');
-		    }
-		    if ($_POST['start_time'] >= $_POST['end_time']){
-		        $this->error( '400079:活动开始时间必须小于结束时间');
-		    }
-		    
+			if (! is_install ( "ShopCoupon" )) {
+				$_POST ['type'] = 0;
+			}
+			if (empty ( $_POST ['title'] )) {
+				$this->error ( '400076:请填写活动名称' );
+			}
+			if (empty ( $_POST ['start_time'] )) {
+				$this->error ( '400077:请填写开始时间' );
+			}
+			if (empty ( $_POST ['end_time'] )) {
+				$this->error ( '400078:请填写结束时间' );
+			}
+			if ($_POST ['start_time'] >= $_POST ['end_time']) {
+				$this->error ( '400079:活动开始时间必须小于结束时间' );
+			}
+			
 			$_POST ['is_show'] = intval ( $_POST ['is_show'] );
 			
 			$act = empty ( $id ) ? 'add' : 'save';
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
-			if ($Model->create () && $res = $Model->$act ()) {
+			$Model->create ();
+			$res = $Model->$act ();
+			if ($res !== false) {
 				$act == 'add' && $id = $res;
 				
 				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'], $this->get_param ) );
 			} else {
-				$this->error( '400080:'. $Model->getError () );
+				$this->error ( '400080:' . $Model->getError () );
 			}
 		} else {
 			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
-			$data || $this->error( '400081:数据不存在！' );
+			$data || $this->error ( '400081:数据不存在！' );
 			
 			$token = get_token ();
 			if (isset ( $data ['token'] ) && $token != $data ['token'] && defined ( 'ADDON_PUBLIC_PATH' )) {
-				$this->error( '400082:非法访问！' );
+				$this->error ( '400082:非法访问！' );
 			}
 			$this->assign ( 'data', $data );
 			
@@ -163,13 +176,16 @@ class RewardController extends ManageBaseController {
 	}
 	// 获取优惠券列表
 	function _get_card_conpon() {
-		$map ['end_time'] = array (
-				'gt',
-				NOW_TIME 
-		);
-		$map ['token'] = get_token ();
-		
-		$list = M ( 'shop_coupon' )->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
+		$list = [ ];
+		if (is_install ( "ShopCoupon" )) {
+			$map ['end_time'] = array (
+					'gt',
+					NOW_TIME 
+			);
+			$map ['token'] = get_token ();
+			
+			$list = M ( 'shop_coupon' )->where ( $map )->field ( 'id,title' )->order ( 'id desc' )->select ();
+		}
 		$this->assign ( 'shop_conpon_list', $list );
 	}
 }

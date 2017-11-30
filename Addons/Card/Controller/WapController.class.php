@@ -54,7 +54,7 @@ class WapController extends WapBaseController {
 	}
 	function index() {
 		$map ['uid'] = $this->mid;
-		$map ['token'] = get_token ();
+		$token = $map ['token'] = get_token ();
 		$info = M ( 'card_member' )->where ( $map )->find ();
 		
 		$has_subscribe = isWeixinBrowser () ? intval ( M ( 'apps_follow' )->where ( $map )->getField ( 'has_subscribe' ) ) : 1;
@@ -105,6 +105,16 @@ class WapController extends WapBaseController {
 				$this->assign ( 'coupon', $couponData );
 			}
 			$this->assign ( 'shops', $branch );
+			
+			// 优惠券可领取的统计数
+			$dao = D ( 'Addons://Coupon/Coupon' );
+			$map = $dao->getUnCollectWhere ( $this->mid, 0 );
+			$coupon_count = $dao->where ( $map )->count ();
+			$this->assign ( 'coupon_num', $coupon_count );
+			
+			// 积分兑换统计数
+			$exchange_num = D ( 'CardScore' )->getNewCount ( $this->mid );
+			$this->assign ( 'exchange_num', $exchange_num );
 		} else if ($info ['number'] && ! $info ['phone'] && $info ['status'] == 2) {
 			// status: 2 体验卡， 1：正常， 0：冻结
 			redirect ( U ( 'get_success', $this->get_param ) );
@@ -1051,58 +1061,8 @@ class WapController extends WapBaseController {
 	
 	// 积分兑换
 	function score_exchange() {
-		$map1 ['token'] = $map ['token'] = get_token ();
-		$map1 ['uid'] = $map ['uid'] = $this->mid;
-		$cardMember = M ( 'card_member' )->where ( $map )->find ();
-		// $map['member']=array('in',array(0,-1,$cardMember['level']));
-		$dataList = M ( 'card_score' )->where ( $map )->order ( 'id desc' )->select ();
-		foreach ( $dataList as $vo ) {
-			$memberArr = explode ( ',', $vo ['member'] );
-			if (in_array ( 0, $memberArr ) || in_array ( - 1, $memberArr ) || in_array ( $cardMember ['level'], $memberArr )) {
-				$data [] = $vo;
-			}
-		}
-		foreach ( $data as &$v ) {
-			$nocount = 0;
-			$map1 ['card_score_id'] = $v ['id'];
-			$logs = M ( 'score_exchange_log' )->where ( $map1 )->count ();
-			if ($v ['coupon_type'] == 0) {
-				if (is_install ( "ShopCoupon" )) {
-					$info = D ( 'Addons://ShopCoupon/ShopCoupon' )->getInfo ( $v ['coupon_id'] );
-					$list = D ( 'Common/SnCode' )->getMyList ( $map ['uid'], $v ['coupon_id'], 'ShopCoupon' );
-					$my_count = count ( $list );
-					if ($info ['limit_num'] > 0 && $my_count >= $info ['limit_num']) {
-						$nocount = 1;
-					}
-					$v ['coupon'] = '代金券：' . $info ['title'];
-				}
-				// $v['coupon']=M('shop_coupon')->find($v['coupon_id']);
-			} else {
-				$info = D ( 'Addons://Coupon/Coupon' )->getInfo ( $v ['coupon_id'] );
-				$list = D ( 'Common/SnCode' )->getMyList ( $map ['uid'], $v ['coupon_id'], 'Coupon' );
-				$my_count = count ( $list );
-				if ($info ['max_num'] > 0 && $my_count >= $info ['max_num']) {
-					$nocount = 1;
-				}
-				
-				$v ['coupon'] = '优惠券：' . $info ['title'];
-				// $v['coupon']=M('coupon')->find($v['coupon_id']);
-			}
-			if ($info ['collect_count'] >= $info ['num']) {
-				$nocount = 1;
-			} else if (! empty ( $info ['start_time'] ) && $info ['start_time'] > NOW_TIME) {
-				$nocount = 1;
-			} else if (! empty ( $info ['end_time'] ) && $info ['end_time'] < NOW_TIME) {
-				$nocount = 1;
-			}
-			
-			if ($logs > 0 && $logs >= $v ['num_limit']) {
-				$nocount = 1;
-			}
-			$v ['no_count'] = $nocount;
-		}
-		
-		$this->assign ( 'score_exchange', $data );
+		$dataList = D ( 'CardScore' )->getWapList ( $this->mid );
+		$this->assign ( 'score_exchange', $dataList );
 		$this->display ();
 	}
 	function do_score_exchange() {

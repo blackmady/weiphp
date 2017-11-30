@@ -92,7 +92,7 @@
 
                       积分</span></p>
                     <p>
-
+<php> if (is_install ( "ShopCoupon" )) { </php>
                       <input type="checkbox" name="shop_coupon[1]" onclick="select_param(this)" value="1" <if condition="$cd[shop_coupon]==1">checked="checked"</if>>
 
                       <span class="title">送赠送券</span><span class="param">送
@@ -106,7 +106,9 @@
                           </volist>
                         </empty>
                       </select>
-                      </span></p></td>
+                      </span></p>
+ <php> } </php>                     
+                      </td>
                 </tr>
                 <volist name="condition_list" id="cd">
                  <tr class="list_tr">
@@ -127,6 +129,7 @@
                       <input type="text" value="{$cd.score_param}" class="form-control money" name="score_param[{$cd.sort}]" maxlength="11">
                       积分</span></p>
                     <p>
+<php> if (is_install ( "ShopCoupon" )) { </php>                    
                       <input type="checkbox" name="shop_coupon[{$cd.sort}]" onclick="select_param(this)" value="1" <if condition="$cd[shop_coupon]==1">checked="checked"</if>>
                       <span class="title">送赠送券</span><span class="param">送
                       <select style="width: 180px;" name="shop_coupon_param[{$cd.sort}]">
@@ -139,7 +142,9 @@
                           </volist>
                         </empty>
                       </select>
-                      </span></p></td>
+                      </span></p>
+ <php> } </php>                        
+                      </td>
                 </tr>
                 </volist>
                 <tr class="more_tr">
@@ -179,7 +184,7 @@
       <input type="text" value="" class="form-control money" name="score_param[sort_id]" maxlength="11">
       积分</span></p>
     <p>
-
+<php> if (is_install ( "ShopCoupon" )) { </php>   
       <input type="checkbox" name="shop_coupon[sort_id]" onclick="select_param(this)" value="1">
       <span class="title">送赠送券</span><span class="param">送
       <select style="width: 180px;" name="shop_coupon_param[sort_id]">
@@ -192,7 +197,9 @@
           </volist>
         </empty>
       </select>
-      </span></p></td>
+      </span></p>
+ <php> } </php>       
+      </td>
 </tr> </table>     
     </div>
   </section>

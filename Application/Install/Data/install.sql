@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50615
 File Encoding         : 65001
 
-Date: 2017-11-24 19:10:42
+Date: 2017-11-30 20:31:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1794,6 +1794,7 @@ CREATE TABLE `wp_coupon` (
   `is_del` int(10) DEFAULT '0' COMMENT '是否删除',
   `use_time_type` tinyint(2) DEFAULT '0' COMMENT '有效时间类型',
   `use_time_limit` int(10) DEFAULT '0' COMMENT '领取后多少天内有效',
+  `is_public` tinyint(2) DEFAULT '0' COMMENT '领取范围',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 

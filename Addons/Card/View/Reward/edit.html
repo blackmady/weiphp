@@ -41,6 +41,7 @@
             <input type="datetime" placeholder="请选择过期时间" value="{$data.end_time|time_format}" class="text time" name="end_time">
           </div>
         </div>
+        <php> if (is_install ( "ShopCoupon" )) { </php>
         <div class="form-item cf toggle-type">
           <label class="item-label"> 活动策略 </label>
           <div class="controls">
@@ -54,6 +55,7 @@
               送代金券 </div>
           </div>
         </div>
+        <php> } </php>
         <div class="form-item cf" id="score" style="display:none">
         <label class="item-label">  </label>
           <div class="controls">
@@ -112,12 +114,12 @@
 
 function choose_type(){
 	var val = $('input[name="type"]:checked').val();
-	if(val==0){
-		$('#score').show();
-		$('#coupon_id').hide();
-	}else{
+	if(val==1){
 		$('#score').hide();
 		$('#coupon_id').show();
+	}else{
+        $('#score').show();
+		$('#coupon_id').hide();
 	}
 }
 

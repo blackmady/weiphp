@@ -43,10 +43,10 @@
                     <span class="title">{$vo.name}</span>
                     <span class="addra">
                     <notempty name="vo.gps">
-                        <a href="http://apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77">地址：{$vo.address}</a>
+                        <a href="//apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77">地址：{$vo.address}</a>
                                 
                     <else />
-                        <a href="http://api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">地址：{$vo.address}</a>
+                        <a href="//api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">地址：{$vo.address}</a>
                     </notempty>
                     </span>
                     <span>{$vo.juli}</span>

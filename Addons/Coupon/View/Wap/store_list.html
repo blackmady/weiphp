@@ -12,9 +12,9 @@
                 <span style="padding-left: 8px;">营业时间：{$vo.open_time}</span>
                 <br/>
                 <notempty name="vo.gps">
-                    <a href="http://apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77">{$vo.address}</a>
+                    <a href="//apis.map.qq.com/tools/poimarker?marker=coord:{$vo.gps};title:{$vo.name};addr:{$vo.address}&referer=myapp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77">{$vo.address}</a>
                 <else />
-                    <a href="http://api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
+                    <a href="//api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
                 </notempty>
                 <a href="tel:{$vo.phone}"><em>&nbsp;</em></a>
             </li>

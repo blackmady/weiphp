@@ -387,7 +387,7 @@ class WapController extends WapBaseController {
 			$shop_list = M ( 'coupon_shop' )->where ( $map_shop )->select ();
 			foreach ( $shop_list as &$s ) {
 				$gpsArr = wp_explode ( $s ['gps'] );
-				$s ['gps'] = $gpsArr [1] . ',' . $gpsArr ['0'];
+				$s ['gps'] = $gpsArr [0] . ',' . $gpsArr [1];
 			}
 			$this->assign ( 'shop_list', $shop_list );
 		}

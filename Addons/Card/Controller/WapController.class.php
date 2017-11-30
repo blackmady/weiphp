@@ -256,10 +256,10 @@ class WapController extends WapBaseController {
 			foreach ( $couponShop as &$v ) {
 				if ($v ['gps']) {
 					$gpsArr = wp_explode ( $v ['gps'] );
-					$v ['gps'] = $gpsArr [1] . ',' . $gpsArr ['0'];
+					$v ['gps'] = $gpsArr [0] . ',' . $gpsArr [1];
 					$location [$v ['id']] = $v;
-					$weidu = $gpsArr [1];
-					$jingdu = $gpsArr [0];
+					$weidu = $gpsArr [0];
+					$jingdu = $gpsArr [1];
 					$juli [$v ['id']] = $this->getDistance ( $latitude, $longitude, $weidu, $jingdu );
 				} else {
 					$endata [] = $v;

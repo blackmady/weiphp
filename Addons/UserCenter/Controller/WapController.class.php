@@ -386,9 +386,7 @@ class WapController extends WapBaseController {
 	function check2() {
 		$token = get_token ();
 		
-		// get_openid
-		$callback = GetCurUrl ();
-		$openid = OAuthWeixin ( $callback, $token, true );
+		$openid = get_openid();
 		if (empty ( $openid ) || $openid == '-1' || $openid == '-2') {
 			addAutoCheckLog ( 'openid', '获取openid失败', $token );
 		} else {

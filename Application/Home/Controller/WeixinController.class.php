@@ -254,7 +254,7 @@ class WeixinController extends HomeController {
 	private function _contain_keyword($keywordInfo, $key, &$addons, &$keywordArr) {
 		if (isset ( $addons [$key] ))
 			return false;
-			// 支持正则匹配
+		// 支持正则匹配
 		if ($keywordInfo ['keyword_type'] == 4) {
 			if (preg_match ( $keywordInfo ['keyword'], $key )) {
 				$addons [$key] = $keywordInfo ['addon'];
@@ -273,8 +273,8 @@ class WeixinController extends HomeController {
 				// 左边匹配
 				if ($keywordInfo ['keyword_type'] == 1 && ! empty ( $arr [0] ))
 					return false;
-					
-					// 右边 匹配
+				
+				// 右边 匹配
 				if ($keywordInfo ['keyword_type'] == 2 && ! empty ( $arr [1] ))
 					return false;
 			}

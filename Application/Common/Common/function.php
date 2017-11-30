@@ -1531,6 +1531,8 @@ function OAuthWeixin($callback, $token = '', $is_return = false) {
 		$info = get_token_appinfo ( $token );
 	}
 	if (empty ( $info ['appid'] )) {
+		if ($is_return)
+			return false;
 		redirect ( $callback . 'openid=-2' );
 	}
 	$param ['appid'] = $info ['appid'];
@@ -2047,11 +2049,11 @@ function check_token_purview($table, $id, $field = 'token') {
 function wp_explode($string, $delimiter = "\s,;\r\n") {
 	if (empty ( $string ))
 		return array ();
-		
-		// 转换中文符号
-		// $string = iconv ( 'utf-8', 'gbk', $string );
-		// $string = preg_replace ( '/\xa3([\xa1-\xfe])/e', 'chr(ord(\1)-0x80)', $string );
-		// $string = iconv ( 'gbk', 'utf-8', $string );
+	
+	// 转换中文符号
+	// $string = iconv ( 'utf-8', 'gbk', $string );
+	// $string = preg_replace ( '/\xa3([\xa1-\xfe])/e', 'chr(ord(\1)-0x80)', $string );
+	// $string = iconv ( 'gbk', 'utf-8', $string );
 	
 	$arr = preg_split ( '/[' . $delimiter . ']+/', $string );
 	return array_unique ( array_filter ( $arr ) );
@@ -2543,8 +2545,8 @@ function get_uid_by_openid($init = true, $openid = '') {
 	
 	if (! $init)
 		return 0;
-		
-		// 不存在就初始化
+	
+	// 不存在就初始化
 	$uid = D ( 'Common/Follow' )->init_follow ( $openid, $map ['token'] );
 	return $uid;
 }
@@ -3387,7 +3389,7 @@ function smsLock($tel, $time = 60) {
 	// 创建目录
 	if (! is_dir ( SITE_PATH . '/Data/smslock/' ))
 		mkdir ( SITE_PATH . '/Data/smslock/', 0777, true );
-		// 锁文件
+	// 锁文件
 	$lockfile = SITE_PATH . '/Data/smslock/' . $tel . '.txt';
 	// 文件验证时间间隔
 	if (file_exists ( $lockfile )) {

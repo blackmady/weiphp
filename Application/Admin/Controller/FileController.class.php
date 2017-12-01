@@ -30,11 +30,12 @@ class FileController extends AdminController {
         if($info){
             $return['data'] = think_encrypt(json_encode($info['download']));
             $return['info'] = $info['download']['name'];
+            $return['file'] = $info['file'];
+            $return['id'] = $info['file']['id'];
         } else {
             $return['status'] = 0;
             $return['info']   = $File->getError();
         }
-
         /* 返回JSON数据 */
         $this->ajaxReturn($return);
     }

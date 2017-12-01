@@ -22,11 +22,15 @@ class ScanController extends AdminController {
 			$status = I ( 'status' );
 			
 			if ($status == 1 && empty ( $wp_id )) {
-				$this->error( '140261:请先选择服务号' );
+				$this->error ( '140261:请先选择服务号' );
 			}
 			
 			$Config->setValue ( 'SCAN_LOGIN_PUBLIC', $wp_id );
 			$Config->setValue ( 'SCAN_LOGIN', $status );
+			
+			$where ['id'] = $wp_id;
+			$token = M ( 'apps' )->where ( $where )->getField ( 'token' );
+			$Config->setValue ( 'SCAN_LOGIN_TOKEN', $token );
 			
 			$this->success ( '操作成功！' );
 		} else {

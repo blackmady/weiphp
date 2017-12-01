@@ -2459,7 +2459,7 @@ function JSON($array) {
  * @return string 如果没有微信短链接接口权限或者不成功，就原样返回长链接，否则返回短链接
  */
 function short_url($long_url) {
-	$access_token = get_access_token ( $token );
+	$access_token = get_access_token ();
 	if (empty ( $access_token )) {
 		return $long_url;
 	}

@@ -89,7 +89,9 @@ class MenuModel extends Model {
 					$cate ['url'] = $m ['url'];
 				} elseif (strpos ( $m ['url'], '://' ) !== false) {
 					$cate ['url'] = addons_url ( $m ['url'] );
-				} elseif (! empty ( $m ['url'] )) {
+				}elseif($m['url'] == "#"){
+                                        $cate ['url'] = "#"; 
+				}elseif (! empty ( $m ['url'] )) {
 					$cate ['url'] = U ( $m ['url'] );
 				}
 				if (! empty ( $cate ['url'] )) {

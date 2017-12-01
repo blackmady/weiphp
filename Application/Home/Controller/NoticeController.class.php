@@ -47,7 +47,6 @@ class NoticeController extends Controller {
 		}
 	}
 	private function pay_after_callback($data) {
-		// dump($data);
 		if ($data ['return_code'] == 'FAIL') {
 			$this->return_error ( $data ['return_msg'] );
 		} elseif ($data ['result_code'] == 'FAIL') {

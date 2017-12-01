@@ -631,10 +631,9 @@ class MemberTransitionController extends BaseController {
 		$map ['token'] = get_token ();
 		if ($year && $month && $is_ajax) {
 			$start_date = $year . '-' . $month;
-			$end_month = $month + 1;
-			$end_date = $year . '-' . $end_month;
 			$start_date = strtotime ( $start_date );
-			$end_date = strtotime ( $end_date );
+			$end_date = strtotime('+1 month', $start_date);
+
 			$map ['cTime'] = array (
 					'between',
 					array (
@@ -702,10 +701,8 @@ class MemberTransitionController extends BaseController {
 			$month = intval ( $month );
 			$day = $this->getDays ( $year, $month );
 			$start_date = $year . '-' . $month;
-			$end_month = $month + 1;
-			$end_date = $year . '-' . $end_month;
 			$start_date = strtotime ( $start_date );
-			$end_date = strtotime ( $end_date );
+			$end_date = strtotime('+1 month', $start_date);
 			$map1 ['cTime'] = $map2 ['cTime'] = array (
 					'between',
 					array (

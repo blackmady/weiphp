@@ -617,10 +617,8 @@ class WapController extends WapBaseController {
 		$month = intval ( $month );
 		// $day=$this->getDays($year, $month);
 		$start_date = $year . '-' . $month;
-		$end_month = $month + 1;
-		$end_date = $year . '-' . $end_month;
 		$start_date = strtotime ( $start_date );
-		$end_date = strtotime ( $end_date );
+		$end_date = strtotime('+1 month', $start_date);
 		$map1 ['cTime'] = $map2 ['cTime'] = array (
 				'between',
 				array (
@@ -686,10 +684,8 @@ class WapController extends WapBaseController {
 		$month = intval ( $month );
 		// $day=$this->getDays($year, $month);
 		$start_date = $year . '-' . $month;
-		$end_month = $month + 1;
-		$end_date = $year . '-' . $end_month;
 		$start_date = strtotime ( $start_date );
-		$end_date = strtotime ( $end_date );
+		$end_date = strtotime('+1 month', $start_date);
 		$map1 ['cTime'] = $map2 ['cTime'] = array (
 				'between',
 				array (
@@ -755,11 +751,9 @@ class WapController extends WapBaseController {
 			$year = $year ? $year : time_format ( NOW_TIME, 'Y' );
 			$month = $month ? $month : time_format ( NOW_TIME, 'm' );
 			$start_date = $year . '-' . $month;
-			$end_month = $month + 1;
-			$end_date = $year . '-' . $end_month;
 			$start_date = strtotime ( $start_date );
-			$end_date = strtotime ( $end_date );
-			
+			$end_date = strtotime('+1 month', $start_date);
+
 			// 总
 			$map1 ['recharge'] = array (
 					'egt',

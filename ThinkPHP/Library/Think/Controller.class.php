@@ -468,10 +468,8 @@ abstract class Controller {
 	public function common_lists($model = null, $page = 0, $templateFile = '', $order = '') {
 		// 获取模型信息
 		is_array ( $model ) || $model = $this->getModel ( $model );
-		
 		$list_data = $this->_get_model_list ( $model, $page, $order );
 		$this->assign ( $list_data );
-		// dump($list_data);
 		
 		$templateFile || $templateFile = $model ['template_list'] ? $model ['template_list'] : '';
 		$this->display ( $templateFile );
@@ -816,6 +814,7 @@ abstract class Controller {
 	}
 	protected function parseData($datas, $fields, $grid, $model) {
 		foreach ( $datas as &$data ) {
+			$original_data =  array_merge ( $_REQUEST, $data );
 			foreach ( $grid as $name => $g ) {
 				$val = $data [$name];
 				$field = $fields [$name];
@@ -825,6 +824,18 @@ abstract class Controller {
 						$href = $link ['url'];
 						
 						$show = $link ['title'];
+						if (strpos ( $show, ':' ) !== false) { // 支持标题随状态变化，设置格式：is_show:0|上架,1|下架
+							list ( $show_filed, $show ) = explode ( ':', $show, 2 );
+							$show_val = $original_data [$show_filed];
+							$showArr = explode ( ',', $show );
+							foreach ( $showArr as $arr ) {
+								list ( $v, $t ) = explode ( '|', $arr );
+								if ($v == $show_val) {
+									$show = $t;
+									break;
+								}
+							}
+						}
 						// 增加跳转方式处理 weiphp
 						$target = '_self';
 						if (preg_match ( '/target=(\w+)/', $href, $matches )) {
@@ -844,9 +855,8 @@ abstract class Controller {
 						), $href );
 						
 						// 替换数据变量
-						$replace_data = array_merge ( $_REQUEST, $data );
-						$href = preg_replace_callback ( '/\[([a-z_]+)\]/', function ($match) use ($replace_data) {
-							return $replace_data [$match [1]];
+						$href = preg_replace_callback ( '/\[([a-z_]+)\]/', function ($match) use ($original_data) {
+							return $original_data [$match [1]];
 						}, $href );
 						
 						// 兼容多种写法
@@ -860,7 +870,7 @@ abstract class Controller {
 							$paramArrs = $GLOBALS ['get_param'];
 							unset ( $paramArrs ['mdm'] );
 							$publicid = get_token_appinfo ( '', 'id' );
-							$valArr [] = '<a class="list_copy_link" id="copyLink_' . $data ['id'] . '"   data-clipboard-text="' . urldecode ( U ( $href, $paramArrs ) ) . '&publicid=' . $publicid . '">' . $show . '</a>';
+							$valArr [] = '<a class="list_copy_link" id="copyLink_' . $original_data ['id'] . '"   data-clipboard-text="' . urldecode ( U ( $href, $paramArrs ) ) . '">' . $show . '</a>';
 						} else {
 							// 排除GET里的参数影响到已赋值的参数
 							$url_param = array ();

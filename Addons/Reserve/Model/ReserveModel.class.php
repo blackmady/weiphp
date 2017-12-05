@@ -43,4 +43,39 @@ class ReserveModel extends Model{
 		
 		return $data;
 	}
+
+    function payOK($data, $payment)
+    {
+        addWeixinLog($data, $payment);
+        $payment = M('payment')->find($payment['id']);
+        $isSuccess = 0;
+        if ($payment['is_pay'] != 1) {
+            // 查询订单状态
+            $orderRes = D('Common/Payment')->query_order($data['appid'], $data['out_trade_no']);
+            if (strtoupper($orderRes['return_code']) == 'SUCCESS' && strtoupper($orderRes['trade_state ']) == 'SUCCESS') {
+                // 支付成功
+                $isSuccess = 1;
+            }
+        } else {
+            $isSuccess = 1;
+        }
+        if ($isSuccess) {
+            // 处理订单状态
+            $map['token'] = $payment['token'];
+            $map['out_trade_no'] = $data['out_trade_no'];
+            $res = M('reserve_value')->where($map)->setField('is_pay', 1);
+            
+            if ($payment['is_pay'] != 1) {
+                M('payment')->where(array(
+                    'id' => $payment['id']
+                ))->setField('is_pay', 1);
+            }
+            $res['status'] = 1;
+            return $res;
+        } else {
+            $res['status'] = 0;
+            $res['msg'] = '支付状态设置失败';
+            return $res;
+        }
+    }
 }

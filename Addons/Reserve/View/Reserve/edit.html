@@ -47,7 +47,7 @@
           </div>
         </div>  
         <div class="form-item cf">
-          <label class="item-label"> <span class="need_flag">*</span> 在线支付 <span class="check-tips"> （开启的话需要先<a href="{:addons_url('Payment://Payment/lists')}" target="_blank">配置微信支付</a>） </span></label>
+          <label class="item-label"> <span class="need_flag">*</span> 在线支付 <span class="check-tips"> （开启的话需要先<a href="{:U('Home/Apps/payment_set')}" target="_blank">配置微信支付</a>） </span></label>
           <div class="controls">
             <div class="check-item">
               <input type="radio" name="pay_online" id="pay_online_0" value="0" class="regular-radio" <if condition="intval($data[pay_online])==0">checked="checked"</if> >

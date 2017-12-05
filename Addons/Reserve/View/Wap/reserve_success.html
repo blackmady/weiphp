@@ -40,7 +40,9 @@
               <div class="m_15">
                <eq name='reserve.pay_online' value='1'>
                	<eq name='is_pay' value='0'>
-              		<a href="{:addons_url('Payment://Payment/confirm',array('title'=>$reserve['title'],'price'=>$value_data['price'],'from'=>'reserve','aim_id'=>$reserve['id']))}" class="btn">在线支付</a>
+<!--               		<a href="{:addons_url('Payment://Payment/confirm',array('title'=>$reserve['title'],'price'=>$value_data['price'],'from'=>'reserve','aim_id'=>$reserve['id']))}" class="btn">在线支付</a> -->
+<!-- 						<a href="javascript:void(0)" class="btn" onclick="doPay()">在线支付</a> -->
+<a href="{:U('do_pay',array('reserve_id'=>$reserve['id']))}" class="btn">在线支付</a>
               	<else/>
               		<button class="gray_btn"  type="button" >已支付</button>
               	</eq>
@@ -59,7 +61,9 @@
 					$('.qr_wrap').hide();
 				}
 			})
-		},3000)
+		},3000);
+			
+		
     </script>
 </body>
 </html>

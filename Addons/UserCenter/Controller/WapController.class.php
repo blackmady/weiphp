@@ -5,7 +5,7 @@ namespace Addons\UserCenter\Controller;
 use Think\WapBaseController;
 
 class WapController extends WapBaseController {
-	// 粉丝登录 TODO 未开发完
+	// 粉丝登录
 	function login() {
 		if (C ( 'USER_OAUTH' )) { // 自动登录
 			$uid = get_uid_by_openid ();
@@ -196,7 +196,7 @@ class WapController extends WapBaseController {
 			if ($res) {
 				$this->success ( '保存成功！', $url );
 			} else {
-				$this->error ( '400427:' . $Model->getError () );
+				$this->error ( '400427:保存失败' );
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
@@ -215,10 +215,11 @@ class WapController extends WapBaseController {
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $this->mid );
 			
 			// 自动从微信接口获取用户信息
-			empty ( $openid ) || $info = getWeixinUserInfo ( $openid, $token );
+			empty ( $openid ) || $openid = get_openid ();
+			$info = getWeixinUserInfo ( $openid );
 			if (is_array ( $info )) {
 				if (empty ( $data ['headimgurl'] ) && ! empty ( $info ['headimgurl'] )) {
-					// 把微信头像转到WeiPHP的通用图片ID保存 TODO
+					// 把微信头像转到WeiPHP的通用图片ID保存
 					$data ['headimgurl'] = $info ['headimgurl'];
 				}
 				$data = array_merge ( $info, $data );
@@ -267,7 +268,7 @@ class WapController extends WapBaseController {
 			if (! method_exists ( $model, 'personal' ))
 				continue;
 			
-			$lists = $model->personal ( $data, $keywordArr );
+			$lists = $model->personal ();
 			if (empty ( $lists ) || ! is_array ( $lists ))
 				continue;
 			
@@ -386,7 +387,7 @@ class WapController extends WapBaseController {
 	function check2() {
 		$token = get_token ();
 		
-		$openid = get_openid();
+		$openid = get_openid ();
 		if (empty ( $openid ) || $openid == '-1' || $openid == '-2') {
 			addAutoCheckLog ( 'openid', '获取openid失败', $token );
 		} else {
@@ -416,7 +417,6 @@ class WapController extends WapBaseController {
 		curl_setopt ( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
 		curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
 		curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
-		curl_setopt ( $ch, CURLOPT_HTTPHEADER, $header );
 		curl_setopt ( $ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)' );
 		curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, 1 );
 		curl_setopt ( $ch, CURLOPT_AUTOREFERER, 1 );
@@ -435,12 +435,14 @@ class WapController extends WapBaseController {
 		return $res;
 	}
 	function check_res_ajax() {
-// 		$map ['token'] = I ( 'token' );
-		$token=I ( 'token' ,'');
-		if (empty($token)){
-		    $map ['token'] =M('apps')->where(array('id'=>WPID))->getField('token');
-		}else {
-		    $map ['token'] = $token;
+		// $map ['token'] = I ( 'token' );
+		$token = I ( 'token', '' );
+		if (empty ( $token )) {
+			$map ['token'] = M ( 'apps' )->where ( array (
+					'id' => WPID 
+			) )->getField ( 'token' );
+		} else {
+			$map ['token'] = $token;
 		}
 		$list = M ( 'apps_check' )->where ( $map )->order ( 'id asc' )->select ();
 		foreach ( $list as $vo ) {

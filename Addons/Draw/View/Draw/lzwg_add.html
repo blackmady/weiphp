@@ -14,7 +14,7 @@
       <php> $post_url || $post_url = U('lzwg_add?model='.$model['id'], $get_param);</php>
       <form id="form" action="{$post_url}" method="post" class="form-horizontal form-center">
 
-        <volist name="fields]" id="field">
+        <volist name="fields" id="field">
           <if condition="$field['is_show'] == 4">
             <input type="hidden" class="text input-large" name="{$field.name}" value="{:I($field[name], $field[value])}">
           </if>

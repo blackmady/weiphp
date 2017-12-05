@@ -191,7 +191,7 @@ class WapController extends WapBaseController {
 		$value_data ['option_id'] = $option ['name'];
 		$value_data ['price'] = $option ['money'];
 		$value_data ['uid'] = $this->mid;
-		// 判断是否支付
+            // 判断是否支付
 		
 		$is_pay = $valueArr ['is_pay'];
 		if ($is_pay == 0) {
@@ -209,6 +209,7 @@ class WapController extends WapBaseController {
 			}
 		}
 		
+		
 		$this->assign ( 'is_pay', $is_pay );
 		// dump ( $value_data );
 		$this->assign ( 'fields', $fields );
@@ -216,6 +217,54 @@ class WapController extends WapBaseController {
 		$this->assign ( 'reserve', $reserve );
 		$this->assign ( 'attend_num', $attend );
 		$this->display ();
+	}
+	function do_pay(){
+	    $map3 ['reserve_id'] = $map ['reserve_id'] = $map2 ['reserve_id'] = $this->reserve_id = I ( 'reserve_id', 0, intval );
+	    $reserve = M ( 'reserve' )->find ( $this->reserve_id );
+	    $publicInfo = get_token_appinfo ();
+	    $this->assign ( 'pubilc_name', $publicInfo ['public_name'] );
+	    $this->assign('reserve',$reserve);
+	    $this->assign ( 'page_title', $reserve ['title'] );
+	    
+	    $map2 ['token'] = $map3 ['token'] = get_token ();
+	    // 获取参与人数
+	    $map3 ['uid'] = $this->mid;
+	    $valueArr = M ( 'reserve_value' )->where ( $map3 )->field ( 'id,value,is_pay' )->find ();
+	    $value_data = unserialize ( $valueArr ['value'] );
+	    $option = M ( 'reserve_option' )->where ( array (
+	        'id' => $value_data ['option_id']
+	    ) )->field ( 'name,money' )->find ();
+	    $this->assign('price', $option ['money']);
+	    // 判断是否支付
+	    if ($reserve['pay_online'] == 1 && $valueArr['is_pay']==0) {
+	        $vSave['out_trade_no'] = date('YmdHis') . substr(uniqid(), 4);
+	        M('reserve_value')->where(array(
+                'id' => $valueArr['id']
+            ))->save($vSave);
+	        $payOpenid=get_openid();
+	        $product = [
+	            'openid' => $payOpenid,
+	            'body' => '微预约 ' . $reserve ['title'],
+	            'out_trade_no' => $vSave['out_trade_no'],
+	            'total_fee' =>  $option ['money']
+	        ];
+	        $callback = 'Reserve/Reserve/payOK';
+	        $jurl = U('reserve_success', array(
+	            'reserve_id' => $this->reserve_id
+	        ));
+	        //支付成功后页面跳转的地址
+	        $this->assign('jump_url', $jurl);
+	        $appInfo = D('Common/Apps')->getInfoByToken($map2 ['token'] );
+	        
+	        $pay = D('Common/Payment')->jsapi_pay($appInfo['appid'], $product, $callback);
+	        if ($pay['status'] == 0) {
+	            $this->assign('error_msg',$pay['msg']);
+// 	            $this->error($pay['msg']);
+	        }
+	        $this->assign('pay', $pay);
+	    }
+	    
+	    $this->display();
 	}
 	private function dealValue($value_data, $fields) {
 		foreach ( $fields as $fd ) {

@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -13,12 +14,10 @@ namespace Home\Controller;
  * 包括用户中心，用户登录及注册
  */
 class UserController extends HomeController {
-    function __construct() {
-	   
+	function __construct() {
 		$this->need_login = false;
 		$this->need_appinfo = false;
-		parent::__construct();
-		
+		parent::__construct ();
 	}
 	// 手机绑定登录
 	function wap_scan() {
@@ -125,7 +124,7 @@ class UserController extends HomeController {
 			if (! preg_match ( '/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/', $email )) {
 				$this->error ( '110186:邮箱格式不正确！' );
 			}
-			
+			$map = [ ];
 			/* 检测验证码 */
 			if (! check_verify ( $verify )) {
 				$this->error ( '110187:验证码输入错误！' );
@@ -169,7 +168,7 @@ class UserController extends HomeController {
 						'from' => 3 
 				) ) );
 			} else { // 注册失败，显示错误信息
-				$this->error ( '110190:'.$this->showRegError ( $uid ) );
+				$this->error ( '110190:' . $this->showRegError ( $uid ) );
 			}
 		} else { // 显示注册表单
 			$this->display ();
@@ -189,7 +188,7 @@ class UserController extends HomeController {
 				$dao = D ( 'Common/User' );
 				$uid = $dao->login ( $username, $password );
 				if (! $uid) { // 登录失败
-					$this->error ( '110192:'.$dao->getError () );
+					$this->error ( '110192:' . $dao->getError () );
 					exit ();
 				}
 				

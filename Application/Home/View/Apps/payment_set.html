@@ -1,6 +1,5 @@
 <extend name="Base/no_side_common" />
 <block name="body">
-<div class="wrap">
 <section id="contents">
   <div class="tab-content" style="margin-top:50px"> 
     <!-- 表单 -->
@@ -15,9 +14,9 @@
             </div>
           </div>
           <div class="form-item cf toggle-public_id">
-            <label class="item-label"> <span class="need_flag">*</span> 小程序APPID </label>
+            <label class="item-label"> <span class="need_flag">*</span> APPID </label>
             <div class="controls">
-              <input type="text" value="{$info.appid}" name="appid" class="text input-large">
+              <input type="text" value="{$info.appid}" name="appid" class="text input-large" readonly='true'>
             </div>
           </div>
           <div class="form-item cf toggle-appid">
@@ -28,7 +27,8 @@
           </div>
           <div class="form-item cf toggle-secret">
             <label class="item-label"> cert_pem证书 <span class="check-tips"> （apiclient_cert.pem 现金红包和企业付款必须） </span></label>
-            <div class='controls upload_file' rel='cert_pem'>
+            
+            <!-- <div class='controls upload_file' rel='cert_pem'>
               <input type='file' id='upload_file_cert_pem'>
               <input type='hidden' name='cert_pem' value='{$info.cert_pem}'/>
               <div class='upload-img-box'>
@@ -36,11 +36,22 @@
                 <div class='upload-pre-file'><span class='upload_icon_all'></span>{:get_table_field ( $info['cert_pem'], 'id', 'name', 'File' )}</div>
                 <php> } </php>
               </div>
-            </div>
+            </div> -->
+            
+            <div class="controls upload_file">
+                <div  id="upload_file_cert_pem" class="uploadrow_file"></div>
+                <input type="hidden" name="cert_pem" id="cert_pem" value="{$info.cert_pem}" data-fileexts='' data-maxsize=''/>
+                <div class="upload-img-box">
+                  <present name="info[cert_pem]">
+                    <div class="upload-pre-file"><span class="upload_icon_all"></span>{:get_table_field ( $info['cert_pem'], 'id', 'name', 'File' )}</div>
+                  </present>
+                </div>
+              </div>
+              
           </div>
           <div class="form-item cf toggle-secret">
             <label class="item-label"> key_pem证书 <span class="check-tips"> （apiclient_key.pem 现金红包和企业付款必须） </span></label>
-            <div class='controls upload_file' rel='key_pem'>
+          <!--   <div class='controls upload_file' rel='key_pem'>
               <input type='file' id='upload_file_key_pem'>
               <input type='hidden' name='key_pem' value='{$info.key_pem}'/>
               <div class='upload-img-box'>
@@ -48,7 +59,17 @@
                 <div class='upload-pre-file'><span class='upload_icon_all'></span>{:get_table_field ( $info['key_pem'], 'id', 'name', 'File' )}</div>
                 <php> } </php>
               </div>
-            </div>
+            </div> -->
+             <div class="controls upload_file">
+                <div  id="upload_file_key_pem" class="uploadrow_file"></div>
+                <input type="hidden" name="key_pem" id="key_pem" value="{$info.key_pem}" data-fileexts='' data-maxsize=''/>
+                <div class="upload-img-box">
+                  <present name="info[key_pem]">
+                    <div class="upload-pre-file"><span class="upload_icon_all"></span>{:get_table_field ( $info['key_pem'], 'id', 'name', 'File' )}</div>
+                  </present>
+                </div>
+              </div>
+              
           </div>
         </div>
         <div class="form-item cf mt_10 bind_step_miniapp_form_next_item">

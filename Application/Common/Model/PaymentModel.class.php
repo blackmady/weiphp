@@ -12,6 +12,11 @@ use Think\Model;
 class PaymentModel extends Model {
 	// JSAPI支付
 	public function jsapi_pay($appid, $product = [], $callback = '') {
+	    if (isset($product['total_fee']) && $product['total_fee']>0){
+	        //金额单位为分
+	        $product['total_fee']=$product['total_fee']*100;
+	    }
+	    
 		$goods = $product;
 		$goods ['appid'] = $appid;
 		

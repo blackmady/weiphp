@@ -3973,6 +3973,7 @@ function initValue($field, $data = [], $defalut = '') {
  *         ***********************************************************
  */
 function json_url($array) {
+	header ( 'Content-Type:application/json; charset=utf-8' );
 	$json = json_encode ( $array, JSON_UNESCAPED_UNICODE );
 	return $json;
 }
@@ -3990,6 +3991,9 @@ function api_return($errcode = 0, $data = [], $msg = '加载数据成功！') {
 }
 // api return
 function api_success($data = [], $is_json = true) {
+	if ($is_json) {
+		header ( 'Content-Type:application/json; charset=utf-8' );
+	}
 	if (isset ( $data ['status'] ) || isset ( $data ['msg'] )) {
 		$return ['status'] = 1;
 		$return ['msg'] = isset ( $data ['msg'] ) ? $data ['msg'] : '';
@@ -4002,6 +4006,9 @@ function api_success($data = [], $is_json = true) {
 	}
 }
 function api_error($msg = '', $is_json = true) {
+	if ($is_json) {
+		header ( 'Content-Type:application/json; charset=utf-8' );
+	}
 	$return ['status'] = 0;
 	$return ['msg'] = $msg;
 	return $is_json ? json ( $return ) : $return;

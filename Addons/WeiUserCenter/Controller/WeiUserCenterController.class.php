@@ -343,7 +343,7 @@ class WeiUserCenterController extends ManageBaseController{
                 }
                 	
                 // 自动从微信接口获取用户信息
-                empty ( $openid ) || $info = getWeixinUserInfo ( $openid, $token );
+                empty ( $openid ) || $info = getWeixinUserInfo ( $openid );
                 if (is_array ( $info )) {
                     if (empty ( $data ['headimgurl'] ) && ! empty ( $info ['headimgurl'] )) {
                         // 把微信头像转到WeiPHP的通用图片ID保存 TODO

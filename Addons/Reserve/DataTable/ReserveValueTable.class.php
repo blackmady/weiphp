@@ -76,7 +76,15 @@ class ReserveValueTable {
 			'is_pay' => [
 					'title' => '是否支付',
 					'field' => 'int(10) NULL',
-					'type' => 'num'
+					'type' => 'num',
+					'placeholder' => '请输入内容'
+			],
+			'out_trade_no' => [
+					'title' => '支付单号',
+					'type' => 'string',
+					'field' => 'varchar(100) NULL',
+					'is_show' => 0,
+					'is_must' => 0
 			]
 	];
 }	

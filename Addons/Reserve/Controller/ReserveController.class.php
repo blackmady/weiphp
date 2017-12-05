@@ -17,7 +17,7 @@ class ReserveController extends ManageBaseController {
 		$list_data = $this->_list_grid ( $model );
 		
 		// 搜索条件
-		$map = $this->_search_map ( $model, $list_data['fields'] );
+		$map = $this->_search_map ( $model, $list_data ['fields'] );
 		
 		$row = empty ( $model ['list_row'] ) ? 20 : $model ['list_row'];
 		$order = 'id desc';
@@ -30,16 +30,14 @@ class ReserveController extends ManageBaseController {
 		$data = $this->parseData ( $data, $dataTable->fields, $dataTable->list_grid, $dataTable->config );
 		foreach ( $data as &$vo ) {
 			if (! empty ( $vo ['start_time'] ) && ! empty ( $vo ['end_time'] )) {
-				$vo ['start_time'] =$vo ['start_time']  . ' 至  ' . time_format ( $vo ['end_time'] );
+				$vo ['start_time'] = $vo ['start_time'] . ' 至  ' . time_format ( $vo ['end_time'] );
 			} elseif (! empty ( $vo ['start_time'] )) {
-				$vo ['start_time'] =  $vo ['start_time']  . ' 开始';
+				$vo ['start_time'] = $vo ['start_time'] . ' 开始';
 			} elseif (! empty ( $vo ['end_time'] )) {
-				$vo ['start_time'] = '到 ' .  $vo ['start_time']  . ' 结束';
-			}else{
-			    $vo ['start_time'] ='不限制';
+				$vo ['start_time'] = '到 ' . $vo ['start_time'] . ' 结束';
+			} else {
+				$vo ['start_time'] = '不限制';
 			}
-			
-// 			$vo ['status_text'] = $vo ['status'] == 0 ? '已禁用' : '已启用';
 		}
 		
 		/* 查询记录总数 */
@@ -89,16 +87,16 @@ class ReserveController extends ManageBaseController {
 				
 				$this->success ( '保存成功！', U ( 'lists?model=' . $model ['name'], $this->get_param ) );
 			} else {
-				$this->error( '400371:'. $Model->getError () );
+				$this->error ( '400371:' . $Model->getError () );
 			}
 		} else {
 			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
-			$data || $this->error( '400372:数据不存在！' );
+			$data || $this->error ( '400372:数据不存在！' );
 			
 			$token = get_token ();
 			if (isset ( $data ['token'] ) && $token != $data ['token'] && defined ( 'ADDON_PUBLIC_PATH' )) {
-				$this->error( '400373:非法访问！' );
+				$this->error ( '400373:非法访问！' );
 			}
 			$this->assign ( 'data', $data );
 			
@@ -196,7 +194,7 @@ class ReserveController extends ManageBaseController {
 		$save ['status'] = I ( 'status', 0, 'intval' );
 		
 		$res = M ( 'reserve' )->where ( $map )->save ( $save );
-		D('Reserve')->getInfo($map['id'],true);
+		D ( 'Reserve' )->getInfo ( $map ['id'], true );
 		echo $res === false ? 0 : 1;
 	}
 	function preview() {
@@ -221,7 +219,7 @@ class ReserveController extends ManageBaseController {
 			$act = 'save';
 			
 			$data = M ( get_table_name ( $this->model ['id'] ) )->find ( $id );
-			$data || $this->error( '400374:数据不存在！' );
+			$data || $this->error ( '400374:数据不存在！' );
 			
 			// dump($data);
 			$value = unserialize ( htmlspecialchars_decode ( $data ['value'] ) );
@@ -255,7 +253,7 @@ class ReserveController extends ManageBaseController {
 				$error_tip = ! empty ( $vo ['error_info'] ) ? $vo ['error_info'] : '请正确输入' . $vo ['title'] . '的值';
 				$value = $_POST [$vo ['name']];
 				if (($vo ['is_must'] && empty ( $value )) || (! empty ( $vo ['validate_rule'] ) && ! M ()->regex ( $value, $vo ['validate_rule'] ))) {
-					$this->error( '400375:'. $error_tip );
+					$this->error ( '400375:' . $error_tip );
 					exit ();
 				}
 				
@@ -283,7 +281,7 @@ class ReserveController extends ManageBaseController {
 				$tip = ! empty ( $reserve ['finish_tip'] ) ? $reserve ['finish_tip'] : '提交成功，谢谢参与';
 				$this->success ( $tip, $url, 5 );
 			} else {
-				$this->error( '400376:'. $Model->getError () );
+				$this->error ( '400376:' . $Model->getError () );
 			}
 			exit ();
 		}
@@ -303,13 +301,13 @@ class ReserveController extends ManageBaseController {
 		$start_time = intval ( strtotime ( I ( 'post.start_time' ) ) );
 		$end_time = intval ( strtotime ( I ( 'post.end_time' ) ) );
 		if ($start_time > 0 && $end_time > 0 && $start_time >= $end_time) {
-			$this->error( '400377:开始时间不能大于或等于结束时间' );
+			$this->error ( '400377:开始时间不能大于或等于结束时间' );
 		}
 		if (! I ( 'post.name' )) {
-			$this->error( '400378:预约项必须' );
+			$this->error ( '400378:预约项必须' );
 		}
 		if (! I ( 'post.attr_title' )) {
-			$this->error( '400379:字段必须' );
+			$this->error ( '400379:字段必须' );
 		}
 	}
 }

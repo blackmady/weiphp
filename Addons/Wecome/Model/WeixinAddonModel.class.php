@@ -126,7 +126,7 @@ class WeixinAddonModel extends WeixinModel {
 		} elseif ($qr ['addon'] == 'Draw') {
 			$url = addons_url ( 'Draw://Wap/index', array (
 					'games_id' => $qr ['aim_id'],
-			         'token' => get_token ()
+					'token' => get_token () 
 			) );
 			$this->replyText ( "关注成功，<a href='{$url}'>请点击这里继续抽奖游戏</a>" );
 			return true; // 告诉上面的关注方法，不需要再回复欢迎语了
@@ -145,15 +145,21 @@ class WeixinAddonModel extends WeixinModel {
 			$res = $this->replyNews ( $articles );
 			return true; // 告诉上面的关注方法，不需要再回复欢迎语了
 		} elseif ($qr ['addon'] == 'ScanLogin') {
-			$user = D ( 'Common/User' )->getUserInfo ( $GLOBALS ['mid'] );
-			S ( $qr ['extra_text'], $user, 1200 );
-			
 			$m_map ['uid'] = $GLOBALS ['mid'];
-			if (! M ( 'manager' )->where ( $m_map )->find ()) {
-				M ( 'manager' )->add ( $m_map );
+			$manager = M ( 'manager' )->where ( $m_map )->find ();
+			if (! C ( 'USER_ALLOW_REGISTER' ) && ! $manager) {
+				$msg = '抱歉，系统已关闭新用户注册功能';
+			} else {
+				$user = D ( 'Common/User' )->getUserInfo ( $GLOBALS ['mid'] );
+				S ( $qr ['extra_text'], $user, 1200 );
+				
+				if (! $manager) {
+					M ( 'manager' )->add ( $m_map );
+				}
+				$msg = '登录成功';
 			}
 			
-			$res = $this->replyText ( '登录成功' );
+			$res = $this->replyText ( $msg );
 			return true; // 告诉上面的关注方法，不需要再回复欢迎语了
 		} elseif ($qr ['addon'] == 'ScanBindLogin') {
 			$map1 ['openid'] = $dataArr ['FromUserName'];

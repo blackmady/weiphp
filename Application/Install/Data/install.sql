@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50615
 File Encoding         : 65001
 
-Date: 2017-11-30 20:31:54
+Date: 2017-12-05 11:21:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -2249,7 +2249,7 @@ DROP TABLE IF EXISTS `wp_file`;
 CREATE TABLE `wp_file` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '文件ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '原始文件名',
-  `savename` char(20) NOT NULL DEFAULT '' COMMENT '保存名称',
+  `savename` char(30) NOT NULL DEFAULT '' COMMENT '保存名称',
   `savepath` char(30) NOT NULL DEFAULT '' COMMENT '文件保存路径',
   `ext` char(5) NOT NULL DEFAULT '' COMMENT '文件后缀',
   `mime` char(40) NOT NULL DEFAULT '' COMMENT '文件mime类型',
@@ -3663,7 +3663,7 @@ CREATE TABLE `wp_request_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `md5` char(32) CHARACTER SET utf8 NOT NULL COMMENT 'md5标识',
   `url` varchar(1000) CHARACTER SET utf8 NOT NULL COMMENT '接口地址',
-  `param` text CHARACTER SET utf8 COMMENT '序列化后的参数',
+  `param` longtext COMMENT '序列化后的参数',
   `res` text COMMENT '接口返回的参数',
   `error_code` char(32) CHARACTER SET utf8 DEFAULT NULL COMMENT 'curl的错误码',
   `msg` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT 'curl的错误提示',
@@ -3764,6 +3764,7 @@ CREATE TABLE `wp_reserve_value` (
   `token` varchar(255) DEFAULT NULL COMMENT 'Token',
   `is_check` int(10) DEFAULT '0' COMMENT '验证是否成功',
   `is_pay` int(10) DEFAULT '0' COMMENT '是否支付',
+  `out_trade_no` varchar(100) DEFAULT NULL COMMENT '支付单号',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 

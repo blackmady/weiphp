@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50615
 File Encoding         : 65001
 
-Date: 2017-12-05 11:21:05
+Date: 2017-12-11 21:28:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -4655,6 +4655,22 @@ CREATE TABLE `wp_vote_option` (
 
 -- ----------------------------
 -- Records of wp_vote_option
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `wp_we_media_category`
+-- ----------------------------
+DROP TABLE IF EXISTS `wp_we_media_category`;
+CREATE TABLE `wp_we_media_category` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` varchar(50) DEFAULT NULL COMMENT '分类名',
+  `uid` int(10) DEFAULT NULL COMMENT '用户ID',
+  `manager_id` int(10) DEFAULT '0' COMMENT 'manager_id',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of wp_we_media_category
 -- ----------------------------
 
 -- ----------------------------

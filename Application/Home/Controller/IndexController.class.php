@@ -21,20 +21,6 @@ class IndexController extends HomeController {
 		}
 		parent::__construct ();
 	}
-	function kkk() {
-		$list = M ( 'model' )->select ();
-		// dump ( $list );
-		foreach ( $list as $vo ) {
-			$info = D ( 'Common/Model' )->getFileInfo ( $vo );
-			// dump ( $info );
-			foreach ( $info->fields as $f ) {
-				if ($f ['is_show'] != 1 && $f ['is_must'] == 1) {
-					echo ('Admin/Attribute/edit/name/' . $f ['name'] . '/model_id/' . $vo ['id'] . '<br/>');
-					// dump ( $f );
-				}
-			}
-		}
-	}
 	// 系统首页
 	public function index() {
 		if ($this->mid <= 0) {
@@ -218,12 +204,6 @@ class IndexController extends HomeController {
 		$count ['yestoday'] = M ()->table ( $px . 'apps_follow as f' )->join ( $px . 'user as u ON f.uid=u.uid' )->where ( $map )->count ();
 		$count ['yestoday'] = $count ['yestoday'] - $count ['today'];
 		$this->assign ( 'count', $count );
-		
-		// 官方公告
-		$url = REMOTE_BASE_URL . '/notice.php';
-		$data = wp_file_get_contents ( $url );
-		$notices = json_decode ( $data, true );
-		$this->assign ( 'notices', $notices );
 		
 		$this->display ();
 	}

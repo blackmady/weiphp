@@ -22,7 +22,6 @@ class WapController extends WapBaseController {
 				$isExchange = 1;
 			}
 			$this->assign ( 'isExchange', $isExchange );
-			
 		}
 		if ($isExchange == 0 && $this->uid != $this->mid) {
 			$this->assign ( 'isShowBtn', 1 );
@@ -30,23 +29,23 @@ class WapController extends WapBaseController {
 		if ($isExchange == 1 && $this->uid != $this->mid) {
 			$this->assign ( 'needDeleteBtn', 1 );
 		}
-		if ($this->uid == $this->mid){
-		    $this->assign('isself',1);
-		    $map['uid']=$this->uid;
-		    $map['aim_id']=$info['id'];
-		    $map['aim_table']='business_card';
-		    $comments=D('Addons://Comment/Comment')->where($map)->select();
-		    foreach ($comments as &$c){
-		        $userInfo=get_followinfo($c['follow_id']);
-		        $c['truename']=$userInfo['truename'];
-		        $c['mobile']=$userInfo['mobile'];
-		        $c['headimgurl']=$userInfo['headimgurl'];
-		    }
-		    $this->assign('comments',$comments);
+		if ($this->uid == $this->mid) {
+			$this->assign ( 'isself', 1 );
+			$map ['uid'] = $this->uid;
+			$map ['aim_id'] = $info ['id'];
+			$map ['aim_table'] = 'business_card';
+			$comments = D ( 'Addons://Comment/Comment' )->where ( $map )->select ();
+			foreach ( $comments as &$c ) {
+				$userInfo = get_followinfo ( $c ['follow_id'] );
+				$c ['truename'] = $userInfo ['truename'];
+				$c ['mobile'] = $userInfo ['mobile'];
+				$c ['headimgurl'] = $userInfo ['headimgurl'];
+			}
+			$this->assign ( 'comments', $comments );
 		}
-		//名片栏目
-		$colunm=$this->_getBusinessCardColunm($this->uid);
-		$this->assign('card_colunm',$colunm);
+		// 名片栏目
+		$colunm = $this->_getBusinessCardColunm ( $this->uid );
+		$this->assign ( 'card_colunm', $colunm );
 		$this->assign ( 'is_perview', $is_perview );
 		$this->display ( ONETHINK_ADDON_PATH . 'BusinessCard/View/TemplateDetail/' . $info ['temp'] . '/detail.html' );
 	}
@@ -57,7 +56,7 @@ class WapController extends WapBaseController {
 		if (! $info) {
 			$isCreate = 0;
 			if ($this->uid == $this->mid) {
-				$this->error( '400028:请先创建您的名片', U ( 'add' ) );
+				$this->error ( '400028:请先创建您的名片', U ( 'add' ) );
 			}
 		}
 		
@@ -73,23 +72,25 @@ class WapController extends WapBaseController {
 		
 		return $info;
 	}
-	//获取栏目信息
-	function _getBusinessCardColunm($uid){
-	    $map['uid']=$uid;
-	    $mediaCategory=M('we_media_category')->field('id,title')->select();
-	    foreach ($mediaCategory as $m){
-	        $cate[$m['id']]=$m['title'];
-	    }
-	    $businessCardColunm=M('business_card_column')->where($map)->order('sort asc')->select();
-	    foreach ($businessCardColunm as &$c){
-	        if ($c['type']==1){
-	            $c['cate_title']=$cate[$c['cate_id']];
-	            $c['cate_url']=addons_url('WeMedia://Wap/lists',array('uid'=>$uid,'cate_id'=>$c['cate_id']));
-	        }
-	    }
-	    return $businessCardColunm;
+	// 获取栏目信息
+	function _getBusinessCardColunm($uid) {
+		$map ['uid'] = $uid;
+		$mediaCategory = M ( 'we_media_category' )->field ( 'id,title' )->select ();
+		foreach ( $mediaCategory as $m ) {
+			$cate [$m ['id']] = $m ['title'];
+		}
+		$businessCardColunm = M ( 'business_card_column' )->where ( $map )->order ( 'sort asc' )->select ();
+		foreach ( $businessCardColunm as &$c ) {
+			if ($c ['type'] == 1) {
+				$c ['cate_title'] = $cate [$c ['cate_id']];
+				$c ['cate_url'] = addons_url ( 'WeMedia://Wap/lists', array (
+						'uid' => $uid,
+						'cate_id' => $c ['cate_id'] 
+				) );
+			}
+		}
+		return $businessCardColunm;
 	}
-	
 	function add() {
 		$model = $this->getModel ( 'BusinessCard' );
 		
@@ -100,9 +101,11 @@ class WapController extends WapBaseController {
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
 			if ($Model->create () && $id = $Model->add ()) {
 				
-				redirect ( U ( 'choose_template', ['id' => $id ] ) );
+				redirect ( U ( 'choose_template', [ 
+						'id' => $id 
+				] ) );
 			} else {
-				$this->error( '400029:'. $Model->getError () );
+				$this->error ( '400029:' . $Model->getError () );
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
@@ -117,7 +120,7 @@ class WapController extends WapBaseController {
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
-		$data || $this->error( '400030:数据不存在！' );
+		$data || $this->error ( '400030:数据不存在！' );
 		
 		if (IS_POST) {
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
@@ -126,7 +129,7 @@ class WapController extends WapBaseController {
 			if ($Model->create () && $Model->save ()) {
 				$this->success ( '保存成功！', U ( 'detail' ) );
 			} else {
-				$this->error( '400031:'. $Model->getError () );
+				$this->error ( '400031:' . $Model->getError () );
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
@@ -151,7 +154,9 @@ class WapController extends WapBaseController {
 		// $model = M( 'BusinessCard' );
 		$data ['template'] = I ( 'post.temp' );
 		$id = I ( 'get.id' );
-		$res = M ( 'business_card' )->where ( ['id' => $id ] )->save ( $data );
+		$res = M ( 'business_card' )->where ( [ 
+				'id' => $id 
+		] )->save ( $data );
 		if ($res) {
 			echo 1;
 		} else {
@@ -282,14 +287,14 @@ class WapController extends WapBaseController {
 		$this->assign ( 'tempList', $tempList );
 	}
 	
-	//删除留言
-	function delComment(){
-	    $map['id']=I('id');
-	    $res=D('Addons://Comment/Comment')->where($map)->delete();
-	    if ($res){
-	        echo $res;
-	    }else {
-	        echo 0;
-	    }
+	// 删除留言
+	function delComment() {
+		$map ['id'] = I ( 'id' );
+		$res = D ( 'Addons://Comment/Comment' )->where ( $map )->delete ();
+		if ($res) {
+			echo $res;
+		} else {
+			echo 0;
+		}
 	}
 }

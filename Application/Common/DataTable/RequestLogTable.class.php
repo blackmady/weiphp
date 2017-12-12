@@ -72,9 +72,9 @@ class RequestLogTable {
 			'param' => [
 					'title' => '序列化后的参数',
 					'type' => 'textarea',
-					'field' => 'text NULL',
+					'field' => 'longtext NULL',
 					'is_show' => 1,
-					'placeholder' => '请输入内容'
+					'is_must' => 0
 			],
 			'res' => [
 					'title' => '接口返回的参数',

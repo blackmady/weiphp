@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -45,12 +46,12 @@ class ManageBaseController extends Controller {
 	public function __construct() {
 		parent::__construct ();
 		$index_3 = strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME );
-		$isBindTicket = $index_3 == 'publicbind/publicbind/setticket'?true:false;
-		if ($index_3 != 'home/weixin/index' && MODULE_NAME != 'Admin' && !$isBindTicket) { // 微信客户端请求的用户初始化在home/weixin/index里实现，这里不作处理
+		$isBindTicket = $index_3 == 'publicbind/publicbind/setticket' ? true : false;
+		if ($index_3 != 'home/weixin/index' && MODULE_NAME != 'Admin' && ! $isBindTicket) { // 微信客户端请求的用户初始化在home/weixin/index里实现，这里不作处理
 			if ($this->need_login) {
 				$user = $this->initUser ();
 				$is_follow = isWeixinBrowser ();
-				if ($user == false && ! $is_follow ) {
+				if ($user == false && ! $is_follow) {
 					// dump($user);exit;
 					$froward = Cookie ( '__forward__' );
 					empty ( $froward ) && Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
@@ -59,8 +60,8 @@ class ManageBaseController extends Controller {
 			}
 			$info = [ ];
 			
-			$index_4=strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME  );
-			if ($this->need_appinfo && $index_4!='publicbind/publicbind') {
+			$index_4 = strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME );
+			if ($this->need_appinfo && $index_4 != 'publicbind/publicbind') {
 				$info = $this->initPublic ();
 				if ($info == false) {
 					$this->error ( '100012:公众号信息缺失', U ( 'Home/Apps/lists' ) );
@@ -75,7 +76,7 @@ class ManageBaseController extends Controller {
 		
 		$this->initWeb ();
 		
-		if (IS_POST) {
+		if (IS_POST && ACTION_NAME != 'login') {
 			$content = GetCurUrl () . PHP_EOL;
 			$content .= 'POST: ' . var_export ( $_POST, true ) . '; ' . PHP_EOL;
 			
@@ -276,7 +277,7 @@ class ManageBaseController extends Controller {
 					$_POST ['config'] [$k] = $_POST [$k];
 				}
 				if ($vv ['type'] == 'file') {
-				    $_POST ['config'] [$k] = $_POST [$k];
+					$_POST ['config'] [$k] = $_POST [$k];
 				}
 			}
 			$flag = D ( 'Common/AddonConfig' )->set ( MODULE_NAME, I ( 'config' ) );

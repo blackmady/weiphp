@@ -330,6 +330,7 @@ $(function(){
 					break;
 				case 'editor' :
 					$html .= "<label class='textarea'><textarea name='{$name}' style='width:405px;height:100px;'>{$value}</textarea>";
+					$value = mysql_real_escape_string($value);
 					$html .= "{:hook ( 'adminArticleEdit', [ 'name' => '{$name}', 'value' => '{$value}' ] )}  </label>";
 					break;
 				case 'picture' :

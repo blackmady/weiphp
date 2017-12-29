@@ -431,6 +431,7 @@ class ApiController extends ApiBaseController {
 		$param ['openid'] = $openid;
 		$param ['mch_id'] = $info ['mch_id'];
 		$param ['partner_key'] = $info ['partner_key'];
+		$param ['attach'] = I('username');
 		
 		$order = D ( 'Common/Payment' )->weiapp_pay ( $appid, $param, 'Home/Service/payok' );
 		echo json ( $order );

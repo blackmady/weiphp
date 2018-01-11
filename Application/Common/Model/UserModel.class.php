@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -238,18 +239,21 @@ class UserModel extends Model {
 			$userInfo ['groups'] = array ();
 			$prefix = C ( 'DB_PREFIX' );
 			$groups = M ()->table ( $prefix . 'auth_group_access a' )->where ( "a.uid='$uid' and g.status='1'" )->join ( $prefix . "auth_group g on a.group_id=g.id" )->field ( 'a.group_id,g.title,g.type,g.icon' )->select ();
-			foreach ( $groups as $g ) {
-				$g ['icon'] = get_cover_url ( $g ['icon'] );
-				$userInfo ['groups'] [$g ['group_id']] = $g;
+			if (! empty ( $groups )) {
+				foreach ( $groups as $g ) {
+					$g ['icon'] = get_cover_url ( $g ['icon'] );
+					$userInfo ['groups'] [$g ['group_id']] = $g;
+				}
 			}
-			
 			// 公众号粉丝信息
 			$userInfo ['tokens'] = array ();
 			$tokens = M ( 'apps_follow' )->where ( "uid='$uid'" )->field ( true )->select ();
-			foreach ( $tokens as $t ) {
-				$userInfo ['tokens'] [$t ['token']] = $t ['openid'];
-				$userInfo ['remarks'] [$t ['token']] = $t ['remark'];
-				$userInfo ['has_subscribe'] [$t ['token']] = $t ['has_subscribe'];
+			if (! empty ( $tokens )) {
+				foreach ( $tokens as $t ) {
+					$userInfo ['tokens'] [$t ['token']] = $t ['openid'];
+					$userInfo ['remarks'] [$t ['token']] = $t ['remark'];
+					$userInfo ['has_subscribe'] [$t ['token']] = $t ['has_subscribe'];
+				}
 			}
 			
 			// 是否为系统管理员
@@ -266,8 +270,8 @@ class UserModel extends Model {
 					1 => '他',
 					2 => '她' 
 			);
-			$userInfo ['sex_name'] = $sexArr [$userInfo ['sex']];
-			$userInfo ['sex_alias'] = $sexArr2 [$userInfo ['sex']];
+			$userInfo ['sex_name'] = isset ( $sexArr [$userInfo ['sex']] ) ? $sexArr [$userInfo ['sex']] : '';
+			$userInfo ['sex_alias'] = isset ( $sexArr2 [$userInfo ['sex']] ) ? $sexArr2 [$userInfo ['sex']] : '';
 			
 			// 获取标签信息
 			$tag_map ['uid'] = $uid;
@@ -372,8 +376,8 @@ class UserModel extends Model {
 	function searchUser($key) {
 		if (empty ( $key ))
 			return 0;
-			
-			// 搜索用户表
+		
+		// 搜索用户表
 		$where = "nickname LIKE '%{$key}%' OR truename LIKE '%{$key}%' OR mobile LIKE '%{$key}%'";
 		$uids = ( array ) $this->where ( $where )->getFields ( 'uid' );
 		// 搜索用户名备注

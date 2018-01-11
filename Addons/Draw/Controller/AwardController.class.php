@@ -28,7 +28,7 @@ class AwardController extends ManageBaseController {
 	}
 	
 	// 通用插件的列表模型
-	public function lists($model = null, $page = 0) {
+	public function lists() {
 		$model = $this->getModel ( 'sport_award' );
 		// $map['uid']=$this->mid;
 		$map ['token'] = get_token ();

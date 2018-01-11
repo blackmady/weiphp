@@ -23,7 +23,7 @@
             	<volist name="list_data" id="vo">
             		<li>
                     	<a href="{:U('detail',array('uid'=>$vo['uid']))}">
-                        	<empty name="vo[headimgurl]">
+                        	<empty name="vo['headimgurl']">
                     			<img src="__IMG__/default.png"/>
                             <else/>
                             	<img src="{$vo.headimgurl}"/>

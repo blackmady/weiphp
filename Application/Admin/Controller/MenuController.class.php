@@ -22,14 +22,14 @@ class MenuController extends AdminController {
 	 *        	模型标识
 	 * @author 凡星
 	 */
-	public function lists($model = null, $p = 0) {
+	public function lists() {
 		$model = $this->getModel ( 'menu' );
 		
 		$map ['place'] = I ( 'place', 0, 'intval' );
 		session ( 'common_condition', $map );
 		
 		$model ['list_row'] = 10000;
-		$list_data = $this->_get_model_list ( $model, $p );
+		$list_data = $this->_get_model_list ( $model );
 		// dump ( $list_data ['list_data'] );
 		$list_data ['list_data'] = $this->_get_data ( $map, $list_data ['list_data'] );
 		$this->assign ( $list_data );
@@ -79,13 +79,13 @@ class MenuController extends AdminController {
 		
 		return $data;
 	}
-	public function edit($model = null, $id = 0) {
+	public function edit() {
 		if (IS_POST) {
 			$_POST = $this->_check_data ( $_POST );
 		}
 		
 		$model = $this->getModel ( 'menu' );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );

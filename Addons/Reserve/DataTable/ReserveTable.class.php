@@ -101,7 +101,7 @@ class ReserveTable {
 					'title' => '提交后跳转的地址',
 					'field' => 'varchar(255) NULL',
 					'type' => 'string',
-					'remark' => '要以http://开头的完整地址，为空时不跳转',
+					'remark' => '要以'.HTTP_PREFIX.'://开头的完整地址，为空时不跳转',
 					'is_show' => 1
 			],
 			'content' => [

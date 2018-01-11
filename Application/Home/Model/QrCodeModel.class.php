@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -26,6 +27,8 @@ class QrCodeModel extends Model {
 		}
 		
 		$public = get_token_appinfo ( $token );
+		if (empty ( $public ))
+			return false;
 		
 		$this->appID = trim ( $public ['appid'] );
 		$this->appSecret = trim ( $public ['secret'] );
@@ -34,6 +37,8 @@ class QrCodeModel extends Model {
 	}
 	public function set_public($publicId) {
 		$public = D ( 'Common/Apps' )->getInfo ( $publicId );
+		if (empty ( $public ))
+			return false;
 		
 		$this->token = $public ['token'];
 		

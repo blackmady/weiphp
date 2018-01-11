@@ -91,10 +91,10 @@ class CategoryController extends BaseController {
 		// dump($data);exit;
 		return $data;
 	}
-	public function edit($model = null, $id = 0) {
+	public function edit() {
 		is_array ( $model ) || $model = $this->model;
 		$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		if (IS_POST) {
 		    if ($_POST['pid']==$id){
@@ -151,8 +151,8 @@ class CategoryController extends BaseController {
 			$this->display ();
 		}
 	}
-	public function add($model = null) {
-		is_array ( $model ) || $model = $this->model;
+	public function add() {
+		$model = $this->model;
 		$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 		
 		if (IS_POST) {

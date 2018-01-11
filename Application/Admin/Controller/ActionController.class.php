@@ -37,7 +37,8 @@ class ActionController extends AdminController {
      * 查看行为日志
      * @author huajie <banhuajie@163.com>
      */
-    public function edit($id = 0){
+    public function edit(){
+		$id = I('id', 0);
         empty($id) && $this->error( '140000:参数错误！');
 
         $info = M('ActionLog')->field(true)->find($id);

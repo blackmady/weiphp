@@ -26,8 +26,6 @@ class AppsController extends ManageBaseController {
 		$this->assign ( 'check_all', false );
 		$this->assign ( 'search_url', U ( 'lists' ) );
 		
-		define ( 'ADDON_PUBLIC_PATH', '' );
-		
 		$this->model = M ( 'model' )->getByName ( 'apps' );
 		$this->assign ( 'model', $this->model );
 		// dump ( $this->model );
@@ -115,13 +113,13 @@ class AppsController extends ManageBaseController {
 			$this->success ( '删除成功' );
 		}
 	}
-	public function edit($model = null, $id = 0) {
-		$id || $id = I ( 'id' );
+	public function edit() {
+		$id = I ( 'id' );
 		redirect ( U ( 'add', [ 
 				'id' => $id 
 		] ) );
 	}
-	public function add($model = null) {
+	public function add() {
 		if (IS_POST) {
 			foreach ( $_POST as &$v ) {
 				$v = trim ( $v );
@@ -190,7 +188,6 @@ class AppsController extends ManageBaseController {
 			}
 			
 			$_POST ['token'] = $_POST ['public_id'];
-			$_POST ['group_id'] = intval ( C ( 'DEFAULT_APPS_GROUP_ID' ) );
 			$_POST ['uid'] = $this->mid;
 			$_POST ['app_type'] = 0;
 			
@@ -323,7 +320,6 @@ class AppsController extends ManageBaseController {
 			}
 			
 			$_POST ['token'] = $_POST ['public_id'];
-			$_POST ['group_id'] = intval ( C ( 'DEFAULT_APPS_GROUP_ID' ) );
 			$_POST ['uid'] = $this->mid;
 			$_POST ['app_type'] = 1;
 			

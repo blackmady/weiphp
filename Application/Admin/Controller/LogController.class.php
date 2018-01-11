@@ -129,7 +129,7 @@ class LogController extends AdminController {
 		$param ['port'] = $_SERVER ['SERVER_PORT'];
 		$param ['key'] = md5 ( SITE_URL );
 		
-		$url = 'http://www.weiphp.cn/index.php?s=/w0/Home/Index/remoteErrorLog';
+		$url = 'https://www.weiphp.cn/index.php?s=/w0/Home/Index/remoteErrorLog';
 		post_data ( $url, $param );
 	}
 }

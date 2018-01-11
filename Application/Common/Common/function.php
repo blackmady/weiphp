@@ -492,6 +492,7 @@ function get_addon_config($name) {
 function addons_url($url, $param = array()) {
 	// 凡星：修复如user_center://user_center/add 识别错误的问题
 	$urlArr = explode ( '://', $url );
+	$addons = '';
 	if (stripos ( $urlArr [0], '_' ) !== false) {
 		$addons = $urlArr [0];
 		$url = HTTP_PREFIX . $urlArr [1];
@@ -1252,7 +1253,7 @@ function clean_hide_attr($str) {
 }
 function get_hide_attr($str) {
 	$arr = explode ( '|', $str );
-	return $arr [1];
+	return isset ( $arr [1] ) ? $arr [1] : '';
 }
 // 分析枚举类型字段值 格式 a:名称1,b:名称2
 function parse_field_attr($string, $preg = '/[\s;\r\n]+/') {
@@ -1608,22 +1609,6 @@ function set_user_status($addon, $keywordArr = array()) {
 	return S ( 'user_status_' . $openid, $user_status );
 }
 
-// 获取公众号等级名
-function get_apps_group_name($group_id) {
-	static $_apps_group_name;
-	
-	$group_id = intval ( $group_id );
-	if (! isset ( $_apps_group_name [$group_id] )) {
-		$group_list = M ( 'apps_group' )->field ( 'id, title' )->select ();
-		foreach ( $group_list as $g ) {
-			$_apps_group_name [$g ['id']] = $g ['title'];
-		}
-		$_apps_group_name [0] = '无';
-	}
-	
-	return $_apps_group_name [$group_id];
-}
-
 // 截取内容
 function getShort($str, $length = 40, $ext = '') {
 	$str = filter_line_tab ( $str );
@@ -1633,6 +1618,7 @@ function getShort($str, $length = 40, $ext = '') {
 	$strlenth = 0;
 	$out = '';
 	preg_match_all ( "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/", $str, $match );
+	$output = '';
 	foreach ( $match [0] as $v ) {
 		preg_match ( "/[\xe0-\xef][\x80-\xbf]{2}/", $v, $matchs );
 		if (! empty ( $matchs [0] )) {
@@ -2353,7 +2339,7 @@ function getMyDistance($shopGPS) {
 	return getDistance ( $arr [0], $arr [1], $my [0], $my [1] );
 }
 function GPS2Address($location) {
-	$url = 'http://api.map.baidu.com/geocoder/v2/?ak=' . BAIDU_GPS_AK . '&coordtype=wgs84ll&location=' . $location . '&output=json&pois=0';
+	$url = '//api.map.baidu.com/geocoder/v2/?ak=' . BAIDU_GPS_AK . '&coordtype=wgs84ll&location=' . $location . '&output=json&pois=0';
 	$res = wp_file_get_contents ( $url );
 	// dump ( $url );
 	$res = json_decode ( $res, true );
@@ -3325,7 +3311,7 @@ function down_media($media_id) {
 	mkdirs ( $savePath );
 	// 获取图片URL
 	
-	$url = 'http://api.weixin.qq.com/cgi-bin/media/get?access_token=' . get_access_token () . '&media_id=' . $media_id;
+	$url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . get_access_token () . '&media_id=' . $media_id;
 	$picContent = wp_file_get_contents ( $url );
 	$picjson = json_decode ( $picContent, true );
 	if (isset ( $picjson ['errcode'] ) && $picjson ['errcode'] != 0) {
@@ -3367,7 +3353,7 @@ function outputCurl($url) {
 
 // 上传多媒体文体
 function upload_media($path, $type = 'image') {
-	$url = 'http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=' . get_access_token ();
+	$url = 'https://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=' . get_access_token ();
 	$param ['type'] = $type;
 	if (class_exists ( '\CURLFile' )) { // 关键是判断curlfile,官网推荐php5.5或更高的版本使用curlfile来实例文件
 		$param ['media'] = new \CURLFile ( realpath ( $path ) );
@@ -3471,7 +3457,7 @@ function down_file_media($media_id, $type = 'voice') {
 	$savePath = SITE_PATH . '/Uploads/Download/' . time_format ( NOW_TIME, 'Y-m-d' );
 	mkdirs ( $savePath );
 	// 获取图片URL
-	$url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . get_access_token () . '&media_id=' . $media_id;
+	$url = 'https://file.api.weixin.qq.com/cgi-bin/media/get?access_token=' . get_access_token () . '&media_id=' . $media_id;
 	$picContent = outputCurl ( $url );
 	$picjson = json_decode ( $picContent, true );
 	if (isset ( $picjson ['errcode'] ) && $picjson ['errcode'] != 0) {
@@ -4033,4 +4019,12 @@ function api_ticket($access_token = '', $update = false) {
 	} else {
 		return 0;
 	}
+}
+function file_log($content, $file_name = "") {
+	if (is_array ( $content )) {
+		$content = "\r\n" . print_r ( $content, true );
+	}
+	$file_name = $file_name != "" ? $file_name . "_" : "";
+	$logPath = RUNTIME_PATH . "Logs/" . $file_name . date ( "Y-m-d" ) . ".log";
+	error_log ( "\r\n" . date ( "[Y-m-d H:i:s]" ) . " : " . $content, 3, $logPath );
 }

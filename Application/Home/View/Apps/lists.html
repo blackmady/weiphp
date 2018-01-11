@@ -36,13 +36,13 @@
 
                     <!--<td>{$data.count}</td>-->
                     <td>
-                    <a href="{:U('Home/Index/main',array('wpid'=>$data[id]))}" target="_self">进入管理</a>&nbsp;&nbsp;&nbsp; 
-                    <a href="{:U('Home/Apps/check_res',['id'=>$data[id]])}" target="_self">自动检测</a>&nbsp;&nbsp;&nbsp; 
+                    <a href="{:U('Home/Index/main',array('wpid'=>$data['id']))}" target="_self">进入管理</a>&nbsp;&nbsp;&nbsp; 
+                    <a href="{:U('Home/Apps/check_res',['wpid'=>$data['id'],'id'=>$data['id']])}" target="_self">自动检测</a>&nbsp;&nbsp;&nbsp; 
                     <php>if($data['is_creator']) { </php>
-                    <a href="{:U('Home/AppsLink/lists',['mp_id'=>$data[id]])}" target="_self">管理员配置</a>&nbsp;&nbsp;&nbsp;
+                    <a href="{:U('Home/AppsLink/lists',['wpid'=>$data['id'],'mp_id'=>$data['id']])}" target="_self">管理员配置</a>&nbsp;&nbsp;&nbsp;
                       <php>if(!C('PUBLIC_BIND') || !$data['is_bind']) { </php>
-                      <a href="{:U('step_0',['id'=>$data[id]])}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;
-                      <a href="{:U('payment_set',['id'=>$data[id]])}" target="_self">微信支付</a>&nbsp;&nbsp;&nbsp;
+                      <a href="{:U('step_0',['wpid'=>$data['id'],'id'=>$data['id']])}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;
+                      <a href="{:U('payment_set',['wpid'=>$data['id'],'id'=>$data['id']])}" target="_self">微信支付</a>&nbsp;&nbsp;&nbsp;
                       <php> } }</php>
                     <a href="javascript:;" onclick="do_del('{$data.id}')" >删除</a>
                    </td>
@@ -91,11 +91,11 @@
                  
                   <!--<td>{$data.count}</td>-->
                   <td>
-                  <a href="{:U('WeiUserCenter/WeiUserCenter/lists',['wpid'=>$data[id]])}" target="_self">进入管理</a>&nbsp;&nbsp;&nbsp; 
+                  <a href="{:U('WeiUserCenter/WeiUserCenter/lists',['wpid'=>$data['id']])}" target="_self">进入管理</a>&nbsp;&nbsp;&nbsp; 
                   <php>if($data['is_creator']) { </php>
-                        <!--<a href="{:U('Home/AppsLink/lists',['mp_id'=>$data[id]])}" target="_self">管理员配置</a>&nbsp;&nbsp;&nbsp;                 -->     
-                        <a href="{:U('step_miniapp_0',['id'=>$data[id]])}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;  
-                        <a href="{:U('payment_set',['id'=>$data[id]])}" target="_self">微信支付</a>&nbsp;&nbsp;&nbsp;
+                        <!--<a href="{:U('Home/AppsLink/lists',['mp_id'=>$data['id']])}" target="_self">管理员配置</a>&nbsp;&nbsp;&nbsp;                 -->     
+                        <a href="{:U('step_miniapp_0',['id'=>$data['id']])}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;  
+                        <a href="{:U('payment_set',['id'=>$data['id']])}" target="_self">微信支付</a>&nbsp;&nbsp;&nbsp;
                   <php> } </php>                
                   <a href="javascript:;" onclick="do_del('{$data.id}')" >删除</a>
                   </td>

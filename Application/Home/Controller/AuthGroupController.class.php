@@ -122,8 +122,8 @@ class AuthGroupController extends HomeController {
 				'group_id' => $group_id 
 		) ) );
 	}
-	public function add($model = null, $templateFile = '') {
-		is_array ( $model ) || $model = $this->model;
+	public function add() {
+		$model = $this->model;
 		if (IS_POST) {
 			$_POST ['type'] = 1; // 目前只能增加微信管理组
 			$_POST ['manager_id'] = $this->mid;
@@ -172,9 +172,9 @@ class AuthGroupController extends HomeController {
 		$count = M ( 'auth_group' )->where ( $map )->count ();
 		return intval ( $count );
 	}
-	public function edit($id = 0) {
+	public function edit() {
 		$model = $this->model;
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );

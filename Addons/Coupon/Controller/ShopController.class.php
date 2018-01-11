@@ -158,8 +158,7 @@ class ShopController extends ManageBaseController {
 	}
 	function del() {
 		$model = $this->getModel ( $this->table );
-// 		D('Addons://Coupon/Coupon')->getCouponShop(true);
-		parent::del ( $model );
+		parent::common_del ( $model );
 	}
 	function add() {
 		$model = $this->getModel ( $this->table );

@@ -167,7 +167,9 @@ class CategoryController extends HomeController {
 	}
 	
 	/* 编辑分类 */
-	public function edit($id = null, $pid = 0) {
+	public function edit() {
+		$id = I('id');
+		$pid = I('pid', 0);
 		$Category = D ( 'Category' );
 		if (IS_POST) { // 提交表单
 			$_POST ['module'] = session ( 'common_category_module' );
@@ -202,7 +204,8 @@ class CategoryController extends HomeController {
 	}
 	
 	/* 新增分类 */
-	public function add($pid = 0) {
+	public function add() {
+		$pid = I('pid', 0);
 		$Category = D ( 'Category' );
 		
 		if (IS_POST) { // 提交表单

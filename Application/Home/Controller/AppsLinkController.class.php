@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -91,12 +92,12 @@ class AppsLinkController extends HomeController {
 			$this->error ( '110030:删除失败！' );
 		}
 	}
-	public function edit($id = 0) {
+	public function edit() {
 		$model = $this->getModel ( $this->table );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		if (IS_POST) {
-			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $_POST ['mp_id'] );
+			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ();
 			foreach ( $addon_list as $v ) {
 				$all_ids [] = $v ['id'];
 			}
@@ -112,7 +113,7 @@ class AppsLinkController extends HomeController {
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
-			$this->_deal_addon ( $fields ['addon_status'], $_POST ['mp_id'] );
+			$this->_deal_addon ( $fields ['addon_status'] );
 			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
 			$data || $this->error ( '110032:数据不存在！' );
@@ -130,7 +131,7 @@ class AppsLinkController extends HomeController {
 	public function add() {
 		$model = $this->getModel ( $this->table );
 		if (IS_POST) {
-			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $_POST ['mp_id'] );
+			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ();
 			foreach ( $addon_list as $v ) {
 				$all_ids [] = $v ['id'];
 			}
@@ -146,7 +147,7 @@ class AppsLinkController extends HomeController {
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
-			$this->_deal_addon ( $fields ['addon_status'], $_POST ['mp_id'] );
+			$this->_deal_addon ( $fields ['addon_status'] );
 			
 			$this->assign ( 'fields', $fields );
 			$this->meta_title = '新增' . $model ['title'];
@@ -154,9 +155,10 @@ class AppsLinkController extends HomeController {
 			$this->display ( 'Addons:add' );
 		}
 	}
-	function _deal_addon(&$info, $mp_id) {
-		$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $mp_id );
+	function _deal_addon(&$info) {
+		$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ();
 		
+		$extra = '';
 		foreach ( $addon_list as $vo ) {
 			$extra .= $vo ['id'] . ':' . $vo ['title'] . "\n";
 			$value [] = $vo ['id'];

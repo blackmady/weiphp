@@ -34,10 +34,10 @@
      </div>
      
          <div class="v_nav">
-            <a class="item" href="{:addons_url('Coupon://Wap/coupon_detail',array('id'=>$data[id]))}">优惠券详情<em>&nbsp;</em></a>
+            <a class="item" href="{:addons_url('Coupon://Wap/coupon_detail',array('id'=>$data['id']))}">优惠券详情<em>&nbsp;</em></a>
             <notempty name="shop_list">
             <if condition="count($shop_list) neq  1">
-                <a class="item" href="{:addons_url('Coupon://Wap/store_list',array('id'=>$data[id]))}">适用门店<em>&nbsp;</em></a>
+                <a class="item" href="{:addons_url('Coupon://Wap/store_list',array('id'=>$data['id']))}">适用门店<em>&nbsp;</em></a>
             <else/>
             	<volist name="shop_list" id="vo">
                     <li class="item single_address">
@@ -45,9 +45,9 @@
  				<span style="padding-left: 8px;">营业时间：{$vo.open_time}</span>
                 <br/>
                         <notempty name="$vo[gps]">
-                        	<a href="http://api.map.baidu.com/marker?location={$vo.gps}&title={$vo.name}&content={$vo.address}&output=html">{$vo.address}</a>
+                        	<a href="//api.map.baidu.com/marker?location={$vo.gps}&title={$vo.name}&content={$vo.address}&output=html">{$vo.address}</a>
                         <else />
-                        	<a href="http://api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
+                        	<a href="//api.map.baidu.com/geocoder?address={$vo.address}&output=html&src={$vo.name}|{$vo.address}">{$vo.address}</a>
                         </notempty>
                         <a href="tel:{$vo.phone}"><em>&nbsp;</em></a>
                     </li>

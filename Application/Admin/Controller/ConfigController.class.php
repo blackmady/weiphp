@@ -78,7 +78,8 @@ class ConfigController extends AdminController {
 	 *
 	 * @author 麦当苗儿 <zuojiazi@vip.qq.com>
 	 */
-	public function edit($id = 0) {
+	public function edit() {
+		$id = I('id', 0);
 		if (IS_POST) {
 			$Config = D ( 'Config' );
 			$data = $Config->create ();

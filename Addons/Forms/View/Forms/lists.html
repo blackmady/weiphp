@@ -59,12 +59,12 @@
                 <td>{$data.title}</td>
                 <td>{$data.keyword}</td>
                 <td>
-                <a href="{:U('preview',array('id'=>$data[id]))}" target="_blank">预览</a>&nbsp;&nbsp;&nbsp;
+                <a href="{:U('preview',array('id'=>$data['id']))}" target="_blank">预览</a>&nbsp;&nbsp;&nbsp;
                 
-                <a href="{:U('edit',array('id'=>$data[id]))}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;
-                <a href="{:addons_url('Forms://FormsValue/lists',array('forms_id'=>$data[id]))}" target="_blank">数据管理</a>&nbsp;&nbsp;&nbsp;
-                <a href="{:U('del',array('id'=>$data[id]))}" class="confirm">删除</a>&nbsp;&nbsp;&nbsp;
-                <a data-clipboard-text="{:addons_url('Forms://Wap/index',array('forms_id'=>$data[id],'wpid' =>$public_info[id]))}" class="list_copy_link" id="copyLink_{$data.id}">复制链接</a></td>
+                <a href="{:U('edit',array('id'=>$data['id']))}" target="_self">编辑</a>&nbsp;&nbsp;&nbsp;
+                <a href="{:addons_url('Forms://FormsValue/lists',array('forms_id'=>$data['id']))}" target="_blank">数据管理</a>&nbsp;&nbsp;&nbsp;
+                <a href="{:U('del',array('id'=>$data['id']))}" class="confirm">删除</a>&nbsp;&nbsp;&nbsp;
+                <a data-clipboard-text="{:addons_url('Forms://Wap/index',array('forms_id'=>$data['id'],'wpid' =>$public_info[id]))}" class="list_copy_link" id="copyLink_{$data.id}">复制链接</a></td>
               </tr>
               </volist>
               

@@ -4,22 +4,20 @@
     <div class="wrap">
     
        <a class="brand" title="{:C('WEB_SITE_TITLE')}" href="{:U('Home/index/index')}">
-       <notempty name="userInfo[website_logo]">
-       		<img height="52" src="{$userInfo.website_logo|get_cover_url}"/>
-       	<else/>
        		<img height="52" src="__IMG__/logo.png"/>
-       </notempty>
        </a>
         <if condition="is_login()">
         	<div class="switch_mp">
             	<notempty name="public_info.public_name"><a href="javascript:;">{$public_info.public_name}
-                <php> if(!empty($myPublics)) { </php> <b class="pl_5 fa fa-sort-down"></b> <php> } </php>
+                <php> if(isset($myPublics) && !empty($myPublics)) { </php> <b class="pl_5 fa fa-sort-down"></b> <php> } </php>
                 </a></notempty>
                 <ul>
+                <php> if(isset($myPublics)) { </php>
                 <volist name='myPublics' id='vo'>
                 	<li><a href="{:U('home/index/main', array('wpid'=>$vo[mp_id]))}">{$vo.public_name}</a></li>
                     </volist>
                 </ul>
+                <php> } </php>
             </div>
         </if>
       <php> $index_2 = strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME . '/*' ); $index_3 = strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME ); </php>
@@ -38,12 +36,10 @@
                            		<li data-id="{$ca.id}" class="{$ca.class}"><a href="{$ca.url}">{$ca.title}</a></li>
                        		</volist>
                     	</if>
-                    	
-                    	
-                        
+
                         <li class="dropdown admin_nav">
                             <a href="#" class="dropdown-toggle login-nav" data-toggle="dropdown" style="">
-                                <notempty name="myinfo[headimgurl]">
+                                <notempty name="myinfo['headimgurl']">
                                     <img class="admin_head url" src="{$myinfo.headimgurl}"/>
                                 <else/>
                                     <img class="admin_head default" src="__IMG__/default.png"/>

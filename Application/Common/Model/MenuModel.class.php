@@ -89,13 +89,13 @@ class MenuModel extends Model {
 					$cate ['url'] = $m ['url'];
 				} elseif (strpos ( $m ['url'], '://' ) !== false) {
 					$cate ['url'] = addons_url ( $m ['url'] );
-				}elseif($m['url'] == "#"){
-                                        $cate ['url'] = "#"; 
-				}elseif (! empty ( $m ['url'] )) {
+				} elseif ($m ['url'] == "#") {
+					$cate ['url'] = "#";
+				} elseif (! empty ( $m ['url'] )) {
 					$cate ['url'] = U ( $m ['url'] );
 				}
 				if (! empty ( $cate ['url'] )) {
-					if ($res ['core_side_menu'] [$m ['id']] [0] ['id']) {
+					if (isset ( $res ['core_side_menu'] [$m ['id']] ) && $res ['core_side_menu'] [$m ['id']] [0] ['id']) {
 						$cate ['url'] .= '&mdm=' . $m ['id'] . '|' . $res ['core_side_menu'] [$m ['id']] [0] ['id'];
 					} else {
 						$cate ['url'] .= '&mdm=' . $m ['id'];
@@ -106,7 +106,7 @@ class MenuModel extends Model {
 			$cate ['addon_name'] = $m ['addon_name'];
 			$res ['core_top_menu'] [] = $cate;
 			
-			$param ['side'] = $res ['core_side_menu'] [$m ['id']] [0] ['id'];
+			$param ['side'] = isset ( $res ['core_side_menu'] [$m ['id']] ) ? $res ['core_side_menu'] [$m ['id']] [0] ['id'] : '';
 			$res ['default_data'] [$cate ['url']] = $param;
 			empty ( $m ['addon_name'] ) || $res ['default_data'] [$cate ['addon_name']] = $param;
 		}
@@ -129,7 +129,7 @@ class MenuModel extends Model {
 		
 		// 第四步：初始化导航高亮参数
 		$default = session ( 'menu_default' );
-		if (strpos ( $_SERVER ['HTTP_REFERER'], 'uploadify.swf' ) === false) {
+		if (isset ( $_SERVER ['HTTP_REFERER'] ) && strpos ( $_SERVER ['HTTP_REFERER'], 'uploadify.swf' ) === false) {
 			if (isset ( $_GET ['mdm'] )) {
 				$mdm = explode ( '|', $_GET ['mdm'] );
 				$default ['top'] = intval ( $mdm [0] );
@@ -156,7 +156,7 @@ class MenuModel extends Model {
 		foreach ( $menus ['core_top_menu'] as &$top ) {
 			$top ['class'] = '';
 			
-			if ($top ['id'] == $default ['top']) {
+			if (isset ( $default ['top'] ) && $top ['id'] == $default ['top']) {
 				$top ['class'] = 'active current';
 				$menus ['now_top_menu_name'] = $top ['title'];
 			}
@@ -164,13 +164,13 @@ class MenuModel extends Model {
 		foreach ( $menus ['core_side_menu'] as &$side ) {
 			foreach ( $side as &$s ) {
 				$s ['class'] = '';
-				if ($s ['id'] == $default ['side'])
+				if (isset ( $default ['side'] ) && $s ['id'] == $default ['side'])
 					$s ['class'] = 'active current';
 			}
 		}
 		
 		$index_2 = strtolower ( MODULE_NAME . '/' . CONTROLLER_NAME . '/*' );
-		$menus ['core_side_menu'] = $index_2 == 'home/appslink/*' ? '' : $menus ['core_side_menu'] [$default ['top']];
+		$menus ['core_side_menu'] = $index_2 != 'home/appslink/*' && isset ( $menus ['core_side_menu'] [$default ['top']] ) ? $menus ['core_side_menu'] [$default ['top']] : '';
 		// dump ( $menus );
 		return $menus;
 	}

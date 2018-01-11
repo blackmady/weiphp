@@ -31,7 +31,7 @@ class PostController extends ManageBaseController {
 	}
 	
 	// 通用插件的增加模型
-	public function add($model = null) {
+	public function add() {
 		parent::common_add ( $this->model );
 	}
 	//首页帖子

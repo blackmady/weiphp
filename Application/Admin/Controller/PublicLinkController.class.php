@@ -80,12 +80,12 @@ class PublicLinkController extends AdminController {
 			$this->error( '140225:删除失败！' );
 		}
 	}
-	public function edit($id = 0) {
+	public function edit() {
 		$model = $this->getModel ( $this->table );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		if (IS_POST) {
-			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $_POST ['mp_id'] );
+			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( );
 			foreach ( $addon_list as $v ) {
 				$all_ids [] = $v ['id'];
 			}
@@ -101,7 +101,7 @@ class PublicLinkController extends AdminController {
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
-			$this->_deal_addon ( $fields, $_POST ['mp_id'] );
+			$this->_deal_addon ( $fields );
 			
 			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
@@ -120,7 +120,7 @@ class PublicLinkController extends AdminController {
 	public function add() {
 		$model = $this->getModel ( $this->table );
 		if (IS_POST) {
-			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $_POST ['mp_id'] );
+			$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( );
 			foreach ( $addon_list as $v ) {
 				$all_ids [] = $v ['id'];
 			}
@@ -136,7 +136,7 @@ class PublicLinkController extends AdminController {
 			}
 		} else {
 			$fields = get_model_attribute ( $model ['id'] );
-			$this->_deal_addon ( $fields, $_POST ['mp_id'] );
+			$this->_deal_addon ( $fields );
 			
 			$this->assign ( 'fields', $fields );
 			$this->meta_title = '新增' . $model ['title'];
@@ -144,8 +144,8 @@ class PublicLinkController extends AdminController {
 			$this->display ( 'Think:add' );
 		}
 	}
-	function _deal_addon(&$info, $mp_id) {
-		$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ( $mp_id );
+	function _deal_addon(&$info) {
+		$addon_list = D ( 'Common/AddonStatus' )->getPublicAddons ();
 		
 		foreach ( $addon_list as $vo ) {
 			$extra .= $vo ['id'] . ':' . $vo ['title'] . "\n";

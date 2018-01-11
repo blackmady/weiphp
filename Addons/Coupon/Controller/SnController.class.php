@@ -87,7 +87,7 @@ class SnController extends ManageBaseController {
 	}
 	function del() {
 		$model = $this->getModel ( 'sn_code' );
-		parent::del ( $model );
+		parent::common_del ( $model );
 	}
 	function set_use() {
 		$id = I ( 'id' );

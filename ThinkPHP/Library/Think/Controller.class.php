@@ -353,7 +353,7 @@ abstract class Controller {
 			$this->assign ( 'waitSecond', $ajax );
 		if (! empty ( $jumpUrl ))
 			$this->assign ( 'jumpUrl', $jumpUrl );
-			// 提示标题
+		// 提示标题
 		$this->assign ( 'msgTitle', $status ? L ( '_OPERATION_SUCCESS_' ) : L ( '_OPERATION_FAIL_' ) );
 		// 如果设置了关闭窗口，则提示完毕后自动关闭窗口
 		if ($this->get ( 'closeWin' ))
@@ -366,7 +366,7 @@ abstract class Controller {
 			                                       // 成功操作后默认停留1秒
 			if (! isset ( $this->waitSecond ))
 				$this->assign ( 'waitSecond', '1' );
-				// 默认操作成功自动返回操作前页面
+			// 默认操作成功自动返回操作前页面
 			if (! isset ( $this->jumpUrl ))
 				$this->assign ( "jumpUrl", $_SERVER ["HTTP_REFERER"] );
 			$this->display ( C ( 'TMPL_ACTION_SUCCESS' ) );
@@ -438,6 +438,10 @@ abstract class Controller {
 		if (is_install ( 'Card' )) {
 			D ( 'Addons://Card/CardCustom' )->do_send_crons ();
 		}
+		
+		// 初始化一些公共变量
+		$this->assign ( 'tongji_code', '' );
+		$this->assign ( 'UploadFileExts', C ( 'DOWNLOAD_UPLOAD' ) ['exts'] );
 	}
 	
 	// ***************************通用的模型数据操作 begin 凡星********************************/
@@ -563,7 +567,7 @@ abstract class Controller {
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
-			if ($Model->create () && $Model->save ()) {
+			if ($Model->create () && false !== $Model->save ()) {
 				$this->_saveKeyword ( $model, $id );
 				
 				// 清空缓存
@@ -585,6 +589,7 @@ abstract class Controller {
 	public function common_add($model = null, $templateFile = '') {
 		is_array ( $model ) || $model = $this->getModel ( $model );
 		if (IS_POST) {
+			
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
@@ -669,14 +674,14 @@ abstract class Controller {
 	protected function checkAttr($Model, $model_id) {
 		$fields = get_model_attribute ( $model_id );
 		$validate = $auto = array ();
+		$pk = $Model->getPk ();
 		foreach ( $fields as $key => $attr ) {
 			
 			if ($attr ['type'] == 'prize' && $_POST [$key]) {
 				// 判断奖品库选择器 数量是否大于库存
 				$this->checkPriceNum ( $_POST [$key] );
 			}
-			if ($attr ['is_must']) { // 必填字段
-			                         // 表单不存在字段也要验证
+			if ($pk != $key && $attr ['is_must']) { // 必填字段,表单不存在字段也要验证
 				$validate [] = array (
 						$attr ['name'],
 						'require',
@@ -737,6 +742,9 @@ abstract class Controller {
 		return $Model->validate ( $validate )->auto ( $auto );
 	}
 	protected function parseDataByField($val, $field) {
+		if (empty ( $field ))
+			return $val;
+		
 		switch ($field ['type']) {
 			case 'date' :
 				$val = day_format ( $val );
@@ -813,11 +821,14 @@ abstract class Controller {
 		return $val;
 	}
 	protected function parseData($datas, $fields, $grid, $model) {
+		if (empty ( $datas ))
+			return [ ];
+		
 		foreach ( $datas as &$data ) {
-			$original_data =  array_merge ( $_REQUEST, $data );
+			$original_data = array_merge ( $_REQUEST, $data );
 			foreach ( $grid as $name => $g ) {
-				$val = $data [$name];
-				$field = $fields [$name];
+				$val = isset ( $data [$name] ) ? $data [$name] : '';
+				$field = isset ( $fields [$name] ) ? $fields [$name] : '';
 				if (isset ( $g ['href'] ) && ! empty ( $g ['href'] )) { // 链接支持
 					$valArr = [ ];
 					foreach ( $g ['href'] as $link ) {

@@ -52,9 +52,9 @@ class CreditConfigController extends HomeController {
 		
 		$this->display ( 'Addons/lists' );
 	}
-	public function edit($id = 0) {
+	public function edit() {
 		$model = $this->getModel ( 'credit_config' );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );

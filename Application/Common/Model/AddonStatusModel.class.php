@@ -46,22 +46,6 @@ class AddonStatusModel extends Model {
 		$info = get_token_appinfo ( $map ['token'] );
 		$token_status = json_decode ( $info ['addon_status'], true );
 		
-		// 等级权限
-		if ($info ['group_id']) {
-			$map2 ['id'] = $info ['group_id'];
-			$addon_ids = M ( 'apps_group' )->where ( $map2 )->getField ( 'addon_status' );
-			if ($addon_ids) {
-				$map3 ['id'] = array (
-						'in',
-						$addon_ids 
-				);
-				$addons = M ( 'addons' )->where ( $map3 )->field ( '`name`' )->select ();
-				foreach ( $addons as $a ) {
-					$token_status [$a ['name']] = '-1';
-				}
-			}
-		}
-		
 		// 对当前用户的权限进行判断
 		if ($is_admin) {
 			unset ( $map );
@@ -80,27 +64,13 @@ class AddonStatusModel extends Model {
 				}
 			}
 		}
-		// dump ( $token_status );
-		// dump(M ( 'apps' )->getLastSql());exit;
+
 		return $token_status;
 	}
 	
 	// 获取当前公众号已授权的插件列表
-	function getPublicAddons($mp_id) {
-		$info = D ( 'Common/Apps' )->getInfo ( $mp_id );
-		// 等级权限
-		if ($info ['group_id']) {
-			$map2 ['id'] = $info ['group_id'];
-			$addon_ids = M ( 'apps_group' )->where ( $map2 )->getField ( 'addon_status' );
-			
-			if ($addon_ids) {
-				$map ['id'] = array (
-						'not in',
-						$addon_ids 
-				);
-			}
-		}
-		
+	function getPublicAddons() {
+		$map['status'] = 1;		
 		$data = M ( 'Addons' )->where ( $map )->order ( 'id DESC' )->select ();
 		
 		return $data;

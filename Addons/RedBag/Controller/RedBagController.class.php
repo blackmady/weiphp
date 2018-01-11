@@ -53,7 +53,7 @@ class RedBagController extends ManageBaseController {
 	}
 	function lists() {
 		// $model = $this->getModel ( 'redbag' );
-		// parent::lists ( $model );
+		// parent::lists ();
 		$isAjax = I ( 'isAjax' );
 		$isRadio = I ( 'isRadio' );
 		$model = $this->getModel ( 'redbag' );
@@ -90,7 +90,7 @@ class RedBagController extends ManageBaseController {
 		if (IS_POST) {
 			$this->checkPostData ();
 		}
-		parent::add ( $model );
+		parent::add ();
 	}
 	function checkPostData() {
 		// if (! I ( 'post.mch_id' )) {

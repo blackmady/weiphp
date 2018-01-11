@@ -31,7 +31,7 @@ function ShowMap(objname,options){
 	var cr = new BMap.CopyrightControl({anchor: BMAP_ANCHOR_TOP_LEFT});
 	map.addControl(cr); //添加版权控件
 	var bs = map.getBounds(); //返回地图可视区域
-	cr.addCopyright({id: 1, content: "<a href='http://www.weiphp.cn' style='font-size:12px;'>WeiPHP</a>", bounds: bs});
+	cr.addCopyright({id: 1, content: "<a href='https://www.weiphp.cn' style='font-size:12px;'>WeiPHP</a>", bounds: bs});
 
 	//坐标不为空时按坐标显示
 	if (this._mapx != ""){

@@ -672,7 +672,9 @@ str;
 			$this->error( '140027:没有指定插件名称，控制器或操作！' );
 		}
 	}
-	public function edit($name, $id = 0) {
+	public function edit() {
+		$id = I('id', 0);
+		$name = I('name');
 		$this->assign ( 'name', $name );
 		$class = get_addon_class ( $name );
 		if (! class_exists ( $class ))

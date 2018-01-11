@@ -67,7 +67,7 @@ class AlipaytypeController extends ManageBaseController {
 		$body = $orderName;
 		// 商品展示地址
 		$show_url = C ( 'site_url' ) . U ( 'Home/Index/price' );
-		// 需以http://开头的完整路径，例如：http://www.xxx.com/myorder.html
+		// 需以'.HTTP_PREFIX.'://开头的完整路径，例如：http://www.xxx.com/myorder.html
 		
 		// 防钓鱼时间戳
 		$anti_phishing_key = "";

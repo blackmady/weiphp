@@ -309,7 +309,7 @@ invite:微邀约',
 					'title' => '其它按钮',
 					'field' => 'text NULL',
 					'type' => 'textarea',
-					'remark' => '格式：按钮名称|按钮跳转地址，每行一个。如：查看官网|http://weiphp.cn',
+					'remark' => '格式：按钮名称|按钮跳转地址，每行一个。如：查看官网|https://weiphp.cn',
 					'is_show' => 1,
 					'placeholder' => '请输入内容'
 			],

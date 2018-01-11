@@ -344,10 +344,10 @@ class MemberController extends BaseController {
 		$this->display ();
 	}
 	// 通用插件的编辑模型
-	public function edit($id) {
+	public function edit() {
 		$model = $this->model;
 		is_array ( $model ) || $model = $this->getModel ( $model );
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );

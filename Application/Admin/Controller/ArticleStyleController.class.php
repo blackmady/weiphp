@@ -64,7 +64,8 @@ class ArticleStyleController extends AdminController {
      * 编辑配置
      * @author jacyxie <51daxigua@gmail.com>
      */
-    public function edit($id = 0){
+    public function edit(){
+		$id = I('id', 0);
 		$postUrl = U('edit',['id' => $id ]);
 		$this ->assign('postUrl',$postUrl);
         if(IS_POST){

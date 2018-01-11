@@ -154,7 +154,8 @@ class File extends Cache {
      * @return boolean
      */
     public function rm($name) {
-        return unlink($this->filename($name));
+		$file = $this->filename ( $name );		
+		return file_exists ( $file ) ? unlink ( $file ) : false;
     }
 
     /**

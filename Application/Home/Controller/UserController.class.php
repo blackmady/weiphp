@@ -258,7 +258,7 @@ class UserController extends HomeController {
 			$this->assign ( 'qrcode', $info ['qr_code'] );
 			
 			$html = 'login';
-			$_GET ['from'] == 'store' && $html = 'simple_login';
+			isset ( $_GET ['from'] ) && $_GET ['from'] == 'store' && $html = 'simple_login';
 			
 			$this->display ( $html );
 		}
@@ -421,7 +421,7 @@ class UserController extends HomeController {
 		}
 		$this->assign ( 'LoginKey', $key );
 		
-		$main_url = 'http://demo.weiphp.cn/'; // 主站的网址，开发者要替换成自己的网站
+		$main_url = 'https://demo.weiphp.cn/'; // 主站的网址，开发者要替换成自己的网站
 		                                      
 		// 获取二维码的地址 TODO 待加上access_token
 		$qr_code = get_data ( $main_url . 'index.php?s=/Home/ScanLoginApi/getQrCode/key/' . $key );
@@ -431,7 +431,7 @@ class UserController extends HomeController {
 		$this->display ();
 	}
 	function checkLogin() {
-		$main_url = 'http://demo.weiphp.cn/'; // 主站的网址，开发者要替换成自己的网站
+		$main_url = 'https://demo.weiphp.cn/'; // 主站的网址，开发者要替换成自己的网站
 		
 		$key = cookie ( 'LoginKey' );
 		// 通过LoginKey获取用户扫码进度

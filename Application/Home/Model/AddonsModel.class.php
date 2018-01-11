@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -64,6 +65,6 @@ class AddonsModel extends Model {
 	}
 	function getInfoByName($name, $update = false) {
 		$list = $this->getList ( $update );
-		return $list [$name];
+		return isset ( $list [$name] ) ? $list [$name] : [ ];
 	}
 }

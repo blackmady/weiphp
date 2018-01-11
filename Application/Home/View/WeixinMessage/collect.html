@@ -29,13 +29,13 @@
             <volist name="list_data" id="vo">
                 <tr>
                   <td width="50%" class="user">
-                	<notempty name="vo[user][headimgurl]">
+                	<notempty name="vo['user']['headimgurl']">
                 		<img width="50" src="{$vo.user.headimgurl}"/>
                     <else/>
                     	<img width="50" src="__IMG__/default.png"/>
                     </notempty>
                 	<div class="u_info">
-                    	<notempty name="vo[user][headimgurl]">
+                    	<notempty name="vo['user']['headimgurl']">
                             <p class="name">{$vo.user.nickname}</p>
                         <else/>
                             <p class="name">{$vo.openid}</p>

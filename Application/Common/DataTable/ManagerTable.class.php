@@ -72,12 +72,6 @@ class ManagerTable {
 					'field' => 'text NULL',
 					'type' => 'textarea',
 					'is_show' => 1
-			],
-			'website_logo' => [
-					'title' => '网站LOGO',
-					'field' => 'int(10) unsigned NULL',
-					'type' => 'picture',
-					'is_show' => 1
 			]
 	];
 }	

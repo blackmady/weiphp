@@ -23,13 +23,13 @@
               <volist name="list_data" id="vo">
                 <tr>
                   <td width="60%" class="user">
-                	<notempty name="vo[user][headimgurl]">
+                	<notempty name="vo['user']['headimgurl']">
                 		<img width="50" src="{$vo.user.headimgurl}"/>
                     <else/>
                     	<img width="50" src="__IMG__/default.png"/>
                     </notempty>
                 	<div class="u_info">
-                    	<notempty name="vo[user][headimgurl]">
+                    	<notempty name="vo['user']['headimgurl']">
                             <p class="name"><a href="{:U('WeixinMessage/person')}&openid={$vo.FromUserName}" >{$vo.user.nickname}</a></p>
                         <else/>
                             <p class="name"><a href="{:U('WeixinMessage/person')}&openid={$vo.FromUserName}" >{$vo.openid}</a></p>

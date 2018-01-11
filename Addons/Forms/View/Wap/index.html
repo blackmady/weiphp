@@ -127,7 +127,7 @@
                                     </php>
                                 </notempty>
                                 
-                                <if condition="empty($data[id]) || $forms[can_edit]==1">
+                                <if condition="empty($data['id']) || $forms[can_edit]==1">
                             	<a class="img_item add_btn" href="javascript:;" onClick="$.WeiPHP.wxChooseImg(this,1,'{$field.name}[]','','{:get_token()}')"><img src="__IMG__/add.png"/></a>
                             	</if>
                             </div>
@@ -183,7 +183,7 @@
               </volist>
           	<div class="form-item cf">
             <input type="hidden" name="id" value="{$data.id}">
-            <if condition="empty($data[id]) || $forms[can_edit]==1">
+            <if condition="empty($data['id']) || $forms[can_edit]==1">
             <button class="home_btn submit-btn mb_10 mt_10" id="submit" type="button" target-form="form-horizontal">确 定</button>
             </if>
             </div>

@@ -107,7 +107,8 @@ class Weiphp extends TagLib {
 		if (! empty ( $this->wpinputArr )) {
 			$htmlArr = array_merge ( $htmlArr, $this->wpinputArr );
 		}
-		if (! isset ( $fields ['id'] ) && isset ( $dataArr ['id'] ) && ! empty ( $dataArr ['id'] )) {
+		
+		if ((! isset ( $fields ['id'] ) || (isset ( $fields ['id'] ) && $fields ['id'] ['is_show'] == 0)) && isset ( $dataArr ['id'] ) && ! empty ( $dataArr ['id'] )) {
 			// 编辑状态自动加上ID值
 			$htmlArr ['id'] = "<input type='hidden' name='id' value='{$dataArr ['id']}' />";
 		}
@@ -127,7 +128,11 @@ class Weiphp extends TagLib {
 		empty ( $class ) && $class = 'form-horizontal form-center';
 		
 		$action = $this->tpl->get ( $tag ['action'] );
-		$action == false && $action = U ( ACTION_NAME,array('mdm'=>$_GET['mdm']) );
+		if ($action == false) {
+			$action = ! isset ( $_GET ['mdm'] ) ? U ( ACTION_NAME ) : U ( ACTION_NAME, [ 
+					'mdm' => $_GET ['mdm'] 
+			] );
+		}
 		
 		$parseStr = "<form id='{$id}' action='{$action}' method='{$method}' class='{$class}'>";
 		$parseStr .= implode ( PHP_EOL, $htmlArr );
@@ -234,9 +239,9 @@ $(function(){
 		return empty ( $dataArr ) ? [ ] : $dataArr;
 	}
 	function parseTemp($name, $field, $is_show = 1) {
-		$value = $field ['value'];
-		$extra = $field ['extra'];
-		$class = $field ['class'];
+		$value = isset ( $field ['value'] ) ? $field ['value'] : '';
+		$extra = isset ( $field ['extra'] ) ? $field ['extra'] : '';
+		$class = isset ( $field ['class'] ) ? $field ['class'] : '';
 		if ($is_show == 4) {
 			if (empty ( $value ) && isset ( $_GET [$name] )) {
 				$value = I ( 'get.' . $name );
@@ -330,7 +335,7 @@ $(function(){
 					break;
 				case 'editor' :
 					$html .= "<label class='textarea'><textarea name='{$name}' style='width:405px;height:100px;'>{$value}</textarea>";
-					$value = mysql_real_escape_string($value);
+					function_exists ( 'mysql_real_escape_string' ) && $value = mysql_real_escape_string ( $value );
 					$html .= "{:hook ( 'adminArticleEdit', [ 'name' => '{$name}', 'value' => '{$value}' ] )}  </label>";
 					break;
 				case 'picture' :
@@ -360,7 +365,7 @@ $(function(){
 					</div>";
 					break;
 				case 'file' :
-				    
+					
 					$html .= "<div class='controls upload_file' rel='{$name}'>
 					<div id='upload_file_{$name}' class='uploadrow_file'></div>
 					<input type='hidden' name='{$name}' value='{$value}' data-fileexts='{$field['validate_file_exts']}' data-maxsize='{$field['validate_file_size']}'/>
@@ -384,7 +389,7 @@ $(function(){
 					;' class='common_add_btn fl' onClick='$.WeiPHP.selectSingleUser(\"" . addons_url ( 'UserCenter://UserCenter/lists' ) . "\",\"{$name}\");'></a> ";
 					}
 					$html .= "</div>";
-// 					dump($html);
+					// dump($html);
 					break;
 				case 'users' :
 					$html .= "<div id='userList' class='common_add_list fl'>";

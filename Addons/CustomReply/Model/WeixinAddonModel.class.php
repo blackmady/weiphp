@@ -15,7 +15,7 @@ class WeixinAddonModel extends WeixinModel {
 		if($data['Content']=='location'){
 			$latitude = $dataArr ['Location_X'];
 			$longitude = $dataArr ['Location_Y'];
-			$pos = get_data ( 'http://lbs.juhe.cn/api/getaddressbylngb?lngx=' . $latitude . '&lngy=' . $longitude );
+			$pos = get_data ( 'https://lbs.juhe.cn/api/getaddressbylngb?lngx=' . $latitude . '&lngy=' . $longitude );
 			$pos_ar = json_decode ( $pos, true );
 			$this->replyText ( htmlspecialchars_decode ( $pos_ar ['row'] ['result'] ['formatted_address'] ) );
 		}elseif ($keywordArr ['extra_text'] == 'custom_reply_mult') {

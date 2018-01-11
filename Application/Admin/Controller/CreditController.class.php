@@ -35,14 +35,15 @@ class CreditController extends AdminController {
 		
 		$this->display ( 'Think:lists' );
 	}
-	public function edit($model = null, $id = 0) {
+	public function edit() {
 		D ( 'Common/Credit' )->clear ();
-		is_array ( $model ) || $model = $this->getModel ( 'credit_confit' );
+		$model = $this->getModel ( 'credit_confit' );
 		$this->meta_title = '编辑' . $model ['title'];
+		$id = I('id', 0);
 		parent::common_edit ( $model, $id, 'Think:edit' );
 	}
-	public function add($model = null) {
-		is_array ( $model ) || $model = $this->getModel ( 'credit_confit' );
+	public function add() {
+		$model = $this->getModel ( 'credit_confit' );
 		$this->meta_title = '新增' . $model ['title'];
 		parent::common_add ( $model, 'Think:add' );
 	}

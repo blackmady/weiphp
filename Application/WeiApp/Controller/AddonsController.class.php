@@ -114,34 +114,26 @@ class AddonsController extends Controller {
 	}
 	
 	// 通用插件的列表模型
-	public function lists($model = null, $page = 0) {
-		is_array ( $model ) || $model = $this->getModel ( $model );
-		$templateFile = $this->getAddonTemplate ( $model ['template_list'] );
-		parent::common_lists ( $model, $page, $templateFile );
+	public function lists() {
+		parent::common_lists ();
 	}
-	function export($model = null) {
-		is_array ( $model ) || $model = $this->getModel ( $model );
-		parent::common_export ( $model );
+	function export() {
+		parent::common_export ();
 	}
 	
 	// 通用插件的编辑模型
-	public function edit($model = null, $id = 0) {
-		is_array ( $model ) || $model = $this->getModel ( $model );
-		$templateFile = $this->getAddonTemplate ( $model ['template_edit'] );
-		parent::common_edit ( $model, $id, $templateFile );
+	public function edit() {
+		parent::common_edit ();
 	}
 	
 	// 通用插件的增加模型
-	public function add($model = null) {
-		is_array ( $model ) || $model = $this->getModel ( $model );
-		$templateFile = $this->getAddonTemplate ( $model ['template_add'] );
-		
-		parent::common_add ( $model, $templateFile );
+	public function add() {		
+		parent::common_add ( );
 	}
 	
 	// 通用插件的删除模型
-	public function del($model = null, $ids = null) {
-		parent::common_del ( $model, $ids );
+	public function del() {
+		parent::common_del ();
 	}
 	
 	// 通用设置插件模型

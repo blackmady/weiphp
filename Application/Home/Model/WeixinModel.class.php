@@ -166,7 +166,7 @@ class WeixinModel extends Model {
 		$post_data ['type'] = $type; // 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
 		$post_data ['media'] = '@' . $file;
 		
-		$url = "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=$acctoken&type=image";
+		$url = "https://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=$acctoken&type=image";
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_POST, 1 );
 		curl_setopt ( $ch, CURLOPT_URL, $url );

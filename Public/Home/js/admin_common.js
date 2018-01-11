@@ -172,7 +172,7 @@
 	});
 
     window.updateAlert = function (text,c,resCode) {
-		 var urlStr = '<a class="code" href="http://www.weiphp.cn/help/index.php?s=/help/help/auto_code/code/'+resCode+'">解决方法 ></a>'
+		 var urlStr = '<a class="code" href="https://www.weiphp.cn/help/index.php?s=/help/help/auto_code/code/'+resCode+'">解决方法 ></a>'
 		text = text||'default';
 		c = c||false;
 		if ( text!='default' ) {

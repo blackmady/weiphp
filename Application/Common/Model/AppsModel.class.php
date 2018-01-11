@@ -34,8 +34,8 @@ class AppsModel extends Model {
 			
 			S ( $key, $arr, 604800 ); // 缓存一周
 		}
-		
-		return $this->getInfo ( $arr [$token], $filed, $update );
+		$id = isset ( $arr [$token] ) ? $arr [$token] : '';
+		return $this->getInfo ( $id, $filed, $update );
 	}
 	function getInfoByAppid($appid, $filed = '', $update = false) {
 		$key = 'Common_Apps_getInfoByAppid';
@@ -48,11 +48,13 @@ class AppsModel extends Model {
 			
 			S ( $key, $arr, 604800 ); // 缓存一周
 		}
-		
+		$id = isset ( $arr [$appid] ) ? $arr [$appid] : '';
 		return $this->getInfo ( $arr [$appid], $filed, $update );
 	}
 	function clear($id, $type = '', $uid = '') {
 		$info = $this->getInfo ( $id, '', true );
+		if (empty ( $info ))
+			return false;
 		
 		$this->getInfoByToken ( $info ['token'], '', true );
 		$this->getInfoByAppid ( $info ['appid'], '', true );

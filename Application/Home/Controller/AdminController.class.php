@@ -21,8 +21,6 @@ class AdminController extends HomeController {
 		$this->assign ( 'check_all', false );
 		$this->assign ( 'search_url', U ( 'lists' ) );
 		
-		define ( 'ADDON_PUBLIC_PATH', '' );
-		
 		$this->model = M('model')->getByName ( 'user' );
 		$this->assign ( 'model', $this->model );
 		// dump ( $this->model );
@@ -113,9 +111,9 @@ class AdminController extends HomeController {
 			$this->error ( '110003:删除失败！' );
 		}
 	}
-	public function edit($model = null, $id = 0) {
+	public function edit() {
 		$model = $this->model;
-		$id || $id = I ( 'id' );
+		$id = I ( 'id' );
 		
 		// 获取数据
 		$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );

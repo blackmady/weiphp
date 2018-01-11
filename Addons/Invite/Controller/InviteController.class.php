@@ -5,13 +5,13 @@ namespace Addons\Invite\Controller;
 use Think\ManageBaseController;
 
 class InviteController extends ManageBaseController {
-	public function lists($model = null, $page = 0, $templateFile = '', $order = 'id desc') {
+	public function lists( $order = 'id desc') {
 	    $isAjax = I ( 'isAjax' );
 	    $isRadio = I ( 'isRadio' );
 		// 获取模型信息
-		is_array ( $model ) || $model = $this->getModel ( $model );
+		$model = $this->getModel (  );
 		
-		$list_data = $this->_get_model_list ( $model, $page, $order );
+		$list_data = $this->_get_model_list ( $model, 0, $order );
 		if (! empty ( $list_data ['list_data'] )) {
 			$coupon_ids = array_unique ( getSubByKey ( $list_data ['list_data'], 'coupon_id' ) );
 			$map ['id'] = array (
@@ -30,8 +30,8 @@ class InviteController extends ManageBaseController {
 		    $this->display ( 'ajax_lists_data' );
 		}else{
 		    $this->assign ( $list_data );
-		    $templateFile || $templateFile = $model ['template_list'] ? $model ['template_list'] : '';
-		    $this->display ( $templateFile );
+		    
+		    $this->display (  );
 		}
 	}
 	function preview(){
